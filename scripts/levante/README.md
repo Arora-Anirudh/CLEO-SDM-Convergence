@@ -17,7 +17,9 @@ verified absolute paths.
 3. `run_collisions0d.sbatch` creates one non-overwriting run directory,
    materializes an absolute-path configuration, generates initial conditions,
    and runs either the Golovin or Long executable.
-4. `analyze_collisions0d.sbatch` reads one completed run through CLEO's own
+4. `validate_collision_seed_replay.sbatch` proves one-thread exact replay for
+   one frozen initialization and two controlled collision streams.
+5. `analyze_collisions0d.sbatch` reads one completed run through CLEO's own
    `cleopy`/`plotcleo` tools and writes non-overwriting distribution, bulk and
    conservation diagnostics.
 
@@ -60,7 +62,7 @@ For the first Golovin smoke run:
 ```bash
 sbatch \
   --account=bb1153 \
-  --export=ALL,KERNEL=golovin,INITIALIZATION_SEED=12345,RUN_LABEL=first_golovin,MODEL_THREADS=1 \
+  --export=ALL,KERNEL=golovin,INITIALIZATION_SEED=12345,COLLISION_SEED=67890,RUN_LABEL=first_golovin_seeded,MODEL_THREADS=1 \
   scripts/levante/run_collisions0d.sbatch
 ```
 
@@ -71,6 +73,35 @@ validation is understood.
 `MODEL_THREADS` is deliberately independent of `SLURM_CPUS_PER_TASK`. Levante
 may allocate additional CPUs to satisfy memory policies; the model still uses
 only the explicitly requested number of Kokkos/OpenMP threads.
+
+Every new run requires two separate seeds:
+
+- `INITIALIZATION_SEED` controls the Python sampling of the time-zero SD
+  population;
+- `COLLISION_SEED` controls CLEO's collision shuffle/event RNG pool.
+
+## Collision-seed replay request
+
+The replay gate requests:
+
+- one node and one task;
+- one CPU core;
+- 940 MiB memory;
+- 10 minutes;
+- `shared` partition;
+- three sequential one-rank, one-thread simulations;
+- no GPU.
+
+```bash
+sbatch \
+  --account=bb1153 \
+  --export=ALL,KERNEL=golovin,INITIALIZATION_SEED=12345,REPLAY_COLLISION_SEED=67890,DIFFERENT_COLLISION_SEED=98765,VALIDATION_LABEL=golovin_seed_replay_v1 \
+  scripts/levante/validate_collision_seed_replay.sbatch
+```
+
+The same initialization and collision seed must yield byte-identical Zarr
+stores; changing only the collision seed must change the output. See
+[`docs/decisions/0002-explicit-collision-seed.md`](../../docs/decisions/0002-explicit-collision-seed.md).
 
 ## Scientific and machine configuration
 

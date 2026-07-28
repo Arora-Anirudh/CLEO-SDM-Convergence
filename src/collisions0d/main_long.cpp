@@ -9,14 +9,16 @@
  */
 
 #include "main_impl.hpp"
-#include "superdrops/collisions/coalescence.hpp"
+#include "seeded_collisions.hpp"
 #include "superdrops/collisions/longhydroprob.hpp"
 
 struct CreateLongCollisions {
   MicrophysicalProcess auto operator()(const Config &config,
-                                       const Timesteps &tsteps) const {
+                                       const Timesteps &tsteps,
+                                       const std::uint64_t seed) const {
     const PairProbability auto probability = LongHydroProb();
-    return CollCoal(tsteps.get_collstep(), &step2realtime, probability);
+    return SeededCollCoal(tsteps.get_collstep(), &step2realtime, probability,
+                          seed);
   }
 };
 

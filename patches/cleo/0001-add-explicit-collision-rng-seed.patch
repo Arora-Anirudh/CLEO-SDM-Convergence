@@ -1,0 +1,22 @@
+diff --git a/libs/superdrops/collisions/collisions.hpp b/libs/superdrops/collisions/collisions.hpp
+index 8e3c570..e192c91 100644
+--- a/libs/superdrops/collisions/collisions.hpp
++++ b/libs/superdrops/collisions/collisions.hpp
+@@ -24,0 +25 @@
++#include <cstdint>
+@@ -250,0 +252,15 @@ struct DoCollisions {
++  /**
++   * @brief Constructs a DoCollisions object with an explicit random-number seed.
++   *
++   * This overload preserves the collision algorithm while allowing an application to make the
++   * Kokkos random-number pool reproducible. The original constructor above retains CLEO's
++   * random-device behaviour for applications that do not provide a seed.
++   *
++   * @param DELT Time interval [s] over which probability of collision is calculated.
++   * @param p The probability object for calculating the probability of a collision.
++   * @param x The enactment object for enacting collision events.
++   * @param seed Seed used to initialize the Kokkos random-number pool.
++   */
++  DoCollisions(const double DELT, Probability p, EnactCollision x, const uint64_t seed)
++      : DELT(DELT), probability(p), enact_collision(x), genpool(seed) {}
++

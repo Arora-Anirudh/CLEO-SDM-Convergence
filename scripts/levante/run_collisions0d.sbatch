@@ -14,7 +14,7 @@
 # Required submission form:
 #
 #   sbatch --account=<project> \
-#     --export=ALL,KERNEL=golovin,INITIALIZATION_SEED=12345,RUN_LABEL=first_golovin \
+#     --export=ALL,KERNEL=golovin,INITIALIZATION_SEED=12345,COLLISION_SEED=67890,RUN_LABEL=first_golovin \
 #     scripts/levante/run_collisions0d.sbatch
 #
 # KERNEL may be "golovin" or "long".
@@ -35,6 +35,7 @@ source "${SCRIPT_DIR}/common.sh"
 
 : "${KERNEL:?Set KERNEL to golovin or long at submission.}"
 : "${INITIALIZATION_SEED:?Set INITIALIZATION_SEED at submission.}"
+: "${COLLISION_SEED:?Set COLLISION_SEED at submission.}"
 : "${RUN_LABEL:?Set a unique RUN_LABEL at submission.}"
 MODEL_THREADS="${MODEL_THREADS:-1}"
 
@@ -44,6 +45,10 @@ if [[ "${KERNEL}" != "golovin" && "${KERNEL}" != "long" ]]; then
 fi
 if [[ ! "${INITIALIZATION_SEED}" =~ ^[0-9]+$ ]]; then
   echo "ERROR: INITIALIZATION_SEED must be a non-negative integer." >&2
+  exit 2
+fi
+if [[ ! "${COLLISION_SEED}" =~ ^[0-9]+$ ]]; then
+  echo "ERROR: COLLISION_SEED must be an integer in [0, 2^64 - 1]." >&2
   exit 2
 fi
 if [[ ! "${RUN_LABEL}" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
@@ -104,7 +109,8 @@ srun \
   --ntasks=1 \
   --cpus-per-task="${MODEL_THREADS}" \
   "${executable}" \
-  "${runtime_config}"
+  "${runtime_config}" \
+  "${COLLISION_SEED}"
 
 zarr_output="${run_directory}/output/collisions0d_solution.zarr"
 setup_output="${run_directory}/output/collisions0d_setup.txt"
@@ -117,6 +123,7 @@ test -f "${setup_output}"
   echo "cleo_commit=${CLEO_SDM_PINNED_CLEO_COMMIT}"
   echo "kernel=${KERNEL}"
   echo "initialization_seed=${INITIALIZATION_SEED}"
+  echo "collision_seed=${COLLISION_SEED}"
   echo "run_label=${RUN_LABEL}"
   echo "slurm_job_id=${SLURM_JOB_ID}"
   echo "slurm_account=${SLURM_JOB_ACCOUNT:-unknown}"
