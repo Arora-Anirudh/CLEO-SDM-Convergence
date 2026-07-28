@@ -69,6 +69,16 @@ if [[ "${actual_cleo_commit}" != "${CLEO_SDM_PINNED_CLEO_COMMIT}" ]]; then
   echo "ERROR: fetched CLEO commit ${actual_cleo_commit} does not match the pin." >&2
   exit 1
 fi
+patched_files="$(
+  git -C "${CLEO_SDM_BUILD_ROOT}/_deps/cleo-src" diff --name-only
+)"
+if [[ "${patched_files}" != "libs/superdrops/collisions/collisions.hpp" ]]; then
+  echo "ERROR: expected only the collision-seed header patch, got: ${patched_files}" >&2
+  exit 1
+fi
+grep -Fq \
+  "DoCollisions(const double DELT, Probability p, EnactCollision x, const uint64_t seed)" \
+  "${CLEO_SDM_BUILD_ROOT}/_deps/cleo-src/libs/superdrops/collisions/collisions.hpp"
 
 echo "--- compile collision-box targets ---"
 cmake \
@@ -88,6 +98,9 @@ test -x "${long_executable}"
   echo "build_cpus=${SLURM_CPUS_PER_TASK}"
   echo "mpicc=$(command -v mpicc)"
   echo "mpicxx=$(command -v mpic++)"
+  echo "build_local_cleo_patch=${patched_files}"
+  sha256sum \
+    "${CLEO_SDM_PROJECT_ROOT}/patches/cleo/0001-add-explicit-collision-rng-seed.patch"
   sha256sum "${golovin_executable}" "${long_executable}"
 } >"${CLEO_SDM_BUILD_ROOT}/build_manifest.txt"
 

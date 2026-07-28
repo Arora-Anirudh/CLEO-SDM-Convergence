@@ -20,6 +20,13 @@ def test_cleo_dependency_is_canonical_and_pinned() -> None:
     assert "refs/heads/main" not in cmake
     assert re.fullmatch(r"[0-9a-f]{40}", CLEO_COMMIT)
 
+    patch = ROOT / "patches" / "cleo" / "0001-add-explicit-collision-rng-seed.patch"
+    assert patch.is_file()
+    patch_content = patch.read_text(encoding="utf-8")
+    assert "libs/superdrops/collisions/collisions.hpp" in patch_content
+    assert "genpool(seed)" in patch_content
+    assert "scaled_probability" not in patch_content
+
 
 def test_reference_initializer_matches_collisions0d() -> None:
     supers = load_reference_config()["python_initconds"]["supers"]
@@ -55,6 +62,7 @@ def test_levante_scripts_are_project_owned_and_account_neutral() -> None:
         "build.sbatch",
         "common.sh",
         "run_collisions0d.sbatch",
+        "validate_collision_seed_replay.sbatch",
     }
     assert expected <= {path.name for path in levante_directory.iterdir()}
 
@@ -68,6 +76,18 @@ def test_levante_scripts_are_project_owned_and_account_neutral() -> None:
 def test_runtime_config_materializer_exists() -> None:
     materializer = ROOT / "scripts" / "materialize_collisions0d_config.py"
     assert materializer.is_file()
+
+
+def test_collision_seed_is_required_and_recorded() -> None:
+    runner = (ROOT / "scripts" / "levante" / "run_collisions0d.sbatch").read_text(encoding="utf-8")
+    assert ': "${COLLISION_SEED:?' in runner
+    assert '"${runtime_config}" \\\n  "${COLLISION_SEED}"' in runner
+    assert 'echo "collision_seed=${COLLISION_SEED}"' in runner
+
+    implementation = (ROOT / "src" / "collisions0d" / "main_impl.hpp").read_text(encoding="utf-8")
+    assert "argc != 3" in implementation
+    assert "parse_collision_seed(argv[2])" in implementation
+    assert "collision_rng_seed=" in implementation
 
 
 def test_collision_box_analyzer_uses_pinned_cleo_tools() -> None:

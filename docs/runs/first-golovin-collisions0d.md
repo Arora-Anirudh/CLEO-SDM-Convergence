@@ -89,9 +89,14 @@ supplied explicitly:
 ```bash
 sbatch \
   --account=bb1153 \
-  --export=ALL,KERNEL=golovin,RUN_LABEL=first_golovin_serial,INIT_SEED=12345,MODEL_THREADS=1 \
+  --export=ALL,KERNEL=golovin,RUN_LABEL=first_golovin_serial,INITIALIZATION_SEED=12345,MODEL_THREADS=1 \
   scripts/levante/run_collisions0d.sbatch
 ```
+
+This is the historical command for project commit
+`afaf8497fb6f2380b61a3ff0722a49c5040baad0`. The current runner also requires
+`COLLISION_SEED`; see ADR 0002. No collision seed can be retroactively assigned
+to this first run.
 
 The batch script deliberately refuses to overwrite an existing run label. The
 result is therefore an immutable run directory:

@@ -13,9 +13,13 @@
 
 #include <Kokkos_Core.hpp>
 
+#include <charconv>
+#include <cstdint>
 #include <filesystem>
 #include <iostream>
 #include <stdexcept>
+#include <string_view>
+#include <system_error>
 
 #include "cartesiandomain/cartesianmaps.hpp"
 #include "cartesiandomain/createcartesianmaps.hpp"
@@ -95,26 +99,46 @@ inline Observer auto create_observer(const Config &config, const Timesteps &tste
 template <typename Dataset, typename Store, typename CreateMicrophysics>
 inline auto create_sdm(const Config &config, const Timesteps &tsteps,
                        Dataset &dataset, Store &store,
-                       const CreateMicrophysics create_microphysics) {
+                       const CreateMicrophysics create_microphysics,
+                       const std::uint64_t collision_seed) {
   const auto couplstep = static_cast<unsigned int>(tsteps.get_couplstep());
   const GridboxMaps auto gbxmaps = create_gridbox_maps(config);
   const MicrophysicalProcess auto microphysics =
-      create_microphysics(config, tsteps);
+      create_microphysics(config, tsteps, collision_seed);
   const MoveSupersInDomain movesupers = create_null_movement(gbxmaps);
   const Observer auto observer = create_observer(config, tsteps, dataset, store);
 
   return SDMMethods(couplstep, gbxmaps, microphysics, movesupers, observer);
 }
 
+inline std::uint64_t parse_collision_seed(const std::string_view text) {
+  if (text.empty() || text.front() == '-') {
+    throw std::invalid_argument(
+        "collision seed must be an integer in [0, 2^64 - 1]");
+  }
+
+  std::uint64_t seed{};
+  const auto result =
+      std::from_chars(text.data(), text.data() + text.size(), seed);
+  if (result.ec != std::errc{} ||
+      result.ptr != text.data() + text.size()) {
+    throw std::invalid_argument(
+        "collision seed must be an integer in [0, 2^64 - 1]");
+  }
+  return seed;
+}
+
 template <typename CreateMicrophysics>
 inline int run_collisions0d(int argc, char *argv[],
                             const CreateMicrophysics create_microphysics) {
-  if (argc < 2) {
-    throw std::invalid_argument("configuration file not specified");
+  if (argc != 3) {
+    throw std::invalid_argument(
+        "usage: collisions0d_<kernel> CONFIG_FILE COLLISION_SEED");
   }
 
   Kokkos::Timer timer;
   const std::filesystem::path config_filename(argv[1]);
+  const std::uint64_t collision_seed = parse_collision_seed(argv[2]);
   const Config config(config_filename);
 
   init_communicator communicator(argc, argv, config);
@@ -126,13 +150,15 @@ inline int run_collisions0d(int argc, char *argv[],
   Kokkos::initialize(config.get_kokkos_initialization_settings());
   {
     Kokkos::print_configuration(std::cout);
+    std::cout << "collision_rng_seed=" << collision_seed << "\n";
     const Timesteps tsteps(config.get_timesteps());
 
     auto store = FSStore(config.get_zarrbasedir());
     auto dataset = SimpleDataset(store);
 
     const SDMMethods sdm =
-        create_sdm(config, tsteps, dataset, store, create_microphysics);
+        create_sdm(config, tsteps, dataset, store, create_microphysics,
+                   collision_seed);
     const CoupledDynamics auto dynamics =
         NullDynamics(tsteps.get_couplstep());
     const CouplingComms<CartesianMaps, NullDynamics> auto communications =

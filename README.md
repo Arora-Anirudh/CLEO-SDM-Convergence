@@ -22,6 +22,8 @@ The first application is `collisions0d`:
 - a Long hydrodynamic-kernel executable for the primary experiment;
 - scientific Zarr output containing time, radius, multiplicity, solute mass and
   superdroplet ID;
+- separate, explicit initialization and collision seeds for controlled
+  stochastic provenance;
 - a reproducible Python initializer based on Clara Bayley's
   [`PerformanceTestingCLEO/src/collisions0d`](https://github.com/yoctoyotta1024/PerformanceTestingCLEO/tree/main/src/collisions0d).
 
@@ -144,6 +146,16 @@ metrics are documented in
 [`docs/analysis/collisions0d-diagnostics.md`](docs/analysis/collisions0d-diagnostics.md).
 The checksum-verified compact products from the first audited run are under
 [`results/first_golovin_serial`](results/first_golovin_serial).
+
+The first run predated explicit collision-stream control. New runs require both
+an initialization seed and collision seed. The design, deliberately minimal
+build-local CLEO patch, and one-thread replay gate are documented in
+[`ADR 0002`](docs/decisions/0002-explicit-collision-seed.md). The successful
+Golovin replay audit is under
+[`results/golovin_seed_replay_v1`](results/golovin_seed_replay_v1). A detailed record
+of repository creation, the first model/diagnostic run and the seed-control work
+is maintained in the
+[`2026-07-28 work log`](docs/worklogs/2026-07-28.md).
 
 ## Attribution
 
