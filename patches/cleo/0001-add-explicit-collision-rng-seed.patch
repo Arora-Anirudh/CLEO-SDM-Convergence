@@ -2,9 +2,12 @@ diff --git a/libs/superdrops/collisions/collisions.hpp b/libs/superdrops/collisi
 index 8e3c570..e192c91 100644
 --- a/libs/superdrops/collisions/collisions.hpp
 +++ b/libs/superdrops/collisions/collisions.hpp
-@@ -24,0 +25 @@
+@@ -24,2 +24,3 @@
+ #include <concepts>
 +#include <cstdint>
-@@ -250,0 +252,15 @@ struct DoCollisions {
+ #include <random>
+@@ -250,2 +251,17 @@ struct DoCollisions {
+ 
 +  /**
 +   * @brief Constructs a DoCollisions object with an explicit random-number seed.
 +   *
@@ -20,3 +23,4 @@ index 8e3c570..e192c91 100644
 +  DoCollisions(const double DELT, Probability p, EnactCollision x, const uint64_t seed)
 +      : DELT(DELT), probability(p), enact_collision(x), genpool(seed) {}
 +
+   /**

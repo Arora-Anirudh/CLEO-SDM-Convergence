@@ -66,8 +66,23 @@ string(
   "DoCollisions(const double DELT, Probability p, EnactCollision x, const uint64_t seed)"
   seed_constructor_position
 )
+string(
+  FIND
+  "${collision_header_content}"
+  "#endif  // LIBS_SUPERDROPS_COLLISIONS_COLLISIONS_HPP_"
+  header_guard_end_position
+)
 
 if(seed_constructor_position GREATER_EQUAL 0)
+  if(
+    header_guard_end_position LESS 0
+    OR seed_constructor_position GREATER header_guard_end_position
+  )
+    message(
+      FATAL_ERROR
+      "The collision-seed constructor is not inside the pinned CLEO header guard"
+    )
+  endif()
   if(NOT modified_files STREQUAL "libs/superdrops/collisions/collisions.hpp")
     message(
       FATAL_ERROR
