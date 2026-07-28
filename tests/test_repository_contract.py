@@ -62,6 +62,7 @@ def test_levante_scripts_are_project_owned_and_account_neutral() -> None:
         "build.sbatch",
         "common.sh",
         "run_collisions0d.sbatch",
+        "run_golovin_matrix.sbatch",
         "validate_collision_seed_replay.sbatch",
     }
     assert expected <= {path.name for path in levante_directory.iterdir()}
@@ -78,6 +79,20 @@ def test_runtime_config_materializer_exists() -> None:
     assert materializer.is_file()
 
 
+def test_stage0_tools_and_development_config_exist() -> None:
+    expected = (
+        ROOT / "config" / "golovin_stage0_development.yaml",
+        ROOT / "scripts" / "golovin_stage0.py",
+        ROOT / "scripts" / "prepare_golovin_matrix.py",
+        ROOT / "scripts" / "summarize_golovin_ensemble.py",
+    )
+    assert all(path.is_file() for path in expected)
+
+    config = YAML(typ="safe").load(expected[0].read_text(encoding="utf-8"))
+    assert config["experiment"]["status"] == "development_only"
+    assert config["provisional_decisions"]["approved_for_production"] is False
+
+
 def test_collision_seed_is_required_and_recorded() -> None:
     runner = (ROOT / "scripts" / "levante" / "run_collisions0d.sbatch").read_text(encoding="utf-8")
     assert ': "${COLLISION_SEED:?' in runner
@@ -88,6 +103,22 @@ def test_collision_seed_is_required_and_recorded() -> None:
     assert "argc != 3" in implementation
     assert "parse_collision_seed(argv[2])" in implementation
     assert "collision_rng_seed=" in implementation
+
+
+def test_run_manifest_records_stage0_provenance() -> None:
+    runner = (ROOT / "scripts" / "levante" / "run_collisions0d.sbatch").read_text(encoding="utf-8")
+    for required_record in (
+        "matrix_stage=",
+        "matrix_case_index=",
+        "initialization_family=",
+        "max_superdroplets=",
+        "collision_timestep_s=",
+        "observation_timestep_s=",
+        "zarr_tree_sha256=",
+        "job_wall_seconds=",
+        "module_list=",
+    ):
+        assert required_record in runner
 
 
 def test_collision_box_analyzer_uses_pinned_cleo_tools() -> None:

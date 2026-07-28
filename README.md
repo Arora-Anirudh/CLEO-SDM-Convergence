@@ -38,6 +38,11 @@ It separates analytical mean bias, stochastic spread, ensemble precision,
 initialization sensitivity, timestep adequacy and cost. Its proposed numerical
 tolerances remain provisional until confirmed before model compute.
 
+The local Stage-0 measurement, provenance and non-destructive matrix tooling is
+explained from first principles in the
+[`Golovin Stage-0 implementation guide`](docs/implementation/golovin-stage0-guide.md).
+Its development configuration is explicitly not production authorization.
+
 ## CLEO dependency
 
 CLEO is fetched during CMake configuration and is not vendored here.

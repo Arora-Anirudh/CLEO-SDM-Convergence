@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import sys
 import warnings
@@ -25,6 +26,37 @@ from ruamel.yaml import YAML
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+
+try:
+    from scripts.golovin_stage0 import (
+        first_threshold_crossing,
+        fixed_bin_mass_density,
+        fixed_bin_relative_l1,
+        golovin_analytical_mass_density,
+        golovin_analytical_radius_moments,
+        logarithmic_radius_edges,
+        mass_fraction_at_or_above,
+        mass_weighted_radius_quantile,
+        radius_moment,
+        relative_error,
+        water_equivalent_droplet_mass_g,
+    )
+except ModuleNotFoundError:
+    # Direct execution places ``scripts/`` rather than the repository root on
+    # sys.path.  Tests/imports from the repository use the first branch.
+    from golovin_stage0 import (  # type: ignore[no-redef]
+        first_threshold_crossing,
+        fixed_bin_mass_density,
+        fixed_bin_relative_l1,
+        golovin_analytical_mass_density,
+        golovin_analytical_radius_moments,
+        logarithmic_radius_edges,
+        mass_fraction_at_or_above,
+        mass_weighted_radius_quantile,
+        radius_moment,
+        relative_error,
+        water_equivalent_droplet_mass_g,
+    )
 
 
 def parse_args() -> argparse.Namespace:
@@ -51,7 +83,13 @@ def parse_args() -> argparse.Namespace:
         "--output-directory",
         type=Path,
         default=None,
-        help="fresh output directory; default RUN_DIRECTORY/analysis_v1",
+        help="fresh output directory; default RUN_DIRECTORY/analysis_stage0_v1",
+    )
+    parser.add_argument(
+        "--stage0-config",
+        type=Path,
+        default=Path(__file__).resolve().parents[1] / "config" / "golovin_stage0_development.yaml",
+        help="registered fixed-bin, threshold and statistical settings",
     )
     parser.add_argument(
         "--times",
@@ -67,6 +105,26 @@ def load_yaml(filename: Path) -> dict[str, Any]:
     yaml = YAML(typ="safe")
     with filename.open("r", encoding="utf-8") as stream:
         return yaml.load(stream)
+
+
+def sha256_file(filename: Path) -> str:
+    digest = hashlib.sha256()
+    with filename.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def load_key_value_manifest(filename: Path) -> dict[str, str]:
+    """Read the ``key=value`` records and ignore following checksum lines."""
+    records: dict[str, str] = {}
+    for line in filename.read_text(encoding="utf-8").splitlines():
+        if "=" not in line:
+            continue
+        key, value = line.split("=", maxsplit=1)
+        if key and key.replace("_", "").isalnum():
+            records[key] = value
+    return records
 
 
 def validate_paths(cleo_source: Path, run_directory: Path, output_directory: Path) -> None:
@@ -131,6 +189,8 @@ def calculate_bulk_row(
     water_mass_g: np.ndarray,
     domain_volume_m3: float,
     initial_liquid_water_gm3: float,
+    large_drop_threshold_um: float = 1000.0,
+    mass_quantile: float = 0.99,
 ) -> dict[str, float | int]:
     if radius_um.shape != multiplicity.shape or radius_um.shape != water_mass_g.shape:
         raise ValueError("radius, multiplicity and water mass must have identical shapes")
@@ -144,22 +204,53 @@ def calculate_bulk_row(
     else:
         relative_drift = liquid_water_gm3 / initial_liquid_water_gm3 - 1.0
 
-    total_mass = float(np.sum(represented_mass_g))
-
-    def mass_fraction_at_or_above(threshold_um: float) -> float:
-        if total_mass <= 0:
-            return float("nan")
-        return float(np.sum(represented_mass_g[radius_um >= threshold_um]) / total_mass)
-
     return {
         "time_s": float(time_s),
         "n_superdroplet_records": int(radius_um.size),
         "number_concentration_cm3": float(np.sum(multiplicity) / domain_volume_m3 / 1.0e6),
         "liquid_water_gm3": liquid_water_gm3,
         "relative_liquid_mass_drift": relative_drift,
+        "radius_moment_0_m3": radius_moment(
+            order=0,
+            radius_um=radius_um,
+            multiplicity=multiplicity,
+            domain_volume_m3=domain_volume_m3,
+        ),
+        "radius_moment_3_um3_m3": radius_moment(
+            order=3,
+            radius_um=radius_um,
+            multiplicity=multiplicity,
+            domain_volume_m3=domain_volume_m3,
+        ),
+        "radius_moment_6_um6_m3": radius_moment(
+            order=6,
+            radius_um=radius_um,
+            multiplicity=multiplicity,
+            domain_volume_m3=domain_volume_m3,
+        ),
         "max_radius_um": float(np.max(radius_um)),
-        "mass_fraction_r_ge_40um": mass_fraction_at_or_above(40.0),
-        "mass_fraction_r_ge_1000um": mass_fraction_at_or_above(1000.0),
+        "mass_fraction_r_ge_40um": mass_fraction_at_or_above(
+            radius_um,
+            represented_mass_g,
+            40.0,
+        ),
+        "mass_fraction_r_ge_large_threshold": mass_fraction_at_or_above(
+            radius_um,
+            represented_mass_g,
+            large_drop_threshold_um,
+        ),
+        # Retained for compatibility while the registered development
+        # threshold is 1000 um.
+        "mass_fraction_r_ge_1000um": mass_fraction_at_or_above(
+            radius_um,
+            represented_mass_g,
+            1000.0,
+        ),
+        "mass_weighted_radius_q99_um": mass_weighted_radius_quantile(
+            radius_um,
+            represented_mass_g,
+            mass_quantile,
+        ),
     }
 
 
@@ -187,6 +278,9 @@ def calculate_diagnostics(
     volume_exponential_scale_m: float,
     max_superdroplets: int,
     shima2009fig,
+    fixed_edges_um: np.ndarray,
+    large_drop_threshold_um: float,
+    mass_quantile: float,
 ) -> list[dict[str, float | int]]:
     radii = superdrops["radius"]
     multiplicities = superdrops["xi"]
@@ -213,6 +307,8 @@ def calculate_diagnostics(
             water_mass_g=water_mass_g,
             domain_volume_m3=domain_volume_m3,
             initial_liquid_water_gm3=initial_liquid_water_gm3,
+            large_drop_threshold_um=large_drop_threshold_um,
+            mass_quantile=mass_quantile,
         )
 
         if kernel == "golovin":
@@ -242,15 +338,67 @@ def calculate_diagnostics(
                 analytical,
                 radius_centres_um,
             )
+
+            wet_mass_g = water_equivalent_droplet_mass_g(
+                radius_um,
+                superdrops.RHO_L(),
+            )
+            fixed_numerical = fixed_bin_mass_density(
+                radius_um=radius_um,
+                multiplicity=multiplicity,
+                droplet_mass_g=wet_mass_g,
+                domain_volume_m3=domain_volume_m3,
+                edges_um=fixed_edges_um,
+            )
+            fixed_analytical = golovin_analytical_mass_density(
+                edges_um=fixed_edges_um,
+                time_s=float(time_s),
+                initial_number_concentration_m3=number_concentration_m3,
+                volume_exponential_scale_radius_m=volume_exponential_scale_m,
+                liquid_water_density_kgm3=superdrops.RHO_L(),
+            )
+            row["golovin_fixed_bin_l1_relative"] = fixed_bin_relative_l1(
+                fixed_numerical.mass_density_gm3_per_ln_radius,
+                fixed_analytical,
+                fixed_edges_um,
+            )
+            row["fixed_bin_mass_below_range_fraction"] = fixed_numerical.mass_below_range_fraction
+            row["fixed_bin_mass_above_range_fraction"] = fixed_numerical.mass_above_range_fraction
+
+            analytical_moments = golovin_analytical_radius_moments(
+                time_s=float(time_s),
+                initial_number_concentration_m3=number_concentration_m3,
+                volume_exponential_scale_radius_m=volume_exponential_scale_m,
+            )
+            for order, column in (
+                (0, "radius_moment_0_m3"),
+                (3, "radius_moment_3_um3_m3"),
+                (6, "radius_moment_6_um6_m3"),
+            ):
+                row[f"golovin_analytical_{column}"] = analytical_moments[order]
+                row[f"golovin_relative_error_{column}"] = relative_error(
+                    float(row[column]),
+                    analytical_moments[order],
+                )
         else:
             row["golovin_l1_relative"] = float("nan")
+            row["golovin_fixed_bin_l1_relative"] = float("nan")
+            row["fixed_bin_mass_below_range_fraction"] = float("nan")
+            row["fixed_bin_mass_above_range_fraction"] = float("nan")
+            for column in (
+                "radius_moment_0_m3",
+                "radius_moment_3_um3_m3",
+                "radius_moment_6_um6_m3",
+            ):
+                row[f"golovin_analytical_{column}"] = float("nan")
+                row[f"golovin_relative_error_{column}"] = float("nan")
 
         rows.append(row)
 
     return rows
 
 
-def write_diagnostics_csv(filename: Path, rows: list[dict[str, float | int]]) -> None:
+def write_diagnostics_csv(filename: Path, rows: list[dict[str, object]]) -> None:
     with filename.open("w", encoding="utf-8", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
         writer.writeheader()
@@ -261,6 +409,7 @@ def plot_bulk_diagnostics(
     rows: list[dict[str, float | int]],
     *,
     kernel: str,
+    large_drop_threshold_um: float,
     savename: Path,
 ) -> None:
     time_minutes = np.asarray([float(row["time_s"]) for row in rows]) / 60.0
@@ -295,17 +444,21 @@ def plot_bulk_diagnostics(
     )
     axes[1, 1].plot(
         time_minutes,
-        values("mass_fraction_r_ge_1000um"),
+        values("mass_fraction_r_ge_large_threshold"),
         marker="o",
-        label="$r\\geq1000$ μm",
+        label=rf"$r\geq{large_drop_threshold_um:g}$ μm",
     )
     axes[1, 1].set_ylim(-0.02, 1.02)
     axes[1, 1].set_ylabel("liquid-mass fraction")
     axes[1, 1].legend()
 
     if kernel == "golovin":
-        axes[1, 2].plot(time_minutes, values("golovin_l1_relative"), marker="o")
-        axes[1, 2].set_ylabel("relative Golovin L1 error")
+        axes[1, 2].plot(
+            time_minutes,
+            values("golovin_fixed_bin_l1_relative"),
+            marker="o",
+        )
+        axes[1, 2].set_ylabel("fixed-bin relative Golovin L1 error")
     else:
         axes[1, 2].plot(
             time_minutes,
@@ -332,13 +485,26 @@ def main() -> None:
     output_directory = (
         args.output_directory.resolve()
         if args.output_directory is not None
-        else run_directory / "analysis_v1"
+        else run_directory / "analysis_stage0_v1"
     )
+    stage0_config_filename = args.stage0_config.resolve()
     validate_paths(cleo_source, run_directory, output_directory)
+    if not stage0_config_filename.is_file():
+        raise FileNotFoundError(f"Stage-0 configuration is missing: {stage0_config_filename}")
 
     pygbxsdat, pysetuptxt, pyzarr, shima2009fig = import_cleo_plotting(cleo_source)
 
     runtime_config = load_yaml(run_directory / "config.yaml")
+    run_manifest = load_key_value_manifest(run_directory / "manifest.txt")
+    stage0_config = load_yaml(stage0_config_filename)
+    diagnostic_config = stage0_config["diagnostics"]
+    fixed_edges_um = logarithmic_radius_edges(
+        float(diagnostic_config["radius_minimum_um"]),
+        float(diagnostic_config["radius_maximum_um"]),
+        int(diagnostic_config["number_of_log_radius_bins"]),
+    )
+    large_drop_threshold_um = float(diagnostic_config["large_drop_threshold_um"])
+    mass_quantile = float(diagnostic_config["mass_weighted_radius_quantile"])
     setup_filename = run_directory / "output" / "collisions0d_setup.txt"
     grid_filename = run_directory / "inputs" / "grid.dat"
     dataset = run_directory / "output" / "collisions0d_solution.zarr"
@@ -405,12 +571,64 @@ def main() -> None:
             volume_exponential_scale_m=volume_exponential_scale_m,
             max_superdroplets=max_superdroplets,
             shima2009fig=shima2009fig,
+            fixed_edges_um=fixed_edges_um,
+            large_drop_threshold_um=large_drop_threshold_um,
+            mass_quantile=mass_quantile,
         )
-    diagnostics_csv = output_directory / "bulk_diagnostics.csv"
+    member_identifiers: dict[str, str | int | float] = {
+        "run_label": run_manifest.get("run_label", run_directory.name),
+        "kernel": args.kernel,
+        "matrix_stage": run_manifest.get("matrix_stage", "single_run"),
+        "initialization_family": run_manifest.get(
+            "initialization_family",
+            "unspecified",
+        ),
+        "matrix_case_index": int(run_manifest.get("matrix_case_index", -1)),
+        "member_index": int(run_manifest.get("member_index", -1)),
+        "initialization_seed": run_manifest.get("initialization_seed", "unknown"),
+        "collision_seed": run_manifest.get("collision_seed", "unknown"),
+        "max_superdroplets": max_superdroplets,
+        "collision_timestep_s": float(runtime_config["timesteps"]["COLLTSTEP"]),
+        "observation_timestep_s": float(runtime_config["timesteps"]["OBSTSTEP"]),
+        "end_time_s": float(runtime_config["timesteps"]["T_END"]),
+    }
+    rows = [{**member_identifiers, **row} for row in rows]
+    diagnostics_csv = output_directory / "member_time_diagnostics.csv"
     write_diagnostics_csv(diagnostics_csv, rows)
 
+    crossing = first_threshold_crossing(
+        np.asarray([float(row["time_s"]) for row in rows]),
+        np.asarray([float(row["mass_fraction_r_ge_40um"]) for row in rows]),
+        float(diagnostic_config["onset_mass_fraction"]),
+    )
+    member_summary = {
+        **member_identifiers,
+        "t10_status": crossing.status,
+        "t10_lower_bound_s": crossing.lower_bound_s,
+        "t10_upper_bound_s": crossing.upper_bound_s,
+        "t10_first_recorded_crossing_s": crossing.first_recorded_crossing_s,
+        "maximum_absolute_liquid_mass_drift": float(
+            np.max(
+                np.abs(
+                    np.asarray(
+                        [float(row["relative_liquid_mass_drift"]) for row in rows],
+                        dtype=float,
+                    )
+                )
+            )
+        ),
+        "large_drop_threshold_um": large_drop_threshold_um,
+        "mass_weighted_radius_quantile": mass_quantile,
+    }
+    write_diagnostics_csv(output_directory / "member_summary.csv", [member_summary])
+
     bulk_figure = output_directory / f"{args.kernel}_bulk_diagnostics.png"
-    plot_bulk_diagnostics(rows, kernel=args.kernel, savename=bulk_figure)
+    plot_bulk_diagnostics(
+        rows,
+        kernel=args.kernel,
+        large_drop_threshold_um=large_drop_threshold_um,
+        savename=bulk_figure,
+    )
 
     metadata = {
         "status": "completed",
@@ -418,6 +636,18 @@ def main() -> None:
         "run_directory": str(run_directory),
         "cleo_source": str(cleo_source),
         "dataset": str(dataset),
+        "stage0_config": str(stage0_config_filename),
+        "stage0_config_sha256": sha256_file(stage0_config_filename),
+        "stage0_experiment_status": stage0_config["experiment"]["status"],
+        "fixed_bin_radius_minimum_um": float(fixed_edges_um[0]),
+        "fixed_bin_radius_maximum_um": float(fixed_edges_um[-1]),
+        "fixed_bin_count": int(fixed_edges_um.size - 1),
+        "fixed_bin_smoothing": None,
+        "large_drop_threshold_um": large_drop_threshold_um,
+        "t10_definition": (
+            "first stored time with mass_fraction_r_ge_40um >= "
+            f"{float(diagnostic_config['onset_mass_fraction']):g}; interval-censored"
+        ),
         "setup_filename": str(setup_filename),
         "grid_filename": str(grid_filename),
         "requested_distribution_times_s": requested_times,

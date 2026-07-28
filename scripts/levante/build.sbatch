@@ -20,11 +20,7 @@ set -eo pipefail
 source /etc/profile
 set -u
 
-if [[ -n "${SLURM_SUBMIT_DIR:-}" ]]; then
-  SCRIPT_DIR="${SLURM_SUBMIT_DIR}/scripts/levante"
-else
-  SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-fi
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=common.sh
 source "${SCRIPT_DIR}/common.sh"
 
@@ -35,6 +31,13 @@ cleo_sdm_print_environment
 
 mkdir -p "${CLEO_SDM_BUILD_ROOT}"
 cd "${CLEO_SDM_PROJECT_ROOT}"
+
+tracked_status="$(git status --porcelain --untracked-files=no)"
+if [[ -n "${tracked_status}" ]]; then
+  echo "ERROR: tracked project files are dirty; commit or restore them before building:" >&2
+  echo "${tracked_status}" >&2
+  exit 1
+fi
 
 echo "--- synchronize the locked Python environment ---"
 "${CLEO_SDM_UV}" sync \

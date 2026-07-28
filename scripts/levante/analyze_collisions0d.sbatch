@@ -23,11 +23,7 @@ set -eo pipefail
 source /etc/profile
 set -u
 
-if [[ -n "${SLURM_SUBMIT_DIR:-}" ]]; then
-  SCRIPT_DIR="${SLURM_SUBMIT_DIR}/scripts/levante"
-else
-  SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-fi
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=common.sh
 source "${SCRIPT_DIR}/common.sh"
 
@@ -50,8 +46,8 @@ cleo_sdm_print_environment
 
 run_directory="${CLEO_SDM_RUN_ROOT}/${RUN_LABEL}"
 cleo_source="${CLEO_SDM_BUILD_ROOT}/_deps/cleo-src"
-output_directory="${run_directory}/analysis_v1"
-staging_directory="${run_directory}/.analysis_v1_job${SLURM_JOB_ID}.tmp"
+output_directory="${run_directory}/analysis_stage0_v1"
+staging_directory="${run_directory}/.analysis_stage0_v1_job${SLURM_JOB_ID}.tmp"
 failed_directory="${run_directory}/analysis_failed_job${SLURM_JOB_ID}"
 python="${CLEO_SDM_PROJECT_ROOT}/.venv/bin/python"
 
@@ -84,7 +80,8 @@ trap preserve_failed_analysis EXIT
   --output-directory "${staging_directory}" \
   --times 0 1200 2400 3600
 
-test -f "${staging_directory}/bulk_diagnostics.csv"
+test -f "${staging_directory}/member_time_diagnostics.csv"
+test -f "${staging_directory}/member_summary.csv"
 test -f "${staging_directory}/${KERNEL}_mass_distribution.png"
 test -f "${staging_directory}/${KERNEL}_bulk_diagnostics.png"
 test -f "${staging_directory}/diagnostic_metadata.json"
@@ -92,7 +89,8 @@ test -f "${staging_directory}/diagnostic_metadata.json"
 (
   cd "${staging_directory}"
   sha256sum \
-    bulk_diagnostics.csv \
+    member_time_diagnostics.csv \
+    member_summary.csv \
     "${KERNEL}_mass_distribution.png" \
     "${KERNEL}_bulk_diagnostics.png" \
     diagnostic_metadata.json \

@@ -19,9 +19,11 @@ verified absolute paths.
    and runs either the Golovin or Long executable.
 4. `validate_collision_seed_replay.sbatch` proves one-thread exact replay for
    one frozen initialization and two controlled collision streams.
-5. `analyze_collisions0d.sbatch` reads one completed run through CLEO's own
-   `cleopy`/`plotcleo` tools and writes non-overwriting distribution, bulk and
-   conservation diagnostics.
+5. `run_golovin_matrix.sbatch` maps one reviewed TSV row to one unique Slurm
+   array task and skips only explicitly resumed completed cases.
+6. `analyze_collisions0d.sbatch` reads one completed run through CLEO's own
+   `cleopy`/`plotcleo` tools and writes non-overwriting fixed-bin, moment,
+   onset, tail and conservation diagnostics.
 
 The permanent source and build trees are in HOME. Run-specific configuration,
 input binaries and Zarr output are stored under SCRATCH.
@@ -110,12 +112,15 @@ The scientific template is
 grid-box dimensions, number of superdroplets, collision timestep, observation
 interval and end time.
 
-`scripts/materialize_collisions0d_config.py` changes only:
+`scripts/materialize_collisions0d_config.py` changes:
 
 - absolute paths to constants, grid, initial superdroplets and output;
-- the Kokkos thread count requested by Slurm.
+- the Kokkos thread count requested by Slurm;
+- only explicitly supplied experiment overrides for maximum superdroplets,
+  collision timestep, observation interval and end time.
 
-It does not change the scientific initialization or timesteps.
+The materialized YAML is the complete per-member record. Unspecified
+scientific values remain exactly those in the version-controlled template.
 
 ## Single-run diagnostic request
 
@@ -139,3 +144,16 @@ sbatch \
 
 The implementation and formulas are documented in
 [`docs/analysis/collisions0d-diagnostics.md`](../../docs/analysis/collisions0d-diagnostics.md).
+
+## Stage-0 matrix status
+
+`config/golovin_stage0_development.yaml` and
+`scripts/prepare_golovin_matrix.py` create a four-row metadata-only development
+matrix. The generator runs no model and writes
+`submission_authorized=false`. Do not submit it until the researcher has
+received a compute disclosure and explicitly approved the development smoke
+run.
+
+The complete design, output schema, seed mapping, refusal/resume semantics and
+remaining scientific decisions are documented in the
+[`Golovin Stage-0 implementation guide`](../../docs/implementation/golovin-stage0-guide.md).
