@@ -46,7 +46,7 @@ The model script requests:
 
 - one node and one task;
 - one CPU core;
-- 2 GiB memory;
+- 940 MiB memory;
 - 10 minutes;
 - `shared` partition;
 - one MPI rank and one OpenMP thread;
@@ -57,13 +57,17 @@ For the first Golovin smoke run:
 ```bash
 sbatch \
   --account=bb1153 \
-  --export=ALL,KERNEL=golovin,INITIALIZATION_SEED=12345,RUN_LABEL=first_golovin \
+  --export=ALL,KERNEL=golovin,INITIALIZATION_SEED=12345,RUN_LABEL=first_golovin,MODEL_THREADS=1 \
   scripts/levante/run_collisions0d.sbatch
 ```
 
 The job refuses to overwrite an existing `RUN_LABEL`. A Long run uses the same
 workflow with `KERNEL=long`, but should only be submitted after the Golovin
 validation is understood.
+
+`MODEL_THREADS` is deliberately independent of `SLURM_CPUS_PER_TASK`. Levante
+may allocate additional CPUs to satisfy memory policies; the model still uses
+only the explicitly requested number of Kokkos/OpenMP threads.
 
 ## Scientific and machine configuration
 

@@ -4,7 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=2G
+#SBATCH --mem=940M
 #SBATCH --time=00:10:00
 #SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
 #SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%j.err
@@ -36,6 +36,7 @@ source "${SCRIPT_DIR}/common.sh"
 : "${KERNEL:?Set KERNEL to golovin or long at submission.}"
 : "${INITIALIZATION_SEED:?Set INITIALIZATION_SEED at submission.}"
 : "${RUN_LABEL:?Set a unique RUN_LABEL at submission.}"
+MODEL_THREADS="${MODEL_THREADS:-1}"
 
 if [[ "${KERNEL}" != "golovin" && "${KERNEL}" != "long" ]]; then
   echo "ERROR: KERNEL must be golovin or long, got ${KERNEL}" >&2
@@ -49,11 +50,21 @@ if [[ ! "${RUN_LABEL}" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
   echo "ERROR: RUN_LABEL contains unsupported characters: ${RUN_LABEL}" >&2
   exit 2
 fi
+if [[ ! "${MODEL_THREADS}" =~ ^[1-9][0-9]*$ ]]; then
+  echo "ERROR: MODEL_THREADS must be a positive integer." >&2
+  exit 2
+fi
+if ((MODEL_THREADS > SLURM_CPUS_PER_TASK)); then
+  echo "ERROR: MODEL_THREADS=${MODEL_THREADS} exceeds allocated task CPUs." >&2
+  exit 2
+fi
 
 cleo_sdm_load_modules
 cleo_sdm_set_runtime
 cleo_sdm_validate_paths
 cleo_sdm_print_environment
+export OMP_NUM_THREADS="${MODEL_THREADS}"
+echo "model_threads=${MODEL_THREADS}"
 
 project_commit="$(git -C "${CLEO_SDM_PROJECT_ROOT}" rev-parse HEAD)"
 run_directory="${CLEO_SDM_RUN_ROOT}/${RUN_LABEL}"
@@ -78,7 +89,7 @@ echo "--- materialize absolute-path runtime configuration ---"
   --build-root "${CLEO_SDM_BUILD_ROOT}" \
   --run-directory "${run_directory}" \
   --output "${runtime_config}" \
-  --num-threads "${SLURM_CPUS_PER_TASK}"
+  --num-threads "${MODEL_THREADS}"
 
 echo "--- generate the initial grid and superdroplets ---"
 cd "${run_directory}"
@@ -91,7 +102,7 @@ echo "--- run CLEO collisions0d (${KERNEL}) ---"
 srun \
   --mpi=pmix_v3 \
   --ntasks=1 \
-  --cpus-per-task="${SLURM_CPUS_PER_TASK}" \
+  --cpus-per-task="${MODEL_THREADS}" \
   "${executable}" \
   "${runtime_config}"
 
@@ -111,6 +122,7 @@ test -f "${setup_output}"
   echo "slurm_account=${SLURM_JOB_ACCOUNT:-unknown}"
   echo "slurm_partition=${SLURM_JOB_PARTITION:-unknown}"
   echo "slurm_cpus_per_task=${SLURM_CPUS_PER_TASK}"
+  echo "model_threads=${MODEL_THREADS}"
   echo "runtime_config=${runtime_config}"
   echo "zarr_output=${zarr_output}"
   sha256sum \
