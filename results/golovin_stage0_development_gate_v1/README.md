@@ -38,6 +38,9 @@ case was run.
   result;
 - `analysis_stage0_v1/`: per-time and per-member diagnostics, figures,
   metadata and checksums.
+- `analysis_stage0_v2/`: checksum-verified diagnostic-only reanalysis of the
+  same immutable Zarr using the generic tail-timing schema; all unchanged
+  scientific values are numerically identical to v1.
 - `tail_threshold_review_v1/`: literature-grounded post-gate interpretation
   that rejects the inherited 40 μm onset definition and derives the
   interval-censored 1000 μm development tail time from the immutable table.
@@ -48,6 +51,8 @@ diagnostic checksum record, then verify the diagnostic products themselves:
 ```bash
 sha256sum -c SHA256SUMS
 cd analysis_stage0_v1
+sha256sum -c SHA256SUMS
+cd ../analysis_stage0_v2
 sha256sum -c SHA256SUMS
 ```
 

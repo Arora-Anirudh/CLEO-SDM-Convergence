@@ -274,6 +274,20 @@ and 3300 s in this member. After the gate, ADR 0003 adopted the generic
 development. It is a secondary millimetre-tail formation metric, not rain
 onset, and the historical Stage-0-v1 outputs remain unchanged.
 
+Diagnostic-only job `26521722` subsequently applied schema v2 to the same
+immutable Zarr. It requested one CPU, 940 MiB and ten minutes on
+`bb1153/interactive`; Slurm allocated two CPUs and 940 MiB, and it completed in
+15 seconds with exit `0:0` and empty stderr. Every scientific value common to
+v1 and v2 is numerically identical, the renamed threshold columns are
+identical to their historical counterparts, and the new summary reports
+
+\[
+t_{1000\,\mu\mathrm{m},0.10}\in(3000,3299.99995]\ \mathrm{s}.
+\]
+
+Both schema versions and their independent checksum manifests are preserved in
+the compact result record.
+
 ## 11. One-thread replay audit
 
 Replay job `26521184` ran:
