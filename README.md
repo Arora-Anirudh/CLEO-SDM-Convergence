@@ -35,8 +35,9 @@ The pre-registered scientific design for the first permanent-repository
 convergence study is the
 [`Golovin convergence protocol`](docs/experiments/golovin-convergence-protocol.md).
 It separates analytical mean bias, stochastic spread, ensemble precision,
-initialization sensitivity, timestep adequacy and cost. Its proposed numerical
-tolerances remain provisional until confirmed before model compute.
+initialization sensitivity, timestep adequacy and cost. Its previously
+provisional numerical tolerances are now documented project acceptance criteria;
+implementation and pilot validation still precede production model compute.
 
 The local Stage-0 measurement, provenance and non-destructive matrix tooling is
 explained from first principles in the
@@ -49,6 +50,12 @@ limitations, is documented in the
 The post-gate decision to separate descriptive 40 μm mass from generic
 millimetre-tail timing—and not call either surface precipitation—is recorded
 in [`ADR 0003`](docs/decisions/0003-tail-growth-not-rain-onset.md).
+The literature-informed definitions for the controlled initializer, fixed-bin
+range, practical-equivalence margins, formal decision times and descriptive
+tail timing are recorded in
+[`ADR 0004`](docs/decisions/0004-golovin-production-definitions.md). These
+definitions authorize implementation and pilot validation, not a production
+convergence claim.
 
 ## CLEO dependency
 

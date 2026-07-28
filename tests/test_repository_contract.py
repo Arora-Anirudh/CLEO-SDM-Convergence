@@ -111,6 +111,42 @@ def test_stage0_tools_and_development_config_exist() -> None:
     assert diagnostics["onset_radius_threshold_um"] > initial_maximum_um
 
 
+def test_registered_golovin_definitions_are_explicit_but_not_compute_authorization() -> None:
+    config_path = ROOT / "config" / "golovin_stage0_development.yaml"
+    config = YAML(typ="safe").load(config_path.read_text(encoding="utf-8"))
+
+    diagnostics = config["diagnostics"]
+    assert diagnostics["radius_minimum_um"] == 1.0
+    assert diagnostics["radius_maximum_um"] == 5000.0
+    assert diagnostics["number_of_log_radius_bins"] == 500
+    assert diagnostics["bin_robustness_counts"] == [250, 500, 1000]
+    assert diagnostics["maximum_out_of_range_mass_fraction"] == 1.0e-6
+    assert diagnostics["decision_times_s"] == [
+        600.0,
+        1200.0,
+        1800.0,
+        2400.0,
+        3000.0,
+        3600.0,
+    ]
+
+    initialization = config["controlled_initialization"]
+    assert initialization["status"] == "specified_not_implemented"
+    assert initialization["maximum_relative_moment0_error"] == 1.0e-10
+    assert initialization["maximum_relative_moment3_error"] == 1.0e-10
+    assert initialization["maximum_relative_moment6_error"] == 0.01
+
+    criteria = config["convergence_criteria"]
+    assert criteria["status"] == "accepted_for_implementation"
+    assert criteria["analytical_agreement"]["maximum_l1_upper_95ci"] == 0.05
+    assert criteria["adjacent_level_equivalence"]["l1_absolute_difference_margin"] == 0.01
+    assert config["levante"]["temporary_account"] == "bb1153"
+    assert config["levante"]["production_compute_authorized"] is False
+
+    decision = ROOT / "docs" / "decisions" / "0004-golovin-production-definitions.md"
+    assert decision.is_file()
+
+
 def test_collision_seed_is_required_and_recorded() -> None:
     runner = (ROOT / "scripts" / "levante" / "run_collisions0d.sbatch").read_text(encoding="utf-8")
     assert ': "${COLLISION_SEED:?' in runner

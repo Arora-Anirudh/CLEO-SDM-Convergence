@@ -1,6 +1,7 @@
 # Golovin convergence protocol
 
-- Status: approved scientific direction; numerical tolerances provisional
+- Status: scientific definitions accepted for implementation; production
+  compute not yet authorized
 - Scope: permanent-repository `collisions0d` Golovin calibration
 - Model: pinned CLEO commit `83318c23223546d10759d202d70f4fa2f7fe4688`
 - Execution mode: one MPI rank and one Kokkos/OpenMP thread per member
@@ -128,10 +129,17 @@ E_{L1}(t)=
 
 The formal convergence calculation must use:
 
-- one pre-registered logarithmic-radius range;
+- 500 logarithmic-radius bins from 1 to 5000 μm;
 - identical bin edges for all members, times and \(N_\mathrm{SD}\);
 - the same analytical and numerical bin definitions;
 - no \(N_\mathrm{SD}\)-dependent smoothing.
+
+Every member and time must report liquid mass below and above the registered
+range. The combined out-of-range fraction must be at most \(10^{-6}\).
+Repeating the calculation with 250 and 1000 bins may change L1 by at most
+0.005 absolute and may not change a convergence decision. The analytical
+coverage audit and failure policy are in
+[ADR 0004](../decisions/0004-golovin-production-definitions.md).
 
 CLEO's official validation plot uses Gaussian smoothing
 \(\sigma_{\ln r}=0.62N_\mathrm{SD}^{-1/5}\). That plot remains a required
@@ -186,16 +194,15 @@ Liquid-mass drift is
 \delta_L(t)=\frac{L(t)-L(0)}{L(0)}.
 \]
 
-This is a software/invariant gate, not a convergence metric. The provisional
-gate is
+This is a software/invariant gate, not a convergence metric. The accepted gate
+is
 
 \[
 \max_t |\delta_L(t)| \leq 10^{-7},
 \]
 
 which is looser than the approximately \(10^{-8}\) drift in the audited
-single-member runs but strict enough to detect a meaningful regression. The
-threshold must be confirmed before production.
+single-member runs but strict enough to detect a meaningful regression.
 
 ### 4.4 Onset and tail metrics
 
@@ -210,18 +217,22 @@ The registered in-box tail diagnostics are:
 - mass fraction at \(r\geq40\,\mathrm{\mu m}\), descriptive only;
 - mass fraction above one pre-registered larger-radius threshold \(R\);
 - mass-weighted 99th-percentile radius;
-- optional \(t_{R,f}\), the first time at which at least fraction \(f\) of
-  liquid mass is at or above \(R\).
+- descriptive \(t_{R,f}\), the first stored interval in which at least
+  fraction \(f\) of liquid mass is at or above \(R\).
 
 For development, \(R=1000\,\mathrm{\mu m}\) and \(f=0.10\). This is a
-millimetre-tail formation time, not rain onset. The observation interval must
-be sufficiently short for the required timing precision. Linear interpolation
+millimetre-tail formation time, not rain onset. It is not a required Golovin
+convergence gate: direct analytical distribution error and \(M_6\) provide
+stronger tail information. The 300 s full-state observation interval is
+retained, and the timing value remains interval-censored. Linear interpolation
 must not be used to invent unresolved timing.
 
 These are tail-growth proxies, not surface precipitation, because the 0-D
 model has no sedimentation or fallout. The rationale and literature
 comparison are recorded in
-[ADR 0003](../decisions/0003-tail-growth-not-rain-onset.md).
+[ADR 0003](../decisions/0003-tail-growth-not-rain-onset.md), and its formal
+Golovin role is decided in
+[ADR 0004](../decisions/0004-golovin-production-definitions.md).
 
 Maximum radius may be retained as a descriptive diagnostic but must not be a
 primary convergence criterion because one exceptionally rare represented
@@ -249,19 +260,24 @@ non-parametric bootstrap as well as the usual Student-\(t\) interval.
 Purpose: isolate collision-timestep, collision-stream and
 \(N_\mathrm{SD}\)-representation error.
 
-The preferred design is a stratified logarithmic-bin representation of the
-prescribed continuous DSD:
+The accepted design is a deterministic stratified logarithmic-volume
+representation of the prescribed continuous DSD:
 
-- one radius representative per bin;
-- multiplicities obtained from analytical DSD integrals;
-- fixed target \(M_0\) and liquid mass/\(M_3\), to the documented precision
-  permitted by integer multiplicities;
+- exactly one radius representative per bin;
+- analytical bin-integrated physical number and liquid volume;
+- deterministic largest-remainder integer multiplicities;
+- representative volume equal to bin-integrated liquid volume divided by the
+  integer multiplicity;
+- relative \(M_0\) and \(M_3\) errors no larger than \(10^{-10}\);
+- initial relative \(M_6\) error no larger than 1%, without forcing \(M_6\);
+- every representative retained inside its source bin;
 - the exact initialization binary frozen and reused across collision streams.
 
-The implementation must be reviewed before use. It must not silently apply a
-global radius rescaling, because that changes the DSD and collision
-probabilities. Any integer residual adjustment must identify which bins are
-changed and quantify the resulting moment errors.
+The complete algorithm, rationale and failure gates are specified in
+[ADR 0004](../decisions/0004-golovin-production-definitions.md). The
+implementation must be reviewed and tested before use. It must not silently
+apply a global radius rescaling, because that changes the DSD and collision
+probabilities.
 
 At different \(N_\mathrm{SD}\), the initial discrete populations are different
 representations of the same prescribed continuous distribution. Identical
@@ -309,7 +325,8 @@ review.
 Required before model compute:
 
 1. implement and unit-test fixed-bin Golovin diagnostics;
-2. implement \(t_{10}\), analytical moments and ensemble summaries;
+2. implement analytical moments, ensemble summaries and descriptive
+   interval-censored tail timing;
 3. provide non-destructive member and matrix runners;
 4. prove fresh-path refusal, resume behavior and manifest completeness;
 5. verify one-thread same-seed replay remains byte-identical;
@@ -338,7 +355,8 @@ Use \(N_\mathrm{SD}=16\,384\) and initially test:
 
 Start with five independent collision members per timestep using a controlled
 frozen initialization. The screen asks whether the mean differences between
-neighboring timestep levels are smaller than the provisional metric margins.
+neighboring timestep levels satisfy the registered practical-equivalence
+margins.
 
 If uncertainty is too large to decide, extend only the ambiguous timestep
 levels. Choose the largest timestep that passes the pre-registered equivalence
@@ -374,7 +392,7 @@ members when:
 
 - its confidence interval is wider than the registered precision target;
 - bootstrap results show unstable mean or interval estimates;
-- rare onset/tail events produce too many censored or undefined members;
+- required tail-sensitive metrics remain statistically imprecise;
 - an equivalence conclusion changes materially with member prefix.
 
 The protocol does not require 100 members for stable bulk metrics merely
@@ -400,32 +418,47 @@ useful.
 
 ## 7. Convergence and stopping rules
 
-### 7.1 Provisional scientific margins
+### 7.1 Registered decision times and margins
 
-These values are proposals for confirmation with the researcher and Clara:
+Time zero is assessed as an initialization gate. Formal post-initialization
+decisions use 600, 1200, 1800, 2400, 3000 and 3600 s. A required metric must
+pass at every registered time.
 
-| Metric class | Equivalence/relative-bias margin | Maximum relative 95% CI half-width |
-| --- | ---: | ---: |
-| fixed-bin L1 and core mean moments | 5% | 5% |
-| onset, high moment and tail metrics | 10% | 10% |
-| liquid-mass drift | absolute \(10^{-7}\) gate | not applicable |
+The accepted analytical-agreement criteria are:
 
-For an error metric whose ideal value is zero, precision is scaled using an
-explicit nonzero scientific reference or reported as an absolute interval.
-Relative CI width must not be divided by a mean statistically compatible with
-zero.
+| Diagnostic | Required 95% confidence-interval containment |
+| --- | ---: |
+| ensemble-mean fixed-bin L1 | upper bound \(\leq0.05\) |
+| signed relative \(M_0\) bias | entirely inside \([-0.05,+0.05]\) |
+| signed relative \(M_6\) bias | entirely inside \([-0.10,+0.10]\) |
+| liquid-mass drift | absolute \(10^{-7}\) per-member gate |
+
+The accepted ensemble-precision limits for the 95% confidence-interval
+half-width are:
+
+- 0.01 absolute for fixed-bin L1;
+- 0.025 of the analytical reference for \(M_0\);
+- 0.05 of the analytical reference for \(M_6\).
+
+These are project-defined practical tolerances informed by published numerical
+results, not universal SDM standards. Their detailed justification is in
+[ADR 0004](../decisions/0004-golovin-production-definitions.md).
 
 ### 7.2 Analytical agreement
 
 For every required mean diagnostic with an analytical reference, the 95%
-confidence interval for its relative bias must lie entirely within the
-pre-registered equivalence margin.
+confidence interval must satisfy the corresponding registered condition at
+every decision time.
 
 ### 7.3 Adjacent-resolution agreement
 
-For \(N\) and \(2N\), form the confidence interval for the mean difference,
-normalized by the analytical reference or another pre-registered scale. The
-entire interval must lie within the metric's equivalence margin.
+For \(N\) and \(2N\), or adjacent timestep levels, form the confidence interval
+for the difference between independent ensemble means. The entire interval
+must lie within:
+
+- \([-0.01,+0.01]\) absolute for fixed-bin L1;
+- \([-0.05,+0.05]\) for signed relative \(M_0\);
+- \([-0.10,+0.10]\) for signed relative \(M_6\).
 
 A non-significant null-hypothesis test, \(p>0.05\), is not evidence of
 convergence. The experiment asks whether differences are demonstrably small,
@@ -465,6 +498,10 @@ Report “not converged in the tested range” when the authorized maximum is
 reached. Do not replace that conclusion with the highest tested value.
 
 ## 8. Compute and storage authorization gate
+
+Until the permanent project allocation is known, Levante submissions use the
+temporary account `bb1153`. This is recorded in every manifest and changed
+through configuration when the permanent account becomes available.
 
 Before each Slurm submission, report:
 
@@ -513,20 +550,26 @@ The final Golovin report must state separate recommendations for:
 - controlled versus operational initialization;
 - transfer limitations for Long and later model hierarchy stages.
 
-## 10. Open decisions before Stage 0 is complete
+## 10. Remaining gates before production
 
-The following remain explicitly provisional:
+Points 1–4 from the scientific-definition review—controlled initialization,
+diagnostic grid, numerical margins and Golovin tail-timing role—are resolved in
+[ADR 0004](../decisions/0004-golovin-production-definitions.md). The temporary
+Levante account is `bb1153`.
 
-1. Clara's acceptance of 5% core and 10% onset/tail margins;
-2. the exact large-radius tail threshold;
-3. the observation interval needed for \(t_{10}\);
-4. the controlled initialization construction and exact moment constraints;
-5. whether the present 10-km-box physical parameters remain only a calibration
-   case or should be replaced before the operational-initialization study;
-6. the Levante project account and persistent storage boundary.
+The following still block a production convergence ensemble:
 
-No production convergence ensemble should be submitted until these decisions,
-the Stage 0 implementation, and the compute disclosure have been recorded.
+1. implementation and unit tests for the controlled initializer;
+2. implementation of the out-of-range and 250/500/1000-bin robustness gates;
+3. a small runtime/storage pilot using the new controlled path;
+4. the pre-submission compute disclosure;
+5. a decision about whether the present 10-km-box physical parameters remain
+   only a calibration case before the operational-initialization study;
+6. the eventual permanent Levante project account and persistent-storage
+   boundary.
+
+Resolving definitions does not establish convergence and does not authorize a
+production submission.
 
 ## 11. Literature basis
 
@@ -536,6 +579,8 @@ the Stage 0 implementation, and the compute disclosure have been recorded.
   [10.5194/gmd-10-1521-2017](https://doi.org/10.5194/gmd-10-1521-2017).
 - Dziekan and Pawlowska (2017), *ACP*, DOI
   [10.5194/acp-17-13509-2017](https://doi.org/10.5194/acp-17-13509-2017).
+- Schwenkel et al. (2018), *GMD*, DOI
+  [10.5194/gmd-11-3929-2018](https://doi.org/10.5194/gmd-11-3929-2018).
 - Unterstrasser et al. (2020), *GMD*, DOI
   [10.5194/gmd-13-5119-2020](https://doi.org/10.5194/gmd-13-5119-2020).
 - Morrison et al. (2024), *JAS*, DOI
