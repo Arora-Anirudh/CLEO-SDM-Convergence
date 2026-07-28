@@ -1,0 +1,5 @@
+case_index	run_label	matrix_stage	initialization_family	kernel	max_superdroplets	collision_timestep_s	observation_timestep_s	end_time_s	model_threads	member_index	initialization_seed	collision_seed
+0	golovin_stage0_development_N001024_dt1_m000	golovin_stage0_development	operational_stochastic	golovin	1024	1.0	300.0	3600.0	1	0	2647907423	16394419086637823225
+1	golovin_stage0_development_N001024_dt1_m001	golovin_stage0_development	operational_stochastic	golovin	1024	1.0	300.0	3600.0	1	1	2859588524	13686403842123650899
+2	golovin_stage0_development_N002048_dt1_m000	golovin_stage0_development	operational_stochastic	golovin	2048	1.0	300.0	3600.0	1	0	4171909926	15754682587062949726
+3	golovin_stage0_development_N002048_dt1_m001	golovin_stage0_development	operational_stochastic	golovin	2048	1.0	300.0	3600.0	1	1	3476038967	6863401412257972266

@@ -42,6 +42,10 @@ The local Stage-0 measurement, provenance and non-destructive matrix tooling is
 explained from first principles in the
 [`Golovin Stage-0 implementation guide`](docs/implementation/golovin-stage0-guide.md).
 Its development configuration is explicitly not production authorization.
+The first single-member Levante gate, including the launcher correction,
+compute/storage accounting, scientific diagnostics, replay audit and
+limitations, is documented in the
+[`Golovin Stage-0 development gate`](docs/runs/golovin-stage0-development-gate.md).
 
 ## CLEO dependency
 
@@ -158,6 +162,9 @@ metrics are documented in
 [`docs/analysis/collisions0d-diagnostics.md`](docs/analysis/collisions0d-diagnostics.md).
 The checksum-verified compact products from the first audited run are under
 [`results/first_golovin_serial`](results/first_golovin_serial).
+The compact products from the newer fixed-bin Stage-0 development gate are
+under
+[`results/golovin_stage0_development_gate_v1`](results/golovin_stage0_development_gate_v1).
 
 The first run predated explicit collision-stream control. New runs require both
 an initialization seed and collision seed. The design, deliberately minimal

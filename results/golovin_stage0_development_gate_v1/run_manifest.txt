@@ -1,0 +1,39 @@
+status=completed
+run_started_epoch=1785246639
+run_finished_epoch=1785246646
+job_wall_seconds=7
+project_commit=bfd3bdfb21ebcad01a6d3c8524d3fc8eb1c708ef
+cleo_commit=83318c23223546d10759d202d70f4fa2f7fe4688
+kernel=golovin
+initialization_seed=2647907423
+collision_seed=16394419086637823225
+run_label=golovin_stage0_development_N001024_dt1_m000
+matrix_stage=golovin_stage0_development
+matrix_case_index=0
+member_index=0
+initialization_family=operational_stochastic
+matrix_file=/home/b/b383673/SDM/cleo_convergence_records/golovin_stage0_development_v1/matrix/cases.tsv
+matrix_sha256=f0462dc951d4a5f3f6dce14fab3b5ea5d27e11b1c814edfe3bc380532c987a63
+slurm_job_id=26521080
+slurm_account=bb1153
+slurm_partition=interactive
+slurm_nodes=1
+slurm_ntasks=1
+slurm_cpus_per_task=1
+slurm_mem_per_node=940
+slurm_time_limit=unknown
+model_threads=1
+max_superdroplets=1024
+collision_timestep_s=1.0
+observation_timestep_s=300.0
+end_time_s=3600.0
+module_list=Currently Loaded Modulefiles:,git/2.43.7-gcc-11.2.0,gcc/11.2.0-gcc-11.2.0,openmpi/4.1.2-gcc-11.2.0,netcdf-c/4.8.1-openmpi-4.1.2-gcc-11.2.0
+runtime_config=/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_stage0_runs/golovin_stage0_development_N001024_dt1_m000/config.yaml
+zarr_output=/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_stage0_runs/golovin_stage0_development_N001024_dt1_m000/output/collisions0d_solution.zarr
+zarr_tree_sha256=b3d73b1abd52023a0d4d2f826d1172b6ee5de99e8d0007da5b2e6bef0410818e
+34276c4b63be3e0877f56edc2c985c9ec89784ed14106a035601b488d2dc34dd  /scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_stage0_runs/golovin_stage0_development_N001024_dt1_m000/config.yaml
+90835b0f88c77e768281bcba9d4cf5d546810895c8a7c4902096679491279ea7  /scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_stage0_runs/golovin_stage0_development_N001024_dt1_m000/inputs/grid.dat
+0b5d7596761e995f5d2edaae5421faec3d6c41ff78388b376261e7de8b7f89a8  /scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_stage0_runs/golovin_stage0_development_N001024_dt1_m000/inputs/superdroplets.dat
+f26e986c010261aec1413dff93c34b591d20b222733a108b123896ab4f0bd8b3  /scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_stage0_runs/golovin_stage0_development_N001024_dt1_m000/output/collisions0d_setup.txt
+4807b7c63e820661f37ad573e845841b734bdc8f81ce5b26eebb064bd5a70ca6  /home/b/b383673/SDM/cleo_builds/CLEO-SDM-Convergence/golovin_stage0/src/collisions0d/collisions0d_golovin
+b6810a72b31761308ec913a42f66f597a07b58fdd79c1c6dec4233ee320f1259  /home/b/b383673/SDM/cleo_builds/CLEO-SDM-Convergence/golovin_stage0/build_manifest.txt

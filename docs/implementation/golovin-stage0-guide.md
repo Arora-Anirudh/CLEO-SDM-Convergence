@@ -587,7 +587,7 @@ unexpected or matrix-inconsistent members.
 
 The local quality gate currently reports:
 
-- 28 Python/repository tests passed;
+- 29 Python/repository tests passed;
 - Ruff lint passed;
 - Ruff formatting check passed;
 - Bash syntax checks passed for both model runners;
@@ -612,23 +612,36 @@ Tests explicitly cover:
 - completed-case skip only under explicit resume;
 - incomplete-case refusal even under resume.
 
-## 19. What is not validated or concluded
+## 19. Levante development gate and remaining limits
 
-No Levante job was submitted during this implementation session. Therefore:
+The exact reviewed commit was rebuilt in an isolated Levante worktree. One
+N=1024 member, its Stage-0 analysis and a one-thread A/A/B replay passed.
+Measured products were 68 MiB for the member plus diagnostics and 202 MiB for
+the three replay cases. The ensemble summarizer correctly refused to summarize
+the intentionally incomplete one-of-four development matrix.
 
-- the updated member runner has not yet been smoke-tested on Levante;
-- the new analyzer has not yet read a fresh Stage-0 Zarr member on Levante;
-- storage and total job time for the new output cadence have not been measured;
-- same-seed byte replay must be rechecked after the branch is built;
+The run also exposed two important facts:
+
+- the Slurm entrypoints needed an explicit-project-root path fix because Slurm
+  executes a copied script under `/var/spool`; a new test protects the fix;
+- the current initialization already has 34.25% of mass at \(r\ge40\) μm, so
+  the provisional 10%-above-40-μm `t10` is already crossed at time zero and is
+  not informative.
+
+The full job accounting, numerical results, replay hashes, storage and
+interpretation are in the
+[Levante development-gate record](../runs/golovin-stage0-development-gate.md).
+
+Still not validated or concluded:
+
 - the controlled/frozen mass-matched initializer is not implemented;
 - the exact production bin range, larger threshold and observation interval
   remain provisional;
 - no value of \(N_\mathrm{SD}\) has been declared converged;
 - no production matrix is authorized.
 
-The next safe step is one small development member plus analysis, after an
-explicit compute disclosure and synchronization of the reviewed commit to
-Levante.
+The software/provenance gate is complete. The next step is scientific review
+of the provisional definitions before production compute.
 
 ## 20. How to explain this to Clara
 
@@ -641,10 +654,11 @@ A concise explanation is:
 > Golovin radius-moment errors, conservation, interval-censored `t10`, tail
 > mass fractions and q99. I added immutable matrix/seed generation and
 > non-overwriting Slurm-array semantics, plus Student and bootstrap ensemble
-> summaries. The local formula, refusal and statistics tests pass, but I have
-> not submitted production compute. We still need to agree on the controlled
-> initializer, production radius/tail thresholds, `t10` output interval and
-> numerical margins.
+> summaries. The local tests and one-member Levante software/provenance gate
+> pass, including one-thread A/A/B replay and incomplete-matrix refusal. This
+> is not a convergence result. We still need to agree on the controlled
+> initializer, production radius/tail thresholds, a useful replacement for
+> the already-crossed `t10`, and numerical margins.
 
 Useful review questions are:
 
@@ -663,17 +677,17 @@ Useful review questions are:
 
 ## 21. Immediate next gate
 
-Before any model submission:
+The implementation, build, one-member analysis, replay and audit gates are
+complete. Before any production matrix:
 
-1. review and commit the Stage-0 implementation;
-2. synchronize that exact commit to Levante;
-3. rebuild so `build_manifest.txt` matches the commit;
-4. state the requested account, partition, nodes, tasks, CPUs, memory,
-   walltime, execution mode, member count and storage estimate;
-5. run one development member only;
-6. audit its manifest, Zarr, diagnostics, `sacct`, wall time and storage;
-7. rerun the one-thread replay gate;
-8. only then decide whether the tiny four-case development matrix is useful.
+1. decide which moments the controlled/mass-matched initializer must hold;
+2. approve the production radius interval and bin count;
+3. replace or remove the already-crossed `t10` definition;
+4. approve the larger-drop threshold and numerical margins;
+5. record the new permanent Levante project account;
+6. regenerate a reviewed production matrix;
+7. disclose compute and storage from the measured 67 MiB per Zarr store;
+8. begin with the bounded Golovin timestep screen, not the Long ensemble.
 
 Production timestep and resolution stages remain blocked until their
 provisional scientific decisions are resolved.

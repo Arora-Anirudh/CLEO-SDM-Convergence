@@ -307,15 +307,17 @@ Required before model compute:
 5. verify one-thread same-seed replay remains byte-identical;
 6. measure one development case's model time, full job time and storage.
 
-Implementation status on 2026-07-28: items 1-4 have local implementations and
-tests, including fixed-bin identity/perturbation tests, deterministic matrix
-generation, fresh-path refusal, completed-case skip and incomplete-case
-refusal. The analytical fixed-bin implementation also matches the pinned CLEO
-utility to floating-point precision at four times. Items 5-6 and reading one
-fresh Stage-0 Zarr member remain Levante gates; no model compute was submitted
-for this implementation. The
-[Stage-0 implementation guide](../implementation/golovin-stage0-guide.md)
-documents the formulas, files, validation and unresolved decisions.
+Implementation status on 2026-07-28: all six software/provenance gates passed
+for one development member. Local tests cover fixed-bin identity/perturbation,
+deterministic matrix generation, fresh-path refusal, completed-case skip and
+incomplete-case refusal. The analytical fixed-bin implementation matches the
+pinned CLEO utility to floating-point precision at four times. On Levante, the
+exact commit was rebuilt, one N=1024 member and its diagnostics completed, a
+one-thread A/A/B replay passed, runtime/storage were measured, and the
+summarizer rejected the intentionally incomplete one-of-four matrix. This does
+not authorize production or establish convergence. See the
+[Stage-0 implementation guide](../implementation/golovin-stage0-guide.md) and
+[Levante development-gate record](../runs/golovin-stage0-development-gate.md).
 
 ### Stage 1: collision-timestep screening
 
