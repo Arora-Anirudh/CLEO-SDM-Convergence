@@ -276,6 +276,7 @@ def plot_bulk_diagnostics(
 
     axes[0, 1].plot(time_minutes, values("liquid_water_gm3"), marker="o")
     axes[0, 1].set_ylabel("liquid water /g m$^{-3}$")
+    axes[0, 1].ticklabel_format(axis="y", style="plain", useOffset=False)
 
     axes[0, 2].plot(time_minutes, values("relative_liquid_mass_drift"), marker="o")
     axes[0, 2].axhline(0.0, color="k", linewidth=0.8)
