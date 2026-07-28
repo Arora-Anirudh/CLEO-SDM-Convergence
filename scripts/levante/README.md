@@ -3,6 +3,12 @@
 These scripts adapt the verified CLEO Levante toolchain to this repository.
 They do not copy CLEO's user-specific example scripts.
 
+The workflow uses Levante's GCC/OpenMPI/NetCDF/Git modules and the system CMake
+3.26.5 directly. It deliberately does not call `spack load`: on 2026-07-28 the
+system Spack package configuration contained a duplicate YAML key, while the
+required software installations remained available through modules and their
+verified absolute paths.
+
 ## Workflow layers
 
 1. `common.sh` records machine paths, modules and runtime settings.

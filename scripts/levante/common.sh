@@ -23,33 +23,30 @@ export CLEO_SDM_GCC_MODULE="${CLEO_SDM_GCC_MODULE:-gcc/11.2.0-gcc-11.2.0}"
 export CLEO_SDM_OPENMPI_MODULE="${CLEO_SDM_OPENMPI_MODULE:-openmpi/4.1.2-gcc-11.2.0}"
 export CLEO_SDM_NETCDF_MODULE="${CLEO_SDM_NETCDF_MODULE:-netcdf-c/4.8.1-openmpi-4.1.2-gcc-11.2.0}"
 export CLEO_SDM_GIT_MODULE="${CLEO_SDM_GIT_MODULE:-git/2.43.7-gcc-11.2.0}"
-export CLEO_SDM_CMAKE_SPEC="${CLEO_SDM_CMAKE_SPEC:-cmake@3.26.3%gcc@=11.2.0/fuvwuhz}"
-export CLEO_SDM_OPENBLAS_SPEC="${CLEO_SDM_OPENBLAS_SPEC:-openblas@0.3.18%gcc@=11.2.0}"
 
 export CLEO_SDM_GCC_LIB="${CLEO_SDM_GCC_LIB:-/sw/spack-levante/gcc-11.2.0-bcn7mb/lib64}"
 export CLEO_SDM_FYAML_ROOT="${CLEO_SDM_FYAML_ROOT:-/sw/spack-levante/libfyaml-0.7.12-fvbhgo}"
+export CLEO_SDM_OPENBLAS_ROOT="${CLEO_SDM_OPENBLAS_ROOT:-/sw/spack-levante/openblas-0.3.18-tpmfvw}"
 
 readonly CLEO_SDM_PINNED_CLEO_COMMIT="83318c23223546d10759d202d70f4fa2f7fe4688"
 
 cleo_sdm_load_modules() {
   module purge
-  spack unload --all >/dev/null 2>&1 || true
 
   module load \
     "${CLEO_SDM_GIT_MODULE}" \
     "${CLEO_SDM_GCC_MODULE}" \
     "${CLEO_SDM_OPENMPI_MODULE}" \
     "${CLEO_SDM_NETCDF_MODULE}"
-  spack load "${CLEO_SDM_CMAKE_SPEC}"
-  spack load "${CLEO_SDM_OPENBLAS_SPEC}"
 }
 
 cleo_sdm_set_runtime() {
   local yaclib="${CLEO_SDM_YACYAXT_ROOT}/yac/lib"
   local yaxtlib="${CLEO_SDM_YACYAXT_ROOT}/yaxt/lib"
   local fyamllib="${CLEO_SDM_FYAML_ROOT}/lib"
+  local openblaslib="${CLEO_SDM_OPENBLAS_ROOT}/lib"
 
-  export LD_LIBRARY_PATH="${yaclib}:${yaxtlib}:${fyamllib}:${CLEO_SDM_GCC_LIB}${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+  export LD_LIBRARY_PATH="${yaclib}:${yaxtlib}:${fyamllib}:${openblaslib}:${CLEO_SDM_GCC_LIB}${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
   export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
   export OMP_PROC_BIND=spread
   export OMP_PLACES=threads
@@ -73,6 +70,7 @@ cleo_sdm_validate_paths() {
     "${CLEO_SDM_PROJECT_ROOT}/config/collisions0d_reference.yaml"
     "${CLEO_SDM_YACYAXT_ROOT}/yac"
     "${CLEO_SDM_YACYAXT_ROOT}/yaxt"
+    "${CLEO_SDM_OPENBLAS_ROOT}/lib/libopenblas.so"
     "${CLEO_SDM_UV}"
     "${CLEO_SDM_BOOTSTRAP_PYTHON}"
   )
