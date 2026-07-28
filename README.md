@@ -135,6 +135,10 @@ accounts, paths and GPU assumptions. The first staged workflow is:
 4. inspect the recorded configuration, manifest and Zarr output before any
    Long-kernel or convergence experiment.
 
+The audited first run, including its code path, prescribed conditions and
+physical interpretation, is documented in
+[`docs/runs/first-golovin-collisions0d.md`](docs/runs/first-golovin-collisions0d.md).
+
 ## Attribution
 
 The CMake composition and initial `collisions0d` design follow
