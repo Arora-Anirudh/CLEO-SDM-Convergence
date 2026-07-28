@@ -27,36 +27,23 @@ from ruamel.yaml import YAML
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
-try:
-    from scripts.golovin_stage0 import (
-        first_threshold_crossing,
-        fixed_bin_mass_density,
-        fixed_bin_relative_l1,
-        golovin_analytical_mass_density,
-        golovin_analytical_radius_moments,
-        logarithmic_radius_edges,
-        mass_fraction_at_or_above,
-        mass_weighted_radius_quantile,
-        radius_moment,
-        relative_error,
-        water_equivalent_droplet_mass_g,
-    )
-except ModuleNotFoundError:
-    # Direct execution places ``scripts/`` rather than the repository root on
-    # sys.path.  Tests/imports from the repository use the first branch.
-    from golovin_stage0 import (  # type: ignore[no-redef]
-        first_threshold_crossing,
-        fixed_bin_mass_density,
-        fixed_bin_relative_l1,
-        golovin_analytical_mass_density,
-        golovin_analytical_radius_moments,
-        logarithmic_radius_edges,
-        mass_fraction_at_or_above,
-        mass_weighted_radius_quantile,
-        radius_moment,
-        relative_error,
-        water_equivalent_droplet_mass_g,
-    )
+SCRIPTS_DIRECTORY = Path(__file__).resolve().parent
+if str(SCRIPTS_DIRECTORY) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIRECTORY))
+
+from golovin_stage0 import (  # noqa: E402
+    first_threshold_crossing,
+    fixed_bin_mass_density,
+    fixed_bin_relative_l1,
+    golovin_analytical_mass_density,
+    golovin_analytical_radius_moments,
+    logarithmic_radius_edges,
+    mass_fraction_at_or_above,
+    mass_weighted_radius_quantile,
+    radius_moment,
+    relative_error,
+    water_equivalent_droplet_mass_g,
+)
 
 
 def parse_args() -> argparse.Namespace:

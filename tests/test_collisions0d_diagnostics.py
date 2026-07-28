@@ -1,4 +1,6 @@
 import importlib.util
+import subprocess
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -14,6 +16,24 @@ def load_analyzer():
     assert spec.loader is not None
     spec.loader.exec_module(module)
     return module
+
+
+def test_analyzer_loads_from_an_isolated_python_process(tmp_path: Path) -> None:
+    command = (
+        "import importlib.util\n"
+        f"script = {str(SCRIPT)!r}\n"
+        "spec = importlib.util.spec_from_file_location('analyze_collisions0d', script)\n"
+        "module = importlib.util.module_from_spec(spec)\n"
+        "spec.loader.exec_module(module)\n"
+    )
+
+    subprocess.run(
+        [sys.executable, "-I", "-c", command],
+        cwd=tmp_path,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
 
 
 def test_bulk_row_uses_multiplicity_and_conserves_mass() -> None:
