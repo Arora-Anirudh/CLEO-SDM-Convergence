@@ -1,0 +1,39 @@
+[project]
+name = "cleo-sdm-convergence"
+version = "0.1.0"
+description = "Reproducible CLEO experiments for superdroplet-method convergence."
+requires-python = ">=3.13,<3.14"
+license = "BSD-3-Clause"
+license-files = ["LICENSE.md"]
+authors = [
+  {name = "Anirudh Arora"},
+]
+dependencies = [
+  "awkward",
+  "matplotlib",
+  "numpy",
+  "ruamel.yaml",
+  "scipy",
+  "xarray",
+  "zarr",
+]
+
+[dependency-groups]
+dev = [
+  "pre-commit",
+  "pytest",
+  "ruff",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.uv]
+package = false

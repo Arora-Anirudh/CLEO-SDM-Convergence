@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite this repository and CLEO."
+title: "CLEO-SDM-Convergence"
+type: software
+authors:
+  - family-names: Arora
+    given-names: Anirudh
+repository-code: "https://github.com/Arora-Anirudh/CLEO-SDM-Convergence"
+license: BSD-3-Clause
+version: 0.1.0
+date-released: 2026-07-28
+keywords:
+  - cloud microphysics
+  - superdroplet method
+  - collision-coalescence
+  - convergence
+  - CLEO
+references:
+  - type: software
+    title: "CLEO"
+    authors:
+      - family-names: Bayley
+        given-names: Clara
+    repository-code: "https://github.com/yoctoyotta1024/CLEO"

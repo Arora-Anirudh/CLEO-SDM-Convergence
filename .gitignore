@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+
+# CMake
+build/
+build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake-build-*/
+compile_commands.json
+
+# CLEO run products
+*.zarr/
+*.dat
+*.out
+*.err
+outputs/
+results/raw/
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
+*~
