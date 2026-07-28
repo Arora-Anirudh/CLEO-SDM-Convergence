@@ -134,8 +134,9 @@ accounts, paths and GPU assumptions. The first staged workflow is:
    executables;
 2. generate one seeded reference initialization;
 3. run one single-thread Golovin validation into a fresh SCRATCH directory;
-4. inspect the recorded configuration, manifest and Zarr output before any
-   Long-kernel or convergence experiment.
+4. validate explicit one-thread collision-stream replay;
+5. run one seeded Long functionality and conservation gate;
+6. define the controlled ensemble matrix before any convergence experiment.
 
 The audited first run, including its code path, prescribed conditions and
 physical interpretation, is documented in
@@ -156,6 +157,13 @@ Golovin replay audit is under
 of repository creation, the first model/diagnostic run and the seed-control work
 is maintained in the
 [`2026-07-28 work log`](docs/worklogs/2026-07-28.md).
+
+The first seeded Long run is documented in
+[`docs/runs/first-long-collisions0d.md`](docs/runs/first-long-collisions0d.md),
+with checksum-verified compact products under
+[`results/first_long_seeded`](results/first_long_seeded). It validates the Long
+application and conservation in the tested one-thread mode; it is not a
+convergence result or the final scientific configuration.
 
 ## Attribution
 
