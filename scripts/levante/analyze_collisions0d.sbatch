@@ -89,14 +89,22 @@ test -f "${staging_directory}/${KERNEL}_mass_distribution.png"
 test -f "${staging_directory}/${KERNEL}_bulk_diagnostics.png"
 test -f "${staging_directory}/diagnostic_metadata.json"
 
-sha256sum \
-  "${staging_directory}/bulk_diagnostics.csv" \
-  "${staging_directory}/${KERNEL}_mass_distribution.png" \
-  "${staging_directory}/${KERNEL}_bulk_diagnostics.png" \
-  "${staging_directory}/diagnostic_metadata.json" \
-  >"${staging_directory}/SHA256SUMS"
+(
+  cd "${staging_directory}"
+  sha256sum \
+    bulk_diagnostics.csv \
+    "${KERNEL}_mass_distribution.png" \
+    "${KERNEL}_bulk_diagnostics.png" \
+    diagnostic_metadata.json \
+    >SHA256SUMS
+  sha256sum -c SHA256SUMS
+)
 
 mv "${staging_directory}" "${output_directory}"
+(
+  cd "${output_directory}"
+  sha256sum -c SHA256SUMS
+)
 trap - EXIT
 
 echo "DIAGNOSTIC_JOB_PASS=1"

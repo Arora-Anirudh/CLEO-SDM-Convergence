@@ -14,6 +14,7 @@ import argparse
 import csv
 import json
 import sys
+import warnings
 from pathlib import Path
 from typing import Any
 
@@ -367,31 +368,43 @@ def main() -> None:
     smooth_sigma = 0.62 * max_superdroplets ** (-1.0 / 5.0)
 
     distribution_figure = output_directory / f"{args.kernel}_mass_distribution.png"
-    shima2009fig.plot_validation_figure(
-        args.kernel == "golovin",
-        time,
-        superdrops,
-        requested_times,
-        domain_volume_m3,
-        number_concentration_m3,
-        volume_exponential_scale_m,
-        smooth_sigma,
-        xlims=[10, 5000],
-        savename=distribution_figure,
-        withgol=args.kernel == "golovin",
-    )
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            message="invalid value encountered in multiply",
+            category=RuntimeWarning,
+        )
+        shima2009fig.plot_validation_figure(
+            args.kernel == "golovin",
+            time,
+            superdrops,
+            requested_times,
+            domain_volume_m3,
+            number_concentration_m3,
+            volume_exponential_scale_m,
+            smooth_sigma,
+            xlims=[10, 5000],
+            savename=distribution_figure,
+            withgol=args.kernel == "golovin",
+        )
     plt.close("all")
 
-    rows = calculate_diagnostics(
-        time=time,
-        superdrops=superdrops,
-        domain_volume_m3=domain_volume_m3,
-        kernel=args.kernel,
-        number_concentration_m3=number_concentration_m3,
-        volume_exponential_scale_m=volume_exponential_scale_m,
-        max_superdroplets=max_superdroplets,
-        shima2009fig=shima2009fig,
-    )
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            message="invalid value encountered in multiply",
+            category=RuntimeWarning,
+        )
+        rows = calculate_diagnostics(
+            time=time,
+            superdrops=superdrops,
+            domain_volume_m3=domain_volume_m3,
+            kernel=args.kernel,
+            number_concentration_m3=number_concentration_m3,
+            volume_exponential_scale_m=volume_exponential_scale_m,
+            max_superdroplets=max_superdroplets,
+            shima2009fig=shima2009fig,
+        )
     diagnostics_csv = output_directory / "bulk_diagnostics.csv"
     write_diagnostics_csv(diagnostics_csv, rows)
 
@@ -416,9 +429,9 @@ def main() -> None:
             abs(float(row["relative_liquid_mass_drift"])) for row in rows
         ),
         "outputs": {
-            "bulk_csv": str(diagnostics_csv),
-            "distribution_figure": str(distribution_figure),
-            "bulk_figure": str(bulk_figure),
+            "bulk_csv": diagnostics_csv.name,
+            "distribution_figure": distribution_figure.name,
+            "bulk_figure": bulk_figure.name,
         },
     }
     metadata_filename = output_directory / "diagnostic_metadata.json"

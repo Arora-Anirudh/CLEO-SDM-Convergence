@@ -75,3 +75,8 @@ def test_collision_box_analyzer_uses_pinned_cleo_tools() -> None:
     assert "from cleopy.sdmout_src import pygbxsdat, pysetuptxt, pyzarr" in analyzer
     assert "from plotcleo import shima2009fig" in analyzer
     assert "shima2009fig.plot_validation_figure" in analyzer
+
+    wrapper = (ROOT / "scripts" / "levante" / "analyze_collisions0d.sbatch").read_text(
+        encoding="utf-8"
+    )
+    assert wrapper.count("sha256sum -c SHA256SUMS") == 2
