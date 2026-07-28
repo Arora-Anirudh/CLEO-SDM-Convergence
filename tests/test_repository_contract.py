@@ -74,6 +74,20 @@ def test_levante_scripts_are_project_owned_and_account_neutral() -> None:
         assert "/home/m/m300950" not in content
 
 
+def test_slurm_entrypoints_resolve_common_from_explicit_project_root() -> None:
+    levante_directory = ROOT / "scripts" / "levante"
+    for script_name in (
+        "build.sbatch",
+        "run_collisions0d.sbatch",
+        "run_golovin_matrix.sbatch",
+        "analyze_collisions0d.sbatch",
+    ):
+        content = (levante_directory / script_name).read_text(encoding="utf-8")
+        expected = 'SCRIPT_DIR="${CLEO_SDM_PROJECT_ROOT}/scripts/levante"'
+        assert expected in content
+        assert content.index(expected) < content.index('source "${SCRIPT_DIR}/common.sh"')
+
+
 def test_runtime_config_materializer_exists() -> None:
     materializer = ROOT / "scripts" / "materialize_collisions0d_config.py"
     assert materializer.is_file()

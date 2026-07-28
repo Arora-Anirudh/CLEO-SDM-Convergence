@@ -25,7 +25,14 @@ set -eo pipefail
 source /etc/profile
 set -u
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -n "${CLEO_SDM_PROJECT_ROOT:-}" ]]; then
+  SCRIPT_DIR="${CLEO_SDM_PROJECT_ROOT}/scripts/levante"
+elif [[ -n "${SLURM_SUBMIT_DIR:-}" ]] \
+  && [[ -f "${SLURM_SUBMIT_DIR}/scripts/levante/common.sh" ]]; then
+  SCRIPT_DIR="${SLURM_SUBMIT_DIR}/scripts/levante"
+else
+  SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+fi
 # shellcheck source=common.sh
 source "${SCRIPT_DIR}/common.sh"
 
