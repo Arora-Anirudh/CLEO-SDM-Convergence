@@ -121,6 +121,20 @@ uv run pytest
 Compiled CLEO validation and Levante smoke tests will be added after the
 repository is installed on Levante.
 
+## Levante workflow
+
+Project-owned Levante scripts are documented in
+[`scripts/levante/README.md`](scripts/levante/README.md). They retain the
+verified compiler/MPI/YAC recipe from CLEO while removing user-specific
+accounts, paths and GPU assumptions. The first staged workflow is:
+
+1. configure and build the pinned CLEO dependency and both collision-box
+   executables;
+2. generate one seeded reference initialization;
+3. run one single-thread Golovin validation into a fresh SCRATCH directory;
+4. inspect the recorded configuration, manifest and Zarr output before any
+   Long-kernel or convergence experiment.
+
 ## Attribution
 
 The CMake composition and initial `collisions0d` design follow

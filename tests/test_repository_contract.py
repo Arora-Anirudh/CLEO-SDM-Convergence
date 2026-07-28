@@ -45,3 +45,25 @@ def test_both_kernel_targets_are_declared() -> None:
     cmake = (ROOT / "src" / "collisions0d" / "CMakeLists.txt").read_text()
     assert "collisions0d_golovin" in cmake
     assert "collisions0d_long" in cmake
+
+
+def test_levante_scripts_are_project_owned_and_account_neutral() -> None:
+    levante_directory = ROOT / "scripts" / "levante"
+    expected = {
+        "README.md",
+        "build.sbatch",
+        "common.sh",
+        "run_collisions0d.sbatch",
+    }
+    assert expected <= {path.name for path in levante_directory.iterdir()}
+
+    for script_name in ("build.sbatch", "run_collisions0d.sbatch"):
+        content = (levante_directory / script_name).read_text(encoding="utf-8")
+        assert "#SBATCH --account=" not in content
+        assert "mh0731" not in content
+        assert "/home/m/m300950" not in content
+
+
+def test_runtime_config_materializer_exists() -> None:
+    materializer = ROOT / "scripts" / "materialize_collisions0d_config.py"
+    assert materializer.is_file()
