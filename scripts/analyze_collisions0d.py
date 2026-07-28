@@ -224,7 +224,7 @@ def calculate_diagnostics(
                 superdrops,
                 smooth_sigma,
             )
-            analytical, analytical_radius_um = shima2009fig.golovin_analytical(
+            analytical, _ = shima2009fig.golovin_analytical(
                 radius_span_um,
                 float(time_s),
                 500,
@@ -232,8 +232,10 @@ def calculate_diagnostics(
                 volume_exponential_scale_m,
                 superdrops.RHO_L(),
             )
-            if not np.allclose(radius_centres_um, analytical_radius_um):
-                raise RuntimeError("CLEO numerical and analytical radius grids differ")
+            # Preserve CLEO's validation-error convention: corresponding numerical
+            # and analytical bins are subtracted by index. Their reported centres
+            # differ slightly because plotcleo uses an arithmetic midpoint for the
+            # numerical bins and a geometric midpoint for the analytical bins.
             row["golovin_l1_relative"] = relative_l1_error(
                 numerical,
                 analytical,

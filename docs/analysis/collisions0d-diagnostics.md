@@ -55,7 +55,10 @@ fallout.
 
 The relative Golovin L1 error integrates the absolute numerical-minus-analytical
 mass-distribution difference over \(\ln r\), normalized by the integrated
-absolute analytical distribution.
+absolute analytical distribution. Corresponding 500-bin values are paired by
+index, matching CLEO's validation error panel. CLEO reports slightly different
+bin-centre coordinates for the numerical and analytical curves because the
+former uses an arithmetic radius midpoint and the latter a geometric midpoint.
 
 ## Outputs
 
@@ -67,4 +70,7 @@ Each fresh `analysis_v1` directory contains:
 - `diagnostic_metadata.json`;
 - `SHA256SUMS` when run through the Levante batch wrapper.
 
-The analysis refuses to overwrite an existing directory.
+The analysis refuses to overwrite an existing directory. The Levante wrapper
+writes to a job-specific staging directory and renames it to `analysis_v1` only
+after every output and checksum succeeds. A failed staging directory is
+preserved as `analysis_failed_job<jobid>` for diagnosis.

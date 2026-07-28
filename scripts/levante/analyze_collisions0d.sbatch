@@ -51,6 +51,8 @@ cleo_sdm_print_environment
 run_directory="${CLEO_SDM_RUN_ROOT}/${RUN_LABEL}"
 cleo_source="${CLEO_SDM_BUILD_ROOT}/_deps/cleo-src"
 output_directory="${run_directory}/analysis_v1"
+staging_directory="${run_directory}/.analysis_v1_job${SLURM_JOB_ID}.tmp"
+failed_directory="${run_directory}/analysis_failed_job${SLURM_JOB_ID}"
 python="${CLEO_SDM_PROJECT_ROOT}/.venv/bin/python"
 
 test -d "${run_directory}"
@@ -60,25 +62,42 @@ if [[ -e "${output_directory}" ]]; then
   echo "ERROR: diagnostic output already exists; refusing to overwrite: ${output_directory}" >&2
   exit 1
 fi
+if [[ -e "${staging_directory}" || -e "${failed_directory}" ]]; then
+  echo "ERROR: diagnostic staging/failure path already exists for this job." >&2
+  exit 1
+fi
+
+preserve_failed_analysis() {
+  local status=$?
+  if ((status != 0)) && [[ -d "${staging_directory}" ]]; then
+    mv "${staging_directory}" "${failed_directory}"
+    echo "Preserved failed diagnostic output: ${failed_directory}" >&2
+  fi
+  exit "${status}"
+}
+trap preserve_failed_analysis EXIT
 
 "${python}" "${CLEO_SDM_PROJECT_ROOT}/scripts/analyze_collisions0d.py" \
   --cleo-source "${cleo_source}" \
   --run-directory "${run_directory}" \
   --kernel "${KERNEL}" \
-  --output-directory "${output_directory}" \
+  --output-directory "${staging_directory}" \
   --times 0 1200 2400 3600
 
-test -f "${output_directory}/bulk_diagnostics.csv"
-test -f "${output_directory}/${KERNEL}_mass_distribution.png"
-test -f "${output_directory}/${KERNEL}_bulk_diagnostics.png"
-test -f "${output_directory}/diagnostic_metadata.json"
+test -f "${staging_directory}/bulk_diagnostics.csv"
+test -f "${staging_directory}/${KERNEL}_mass_distribution.png"
+test -f "${staging_directory}/${KERNEL}_bulk_diagnostics.png"
+test -f "${staging_directory}/diagnostic_metadata.json"
 
 sha256sum \
-  "${output_directory}/bulk_diagnostics.csv" \
-  "${output_directory}/${KERNEL}_mass_distribution.png" \
-  "${output_directory}/${KERNEL}_bulk_diagnostics.png" \
-  "${output_directory}/diagnostic_metadata.json" \
-  >"${output_directory}/SHA256SUMS"
+  "${staging_directory}/bulk_diagnostics.csv" \
+  "${staging_directory}/${KERNEL}_mass_distribution.png" \
+  "${staging_directory}/${KERNEL}_bulk_diagnostics.png" \
+  "${staging_directory}/diagnostic_metadata.json" \
+  >"${staging_directory}/SHA256SUMS"
+
+mv "${staging_directory}" "${output_directory}"
+trap - EXIT
 
 echo "DIAGNOSTIC_JOB_PASS=1"
 echo "output_directory=${output_directory}"
