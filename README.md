@@ -142,6 +142,8 @@ The project diagnostic deliberately reuses CLEO's pinned `cleopy` and
 `plotcleo` readers/distribution tools; its additional bulk and conservation
 metrics are documented in
 [`docs/analysis/collisions0d-diagnostics.md`](docs/analysis/collisions0d-diagnostics.md).
+The checksum-verified compact products from the first audited run are under
+[`results/first_golovin_serial`](results/first_golovin_serial).
 
 ## Attribution
 

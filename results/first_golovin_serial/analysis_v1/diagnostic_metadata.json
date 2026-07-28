@@ -1,0 +1,26 @@
+{
+  "status": "completed",
+  "kernel": "golovin",
+  "run_directory": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/runs/first_golovin_serial",
+  "cleo_source": "/home/b/b383673/SDM/cleo_builds/CLEO-SDM-Convergence/openmp/_deps/cleo-src",
+  "dataset": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/runs/first_golovin_serial/output/collisions0d_solution.zarr",
+  "setup_filename": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/runs/first_golovin_serial/output/collisions0d_setup.txt",
+  "grid_filename": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/runs/first_golovin_serial/inputs/grid.dat",
+  "requested_distribution_times_s": [
+    0.0,
+    1200.0,
+    2400.0,
+    3600.0
+  ],
+  "domain_volume_m3": 1000000000000.0,
+  "number_concentration_m3": 8388608.0,
+  "volume_exponential_scale_m": 3.0531e-05,
+  "max_superdroplets": 4096,
+  "smoothing_sigma_ln_radius": 0.11746803390455585,
+  "maximum_absolute_relative_mass_drift": 7.948490865494762e-09,
+  "outputs": {
+    "bulk_csv": "bulk_diagnostics.csv",
+    "distribution_figure": "golovin_mass_distribution.png",
+    "bulk_figure": "golovin_bulk_diagnostics.png"
+  }
+}

@@ -174,3 +174,7 @@ The project-owned diagnostic implementation is documented in
 to establish explicit collision-stream control, repeat the Golovin validation
 over controlled ensembles and resolutions, and only then transfer the verified
 workflow to the Long kernel.
+
+The checksum-verified compact output from final diagnostic job `26517314` is
+versioned under `results/first_golovin_serial/analysis_v1/`. The raw Zarr remains
+on Levante SCRATCH.

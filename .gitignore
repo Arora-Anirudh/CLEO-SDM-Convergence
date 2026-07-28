@@ -20,6 +20,8 @@ compile_commands.json
 *.err
 outputs/
 results/raw/
+results/**/analysis_failed_job*/
+results/**/analysis_superseded_job*/
 
 # Editors and operating systems
 .DS_Store
