@@ -100,9 +100,22 @@ def import_cleo_plotting(cleo_source: Path):
     return pygbxsdat, pysetuptxt, pyzarr, shima2009fig
 
 
-def require_exact_times(available: np.ndarray, requested: list[float]) -> None:
+def require_exact_times(
+    available: np.ndarray,
+    requested: list[float],
+    *,
+    absolute_tolerance_s: float = 1.0e-3,
+) -> None:
+    """Require each nominal time to match a stored output within float tolerance."""
     for requested_time in requested:
-        if not np.any(np.isclose(available, requested_time, rtol=0.0, atol=1.0e-9)):
+        if not np.any(
+            np.isclose(
+                available,
+                requested_time,
+                rtol=0.0,
+                atol=absolute_tolerance_s,
+            )
+        ):
             raise ValueError(
                 f"requested time {requested_time:g} s is not an exact dataset output; "
                 f"available times are {available.tolist()}"

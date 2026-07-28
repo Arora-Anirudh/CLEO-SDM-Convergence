@@ -46,3 +46,10 @@ def test_relative_l1_error_is_zero_for_identical_distributions() -> None:
     distribution = np.exp(-((np.log(radius) - 2.0) ** 2))
 
     assert analyzer.relative_l1_error(distribution, distribution, radius) == pytest.approx(0.0)
+
+
+def test_nominal_times_accept_cleo_float_scaling() -> None:
+    analyzer = load_analyzer()
+    stored = np.asarray([0.0, 1200.0000476837158, 2400.0000953674316, 3599.9999046325684])
+
+    analyzer.require_exact_times(stored, [0.0, 1200.0, 2400.0, 3600.0])
