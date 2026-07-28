@@ -1,0 +1,48 @@
+import importlib.util
+from pathlib import Path
+
+import numpy as np
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+SCRIPT = ROOT / "scripts" / "analyze_collisions0d.py"
+
+
+def load_analyzer():
+    spec = importlib.util.spec_from_file_location("analyze_collisions0d", SCRIPT)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_bulk_row_uses_multiplicity_and_conserves_mass() -> None:
+    analyzer = load_analyzer()
+    radius = np.asarray([10.0, 50.0, 1500.0])
+    multiplicity = np.asarray([3.0, 2.0, 1.0])
+    water_mass = np.asarray([1.0, 2.0, 5.0])
+
+    row = analyzer.calculate_bulk_row(
+        time_s=60.0,
+        radius_um=radius,
+        multiplicity=multiplicity,
+        water_mass_g=water_mass,
+        domain_volume_m3=2.0,
+        initial_liquid_water_gm3=6.0,
+    )
+
+    assert row["n_superdroplet_records"] == 3
+    assert row["number_concentration_cm3"] == pytest.approx(3.0e-6)
+    assert row["liquid_water_gm3"] == pytest.approx(6.0)
+    assert row["relative_liquid_mass_drift"] == pytest.approx(0.0)
+    assert row["max_radius_um"] == pytest.approx(1500.0)
+    assert row["mass_fraction_r_ge_40um"] == pytest.approx(9.0 / 12.0)
+    assert row["mass_fraction_r_ge_1000um"] == pytest.approx(5.0 / 12.0)
+
+
+def test_relative_l1_error_is_zero_for_identical_distributions() -> None:
+    analyzer = load_analyzer()
+    radius = np.geomspace(1.0, 100.0, 20)
+    distribution = np.exp(-((np.log(radius) - 2.0) ** 2))
+
+    assert analyzer.relative_l1_error(distribution, distribution, radius) == pytest.approx(0.0)

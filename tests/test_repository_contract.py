@@ -51,6 +51,7 @@ def test_levante_scripts_are_project_owned_and_account_neutral() -> None:
     levante_directory = ROOT / "scripts" / "levante"
     expected = {
         "README.md",
+        "analyze_collisions0d.sbatch",
         "build.sbatch",
         "common.sh",
         "run_collisions0d.sbatch",
@@ -67,3 +68,10 @@ def test_levante_scripts_are_project_owned_and_account_neutral() -> None:
 def test_runtime_config_materializer_exists() -> None:
     materializer = ROOT / "scripts" / "materialize_collisions0d_config.py"
     assert materializer.is_file()
+
+
+def test_collision_box_analyzer_uses_pinned_cleo_tools() -> None:
+    analyzer = (ROOT / "scripts" / "analyze_collisions0d.py").read_text(encoding="utf-8")
+    assert "from cleopy.sdmout_src import pygbxsdat, pysetuptxt, pyzarr" in analyzer
+    assert "from plotcleo import shima2009fig" in analyzer
+    assert "shima2009fig.plot_validation_figure" in analyzer

@@ -17,6 +17,9 @@ verified absolute paths.
 3. `run_collisions0d.sbatch` creates one non-overwriting run directory,
    materializes an absolute-path configuration, generates initial conditions,
    and runs either the Golovin or Long executable.
+4. `analyze_collisions0d.sbatch` reads one completed run through CLEO's own
+   `cleopy`/`plotcleo` tools and writes non-overwriting distribution, bulk and
+   conservation diagnostics.
 
 The permanent source and build trees are in HOME. Run-specific configuration,
 input binaries and Zarr output are stored under SCRATCH.
@@ -82,3 +85,26 @@ interval and end time.
 - the Kokkos thread count requested by Slurm.
 
 It does not change the scientific initialization or timesteps.
+
+## Single-run diagnostic request
+
+The diagnostic script requests:
+
+- one node and one task;
+- one CPU core;
+- 940 MiB memory;
+- 10 minutes;
+- `shared` partition;
+- serial CPU analysis with no GPU.
+
+For the audited first Golovin run:
+
+```bash
+sbatch \
+  --account=bb1153 \
+  --export=ALL,KERNEL=golovin,RUN_LABEL=first_golovin_serial \
+  scripts/levante/analyze_collisions0d.sbatch
+```
+
+The implementation and formulas are documented in
+[`docs/analysis/collisions0d-diagnostics.md`](../../docs/analysis/collisions0d-diagnostics.md).

@@ -169,7 +169,8 @@ collision random stream is not yet under an explicit project-controlled seed.
 That control is required before the later reproducible ensemble and convergence
 experiments.
 
-The next scientific steps are to add a project-owned diagnostic plot for this
-run, establish explicit collision-stream control, repeat the Golovin validation
+The project-owned diagnostic implementation is documented in
+`docs/analysis/collisions0d-diagnostics.md`. The remaining scientific steps are
+to establish explicit collision-stream control, repeat the Golovin validation
 over controlled ensembles and resolutions, and only then transfer the verified
 workflow to the Long kernel.

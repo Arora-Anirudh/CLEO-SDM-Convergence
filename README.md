@@ -138,6 +138,10 @@ accounts, paths and GPU assumptions. The first staged workflow is:
 The audited first run, including its code path, prescribed conditions and
 physical interpretation, is documented in
 [`docs/runs/first-golovin-collisions0d.md`](docs/runs/first-golovin-collisions0d.md).
+The project diagnostic deliberately reuses CLEO's pinned `cleopy` and
+`plotcleo` readers/distribution tools; its additional bulk and conservation
+metrics are documented in
+[`docs/analysis/collisions0d-diagnostics.md`](docs/analysis/collisions0d-diagnostics.md).
 
 ## Attribution
 
