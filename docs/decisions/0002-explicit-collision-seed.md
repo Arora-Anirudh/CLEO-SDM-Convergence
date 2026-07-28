@@ -1,6 +1,6 @@
 # ADR 0002: Explicit collision random-number seed
 
-- Status: accepted; one-thread runtime replay validation pending
+- Status: accepted and one-thread runtime replay validated
 - Date: 2026-07-28
 
 ## Context
@@ -64,6 +64,13 @@ same initialization + different collision seed -> different Zarr output
 The dedicated Slurm wrapper runs three sequential simulations and checks that
 condition. One-thread replay is the scientific requirement for controlled
 ensembles in the initial convergence workflow.
+
+Golovin validation job `26518192` passed this gate on 2026-07-28. All three
+initialization binaries had SHA-256
+`234c001863b05d529ef7151f9573045f2005aa1e1bffda5c4d55697b01eb384b`.
+The two equal-collision-seed Zarr manifests were byte-identical, while the
+different-seed manifest changed. The compact audit is under
+`results/golovin_seed_replay_v1`.
 
 Multi-thread byte replay is not assumed. Parallel execution may acquire Kokkos
 RNG-pool states in a schedule-dependent order even with the same pool seed. If

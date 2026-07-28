@@ -150,7 +150,9 @@ The checksum-verified compact products from the first audited run are under
 The first run predated explicit collision-stream control. New runs require both
 an initialization seed and collision seed. The design, deliberately minimal
 build-local CLEO patch, and one-thread replay gate are documented in
-[`ADR 0002`](docs/decisions/0002-explicit-collision-seed.md). A detailed record
+[`ADR 0002`](docs/decisions/0002-explicit-collision-seed.md). The successful
+Golovin replay audit is under
+[`results/golovin_seed_replay_v1`](results/golovin_seed_replay_v1). A detailed record
 of repository creation, the first model/diagnostic run and the seed-control work
 is maintained in the
 [`2026-07-28 work log`](docs/worklogs/2026-07-28.md).
