@@ -70,7 +70,7 @@ def parse_args() -> argparse.Namespace:
         "--output-directory",
         type=Path,
         default=None,
-        help="fresh output directory; default RUN_DIRECTORY/analysis_stage0_v1",
+        help="fresh output directory; default RUN_DIRECTORY/analysis_stage0_v2",
     )
     parser.add_argument(
         "--stage0-config",
@@ -176,7 +176,9 @@ def calculate_bulk_row(
     water_mass_g: np.ndarray,
     domain_volume_m3: float,
     initial_liquid_water_gm3: float,
+    cloud_drop_threshold_um: float = 40.0,
     large_drop_threshold_um: float = 1000.0,
+    onset_radius_threshold_um: float = 1000.0,
     mass_quantile: float = 0.99,
 ) -> dict[str, float | int]:
     if radius_um.shape != multiplicity.shape or radius_um.shape != water_mass_g.shape:
@@ -216,22 +218,20 @@ def calculate_bulk_row(
             domain_volume_m3=domain_volume_m3,
         ),
         "max_radius_um": float(np.max(radius_um)),
-        "mass_fraction_r_ge_40um": mass_fraction_at_or_above(
+        "mass_fraction_r_ge_cloud_threshold": mass_fraction_at_or_above(
             radius_um,
             represented_mass_g,
-            40.0,
+            cloud_drop_threshold_um,
         ),
         "mass_fraction_r_ge_large_threshold": mass_fraction_at_or_above(
             radius_um,
             represented_mass_g,
             large_drop_threshold_um,
         ),
-        # Retained for compatibility while the registered development
-        # threshold is 1000 um.
-        "mass_fraction_r_ge_1000um": mass_fraction_at_or_above(
+        "mass_fraction_r_ge_onset_threshold": mass_fraction_at_or_above(
             radius_um,
             represented_mass_g,
-            1000.0,
+            onset_radius_threshold_um,
         ),
         "mass_weighted_radius_q99_um": mass_weighted_radius_quantile(
             radius_um,
@@ -266,7 +266,9 @@ def calculate_diagnostics(
     max_superdroplets: int,
     shima2009fig,
     fixed_edges_um: np.ndarray,
+    cloud_drop_threshold_um: float,
     large_drop_threshold_um: float,
+    onset_radius_threshold_um: float,
     mass_quantile: float,
 ) -> list[dict[str, float | int]]:
     radii = superdrops["radius"]
@@ -294,7 +296,9 @@ def calculate_diagnostics(
             water_mass_g=water_mass_g,
             domain_volume_m3=domain_volume_m3,
             initial_liquid_water_gm3=initial_liquid_water_gm3,
+            cloud_drop_threshold_um=cloud_drop_threshold_um,
             large_drop_threshold_um=large_drop_threshold_um,
+            onset_radius_threshold_um=onset_radius_threshold_um,
             mass_quantile=mass_quantile,
         )
 
@@ -396,6 +400,7 @@ def plot_bulk_diagnostics(
     rows: list[dict[str, float | int]],
     *,
     kernel: str,
+    cloud_drop_threshold_um: float,
     large_drop_threshold_um: float,
     savename: Path,
 ) -> None:
@@ -425,9 +430,9 @@ def plot_bulk_diagnostics(
 
     axes[1, 1].plot(
         time_minutes,
-        values("mass_fraction_r_ge_40um"),
+        values("mass_fraction_r_ge_cloud_threshold"),
         marker="o",
-        label="$r\\geq40$ μm",
+        label=rf"$r\geq{cloud_drop_threshold_um:g}$ μm",
     )
     axes[1, 1].plot(
         time_minutes,
@@ -472,7 +477,7 @@ def main() -> None:
     output_directory = (
         args.output_directory.resolve()
         if args.output_directory is not None
-        else run_directory / "analysis_stage0_v1"
+        else run_directory / "analysis_stage0_v2"
     )
     stage0_config_filename = args.stage0_config.resolve()
     validate_paths(cleo_source, run_directory, output_directory)
@@ -490,7 +495,9 @@ def main() -> None:
         float(diagnostic_config["radius_maximum_um"]),
         int(diagnostic_config["number_of_log_radius_bins"]),
     )
+    cloud_drop_threshold_um = float(diagnostic_config["cloud_drop_threshold_um"])
     large_drop_threshold_um = float(diagnostic_config["large_drop_threshold_um"])
+    onset_radius_threshold_um = float(diagnostic_config["onset_radius_threshold_um"])
     mass_quantile = float(diagnostic_config["mass_weighted_radius_quantile"])
     setup_filename = run_directory / "output" / "collisions0d_setup.txt"
     grid_filename = run_directory / "inputs" / "grid.dat"
@@ -559,7 +566,9 @@ def main() -> None:
             max_superdroplets=max_superdroplets,
             shima2009fig=shima2009fig,
             fixed_edges_um=fixed_edges_um,
+            cloud_drop_threshold_um=cloud_drop_threshold_um,
             large_drop_threshold_um=large_drop_threshold_um,
+            onset_radius_threshold_um=onset_radius_threshold_um,
             mass_quantile=mass_quantile,
         )
     member_identifiers: dict[str, str | int | float] = {
@@ -585,15 +594,17 @@ def main() -> None:
 
     crossing = first_threshold_crossing(
         np.asarray([float(row["time_s"]) for row in rows]),
-        np.asarray([float(row["mass_fraction_r_ge_40um"]) for row in rows]),
+        np.asarray([float(row["mass_fraction_r_ge_onset_threshold"]) for row in rows]),
         float(diagnostic_config["onset_mass_fraction"]),
     )
     member_summary = {
         **member_identifiers,
-        "t10_status": crossing.status,
-        "t10_lower_bound_s": crossing.lower_bound_s,
-        "t10_upper_bound_s": crossing.upper_bound_s,
-        "t10_first_recorded_crossing_s": crossing.first_recorded_crossing_s,
+        "tail_onset_status": crossing.status,
+        "tail_onset_lower_bound_s": crossing.lower_bound_s,
+        "tail_onset_upper_bound_s": crossing.upper_bound_s,
+        "tail_onset_first_recorded_crossing_s": crossing.first_recorded_crossing_s,
+        "onset_radius_threshold_um": onset_radius_threshold_um,
+        "onset_mass_fraction": float(diagnostic_config["onset_mass_fraction"]),
         "maximum_absolute_liquid_mass_drift": float(
             np.max(
                 np.abs(
@@ -613,12 +624,14 @@ def main() -> None:
     plot_bulk_diagnostics(
         rows,
         kernel=args.kernel,
+        cloud_drop_threshold_um=cloud_drop_threshold_um,
         large_drop_threshold_um=large_drop_threshold_um,
         savename=bulk_figure,
     )
 
     metadata = {
         "status": "completed",
+        "diagnostic_schema_version": 2,
         "kernel": args.kernel,
         "run_directory": str(run_directory),
         "cleo_source": str(cleo_source),
@@ -630,10 +643,15 @@ def main() -> None:
         "fixed_bin_radius_maximum_um": float(fixed_edges_um[-1]),
         "fixed_bin_count": int(fixed_edges_um.size - 1),
         "fixed_bin_smoothing": None,
+        "cloud_drop_threshold_um": cloud_drop_threshold_um,
         "large_drop_threshold_um": large_drop_threshold_um,
-        "t10_definition": (
-            "first stored time with mass_fraction_r_ge_40um >= "
-            f"{float(diagnostic_config['onset_mass_fraction']):g}; interval-censored"
+        "onset_radius_threshold_um": onset_radius_threshold_um,
+        "onset_mass_fraction": float(diagnostic_config["onset_mass_fraction"]),
+        "tail_onset_definition": (
+            "first stored time with mass_fraction_r_ge_onset_threshold >= "
+            f"{float(diagnostic_config['onset_mass_fraction']):g}; "
+            f"radius threshold={onset_radius_threshold_um:g} um; interval-censored; "
+            "tail-growth diagnostic, not rain onset or precipitation"
         ),
         "setup_filename": str(setup_filename),
         "grid_filename": str(grid_filename),

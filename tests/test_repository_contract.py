@@ -105,6 +105,10 @@ def test_stage0_tools_and_development_config_exist() -> None:
     config = YAML(typ="safe").load(expected[0].read_text(encoding="utf-8"))
     assert config["experiment"]["status"] == "development_only"
     assert config["provisional_decisions"]["approved_for_production"] is False
+    diagnostics = config["diagnostics"]
+    initial_maximum_um = load_reference_config()["python_initconds"]["supers"]["rspan"][1] * 1.0e6
+    assert diagnostics["cloud_drop_threshold_um"] < initial_maximum_um
+    assert diagnostics["onset_radius_threshold_um"] > initial_maximum_um
 
 
 def test_collision_seed_is_required_and_recorded() -> None:

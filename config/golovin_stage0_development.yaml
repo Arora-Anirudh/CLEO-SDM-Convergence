@@ -26,6 +26,10 @@ diagnostics:
   number_of_log_radius_bins: 500
   cloud_drop_threshold_um: 40.0
   large_drop_threshold_um: 1000.0
+  # Optional tail-growth timing metric t_(R,f). This is not rain onset:
+  # collisions0d has no sedimentation/fallout and its initial support extends
+  # beyond the conventional 40 um cloud/rain separation.
+  onset_radius_threshold_um: 1000.0
   onset_mass_fraction: 0.10
   mass_weighted_radius_quantile: 0.99
   confidence_level: 0.95
@@ -35,5 +39,5 @@ diagnostics:
 provisional_decisions:
   approved_for_production: false
   reason: >-
-    Bin range, large-drop threshold, onset observation interval, equivalence
+    Bin range, tail-growth threshold, observation interval, equivalence
     margins, controlled initializer and Levante account still require review.

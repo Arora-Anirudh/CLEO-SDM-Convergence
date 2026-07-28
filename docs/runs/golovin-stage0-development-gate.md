@@ -258,23 +258,21 @@ The mass-weighted q99 and mass fraction above 1000 μm show the distribution
 moving into the large-drop tail. They are more stable concepts than maximum
 radius, but their sampling uncertainty still needs an ensemble.
 
-### `t10` is not useful under the current definition
+### The inherited `t10` is not useful under this initialization
 
 The provisional onset diagnostic asked for the first output with at least 10%
 of mass at \(r\ge40\) μm. The initialization already has 34.25% there, so the
 analyzer honestly reports `already_crossed_at_first_output`.
 
-This is not a code failure. It shows that a threshold inherited from an earlier
-plot is inconsistent with the present initialization. Before production,
-Clara and Anirudh should decide whether onset should instead use:
-
-- 10% mass above the larger 1000 μm threshold;
-- another radius tied to the intended cloud configuration;
-- a number-based or rain-water-content threshold;
-- or no onset metric for the Golovin calibration.
+This is not a code failure. Morrison et al. (2024) used this definition with
+an initial DSD truncated to 1-25 μm. The present initializer extends to 75 μm,
+so the definition cannot be copied independently of its initial condition.
 
 For reference, 10% mass above 1000 μm would be interval-censored between 3000
-and 3300 s in this member. That observation is not adopted as a new definition.
+and 3300 s in this member. After the gate, ADR 0003 adopted the generic
+\(t_{R,f}\) notation and registered \(R=1000\,\mathrm{\mu m}\), \(f=0.10\) for
+development. It is a secondary millimetre-tail formation metric, not rain
+onset, and the historical Stage-0-v1 outputs remain unchanged.
 
 ## 11. One-thread replay audit
 
@@ -347,7 +345,7 @@ therefore be estimated from measured stores, not only from superdroplet count.
 - no ensemble mean or stochastic spread has been estimated;
 - the 1-5000 μm bin interval is not approved for production;
 - the 1000 μm tail threshold is provisional;
-- the current `t10` definition is unsuitable for this initialization;
+- the historical 40 μm `t10` definition is unsuitable for this initialization;
 - the operational initializer is not mass-matched across resolutions;
 - the current 10-km box and reference DSD are not the final cloud
   configuration;

@@ -46,6 +46,9 @@ The first single-member Levante gate, including the launcher correction,
 compute/storage accounting, scientific diagnostics, replay audit and
 limitations, is documented in the
 [`Golovin Stage-0 development gate`](docs/runs/golovin-stage0-development-gate.md).
+The post-gate decision to separate descriptive 40 μm mass from generic
+millimetre-tail timing—and not call either surface precipitation—is recorded
+in [`ADR 0003`](docs/decisions/0003-tail-growth-not-rain-onset.md).
 
 ## CLEO dependency
 

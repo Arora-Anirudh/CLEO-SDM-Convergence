@@ -38,6 +38,9 @@ case was run.
   result;
 - `analysis_stage0_v1/`: per-time and per-member diagnostics, figures,
   metadata and checksums.
+- `tail_threshold_review_v1/`: literature-grounded post-gate interpretation
+  that rejects the inherited 40 μm onset definition and derives the
+  interval-censored 1000 μm development tail time from the immutable table.
 
 Run the following from this directory to verify the copied manifests and
 diagnostic checksum record, then verify the diagnostic products themselves:
@@ -62,6 +65,12 @@ sha256sum -c SHA256SUMS
 - 34.25% of mass is already at \(r\ge40\) μm at time zero, so the provisional
   `t10` based on 10% mass above 40 μm is not informative for this
   initialization.
+
+The post-gate decision is documented in
+[`tail_threshold_review_v1/README.md`](tail_threshold_review_v1/README.md).
+For development, the generic secondary metric
+\(t_{1000\,\mu\mathrm{m},0.10}\) lies in \((3000,3300]\) s for this member.
+It is called millimetre-tail formation, not rain onset.
 
 The large unsmoothed L1 values are expected to be sensitive to sparse
 fixed-bin sampling at \(N_\mathrm{SD}=1024\). One member cannot determine mean

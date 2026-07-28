@@ -1,3 +1,4 @@
+import csv
 import importlib.util
 import sys
 from pathlib import Path
@@ -8,6 +9,13 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 STAGE0_SCRIPT = ROOT / "scripts" / "golovin_stage0.py"
 SUMMARY_SCRIPT = ROOT / "scripts" / "summarize_golovin_ensemble.py"
+DEVELOPMENT_TIME_TABLE = (
+    ROOT
+    / "results"
+    / "golovin_stage0_development_gate_v1"
+    / "analysis_stage0_v1"
+    / "member_time_diagnostics.csv"
+)
 
 
 def load_module(filename: Path, name: str):
@@ -100,8 +108,8 @@ def test_golovin_fixed_bin_analytical_distribution_is_finite() -> None:
     assert np.any(distribution > 0.0)
 
 
-def test_t10_reports_output_interval_instead_of_false_exact_time() -> None:
-    stage0 = load_module(STAGE0_SCRIPT, "golovin_stage0_t10")
+def test_tail_onset_reports_output_interval_instead_of_false_exact_time() -> None:
+    stage0 = load_module(STAGE0_SCRIPT, "golovin_stage0_tail_onset")
     crossing = stage0.first_threshold_crossing(
         np.asarray([0.0, 300.0, 600.0, 900.0]),
         np.asarray([0.0, 0.05, 0.12, 0.20]),
@@ -112,6 +120,23 @@ def test_t10_reports_output_interval_instead_of_false_exact_time() -> None:
     assert crossing.lower_bound_s == pytest.approx(300.0)
     assert crossing.upper_bound_s == pytest.approx(600.0)
     assert crossing.first_recorded_crossing_s == pytest.approx(600.0)
+
+
+def test_recorded_stage0_member_has_interval_censored_millimetre_tail_time() -> None:
+    stage0 = load_module(STAGE0_SCRIPT, "golovin_stage0_recorded_tail_onset")
+    with DEVELOPMENT_TIME_TABLE.open(encoding="utf-8", newline="") as stream:
+        rows = list(csv.DictReader(stream))
+
+    crossing = stage0.first_threshold_crossing(
+        np.asarray([float(row["time_s"]) for row in rows]),
+        np.asarray([float(row["mass_fraction_r_ge_large_threshold"]) for row in rows]),
+        0.10,
+    )
+
+    assert crossing.status == "crossed_between_outputs"
+    assert crossing.lower_bound_s == pytest.approx(3000.0)
+    assert crossing.upper_bound_s == pytest.approx(3299.999952316284)
+    assert crossing.first_recorded_crossing_s == pytest.approx(3299.999952316284)
 
 
 def test_mass_weighted_quantile_uses_represented_mass() -> None:

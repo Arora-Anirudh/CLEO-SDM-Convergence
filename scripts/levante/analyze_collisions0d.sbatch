@@ -53,8 +53,8 @@ cleo_sdm_print_environment
 
 run_directory="${CLEO_SDM_RUN_ROOT}/${RUN_LABEL}"
 cleo_source="${CLEO_SDM_BUILD_ROOT}/_deps/cleo-src"
-output_directory="${run_directory}/analysis_stage0_v1"
-staging_directory="${run_directory}/.analysis_stage0_v1_job${SLURM_JOB_ID}.tmp"
+output_directory="${run_directory}/analysis_stage0_v2"
+staging_directory="${run_directory}/.analysis_stage0_v2_job${SLURM_JOB_ID}.tmp"
 failed_directory="${run_directory}/analysis_failed_job${SLURM_JOB_ID}"
 python="${CLEO_SDM_PROJECT_ROOT}/.venv/bin/python"
 

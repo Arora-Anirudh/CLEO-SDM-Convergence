@@ -108,9 +108,10 @@ The current development values are:
 | --- | ---: | --- |
 | radius range | 1-5000 μm | fixed interval used for the formal distribution |
 | number of log-radius bins | 500 | same 500 edges for all members and resolutions |
-| cloud-drop threshold | 40 μm | radius used by the onset mass fraction |
+| cloud-drop threshold | 40 μm | descriptive in-box mass partition |
 | larger-drop threshold | 1000 μm | provisional tail proxy |
-| onset fraction | 0.10 | `t10` occurs when 10% of liquid mass is at least 40 μm |
+| onset radius \(R\) | 1000 μm | development threshold for optional tail timing |
+| onset fraction \(f\) | 0.10 | \(t_{R,f}\) when 10% of mass reaches the threshold |
 | mass-weighted quantile | 0.99 | radius below which 99% of represented mass lies |
 | confidence level | 0.95 | interval level for ensemble means |
 | bootstrap resamples | 10000 | deterministic non-parametric uncertainty check |
@@ -286,10 +287,23 @@ This is the represented liquid mass carried by droplets with
 It is not the fraction of superdroplet records and not the fraction of real
 droplet number. Multiplicity and droplet mass both enter the numerator.
 
-### `t10`
+### Generic tail-formation time \(t_{R,f}\)
 
-`t10` is the first time when at least 10% of represented liquid mass is carried
-at \(r\geq40\,\mathrm{\mu m}\).
+The first implementation copied Morrison et al. (2024)'s \(t_{10}\): the first
+time when 10% of represented liquid mass is carried at
+\(r\geq40\,\mathrm{\mu m}\). Morrison's initial DSD was truncated to 1-25 μm,
+whereas this project's `collisions0d` initial support extends to 75 μm. The
+audited member already has 34.25% of its mass above 40 μm at time zero, so that
+definition is not transferable.
+
+The revised diagnostic uses the explicit generic definition
+
+\[
+t_{R,f}=\inf\{t:F_{\ge R}(t)\ge f\}.
+\]
+
+For development, \(R=1000\,\mathrm{\mu m}\) and \(f=0.10\). It describes
+millimetre-tail formation, not rain onset or precipitation.
 
 If output is stored at 300 and 600 s and the fraction first exceeds 0.10 at
 600 s, the code records:
@@ -300,9 +314,9 @@ If output is stored at 300 and 600 s and the fraction first exceeds 0.10 at
 - first recorded crossing: 600 s.
 
 It does not claim that the physical crossing happened exactly at 600 s and
-does not use linear interpolation to invent unresolved timing. Thus, `t10`
-precision can never be better than the observation interval without storing
-more frequent output.
+does not use linear interpolation to invent unresolved timing. Thus,
+\(t_{R,f}\) precision can never be better than the observation interval
+without storing more frequent output.
 
 Possible status values are:
 
@@ -313,7 +327,8 @@ Possible status values are:
 ### Larger-drop mass fraction
 
 The development threshold is 1000 μm. It is a tail proxy and remains
-provisional. The threshold value is stored with every member summary.
+provisional. The large-drop and timing thresholds are recorded separately,
+even when they have the same development value.
 
 ### Mass-weighted radius q99
 
@@ -523,7 +538,7 @@ scientifically correct.
 
 ## 16. Per-member outputs
 
-Every fresh `analysis_stage0_v1` directory contains:
+Every fresh `analysis_stage0_v2` directory contains:
 
 ### `member_time_diagnostics.csv`
 
@@ -537,7 +552,7 @@ One row per stored output time. It includes:
 - fixed-bin L1;
 - official CLEO smoothed L1 retained as a visual-compatibility diagnostic;
 - fixed-bin overflow fractions;
-- 40 μm and larger-threshold mass fractions;
+- configured cloud, large-tail, and timing-threshold mass fractions;
 - q99;
 - mass drift and maximum radius.
 
@@ -546,7 +561,7 @@ One row per stored output time. It includes:
 One row per member. It includes:
 
 - member identifiers;
-- interval-censored `t10`;
+- interval-censored \(t_{R,f}\), with \(R\) and \(f\) stored explicitly;
 - maximum absolute liquid-mass drift;
 - the threshold and quantile definitions used.
 
@@ -587,7 +602,7 @@ unexpected or matrix-inconsistent members.
 
 The local quality gate currently reports:
 
-- 29 Python/repository tests passed;
+- 31 Python/repository tests passed;
 - Ruff lint passed;
 - Ruff formatting check passed;
 - Bash syntax checks passed for both model runners;
@@ -603,7 +618,7 @@ Tests explicitly cover:
 - binned mass plus underflow/overflow is accounted for;
 - exact Golovin \(M_0,M_3,M_6\) behavior;
 - finite analytical fixed-bin output;
-- honest `t10` interval reporting;
+- honest interval-censored tail-timing reporting;
 - mass-weighted q99;
 - deterministic ensemble bootstrap;
 - deterministic unique seeds;
@@ -626,7 +641,8 @@ The run also exposed two important facts:
   executes a copied script under `/var/spool`; a new test protects the fix;
 - the current initialization already has 34.25% of mass at \(r\ge40\) μm, so
   the provisional 10%-above-40-μm `t10` is already crossed at time zero and is
-  not informative.
+  not informative. ADR 0003 therefore removes it from the convergence criteria
+  and introduces generic \(t_{R,f}\) tail timing.
 
 The full job accounting, numerical results, replay hashes, storage and
 interpretation are in the
@@ -651,14 +667,15 @@ A concise explanation is:
 > statistic. The new metric uses one fixed logarithmic-radius grid for every
 > member and resolution, reports mass outside the grid, and compares against
 > the same pinned Golovin analytical solution. Each member also reports exact
-> Golovin radius-moment errors, conservation, interval-censored `t10`, tail
+> Golovin radius-moment errors, conservation, interval-censored \(t_{R,f}\), tail
 > mass fractions and q99. I added immutable matrix/seed generation and
 > non-overwriting Slurm-array semantics, plus Student and bootstrap ensemble
 > summaries. The local tests and one-member Levante software/provenance gate
 > pass, including one-thread A/A/B replay and incomplete-matrix refusal. This
 > is not a convergence result. We still need to agree on the controlled
-> initializer, production radius/tail thresholds, a useful replacement for
-> the already-crossed `t10`, and numerical margins.
+> initializer, production radius/tail thresholds and numerical margins. The
+> development tail timing is now explicitly 10% mass at 1000 μm and is not
+> called rain onset.
 
 Useful review questions are:
 
@@ -666,8 +683,8 @@ Useful review questions are:
    wider for the intended 3600 s Golovin calibration?
 2. Is 1000 μm the desired larger-radius tail proxy, or should the metric be
    tied to a different physical size?
-3. What `t10` precision is scientifically useful, and therefore what
-   observation interval should be stored?
+3. Is \(t_{1000\,\mu\mathrm{m},0.10}\) useful as a secondary Golovin tail
+   metric, and what observation interval should be stored?
 4. For the controlled initialization, which moments must match exactly or to
    integer-multiplicity tolerance?
 5. Are the provisional 5% core and 10% onset/tail equivalence margins
@@ -682,7 +699,8 @@ complete. Before any production matrix:
 
 1. decide which moments the controlled/mass-matched initializer must hold;
 2. approve the production radius interval and bin count;
-3. replace or remove the already-crossed `t10` definition;
+3. confirm or replace the provisional \(t_{1000\,\mu\mathrm{m},0.10}\)
+   tail-growth definition;
 4. approve the larger-drop threshold and numerical margins;
 5. record the new permanent Levante project account;
 6. regenerate a reviewed production matrix;

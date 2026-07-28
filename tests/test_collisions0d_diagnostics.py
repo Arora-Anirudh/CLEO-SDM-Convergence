@@ -56,8 +56,9 @@ def test_bulk_row_uses_multiplicity_and_conserves_mass() -> None:
     assert row["liquid_water_gm3"] == pytest.approx(6.0)
     assert row["relative_liquid_mass_drift"] == pytest.approx(0.0)
     assert row["max_radius_um"] == pytest.approx(1500.0)
-    assert row["mass_fraction_r_ge_40um"] == pytest.approx(9.0 / 12.0)
-    assert row["mass_fraction_r_ge_1000um"] == pytest.approx(5.0 / 12.0)
+    assert row["mass_fraction_r_ge_cloud_threshold"] == pytest.approx(9.0 / 12.0)
+    assert row["mass_fraction_r_ge_large_threshold"] == pytest.approx(5.0 / 12.0)
+    assert row["mass_fraction_r_ge_onset_threshold"] == pytest.approx(5.0 / 12.0)
 
 
 def test_relative_l1_error_is_zero_for_identical_distributions() -> None:

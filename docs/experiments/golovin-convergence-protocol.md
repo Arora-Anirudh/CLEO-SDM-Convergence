@@ -199,21 +199,29 @@ threshold must be confirmed before production.
 
 ### 4.4 Onset and tail metrics
 
-Required in-box metrics are:
+The 40 μm mass fraction is retained as a descriptive in-box partition, but it
+is not used as an onset time. Morrison et al. (2024) used 10% mass above
+40 μm only with an initial DSD truncated to 1-25 μm. The present
+`collisions0d` initial support extends to 75 μm and already populates that
+class.
 
-- mass fraction at \(r\geq40\,\mathrm{\mu m}\);
-- \(t_{10}\), the first time at which at least 10% of liquid mass is at
-  \(r\geq40\,\mathrm{\mu m}\);
-- mass fraction above one pre-registered larger-radius threshold;
-- mass-weighted 99th-percentile radius.
+The registered in-box tail diagnostics are:
 
-The observation interval must be sufficiently short to estimate \(t_{10}\) at
-the desired precision. If the existing \(300\,\mathrm{s}\) interval is too
-coarse, observation frequency must be changed before the production matrix;
-linear interpolation cannot recover unresolved onset variability.
+- mass fraction at \(r\geq40\,\mathrm{\mu m}\), descriptive only;
+- mass fraction above one pre-registered larger-radius threshold \(R\);
+- mass-weighted 99th-percentile radius;
+- optional \(t_{R,f}\), the first time at which at least fraction \(f\) of
+  liquid mass is at or above \(R\).
 
-These are rain-growth or tail proxies. They are not surface precipitation
-because the 0-D model has no sedimentation or fallout.
+For development, \(R=1000\,\mathrm{\mu m}\) and \(f=0.10\). This is a
+millimetre-tail formation time, not rain onset. The observation interval must
+be sufficiently short for the required timing precision. Linear interpolation
+must not be used to invent unresolved timing.
+
+These are tail-growth proxies, not surface precipitation, because the 0-D
+model has no sedimentation or fallout. The rationale and literature
+comparison are recorded in
+[ADR 0003](../decisions/0003-tail-growth-not-rain-onset.md).
 
 Maximum radius may be retained as a descriptive diagnostic but must not be a
 primary convergence criterion because one exceptionally rare represented

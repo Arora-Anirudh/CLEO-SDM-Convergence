@@ -42,14 +42,15 @@ TIME_METRICS = (
     "golovin_relative_error_radius_moment_6_um6_m3",
     "liquid_water_gm3",
     "relative_liquid_mass_drift",
-    "mass_fraction_r_ge_40um",
+    "mass_fraction_r_ge_cloud_threshold",
     "mass_fraction_r_ge_large_threshold",
+    "mass_fraction_r_ge_onset_threshold",
     "mass_weighted_radius_q99_um",
     "fixed_bin_mass_below_range_fraction",
     "fixed_bin_mass_above_range_fraction",
 )
 MEMBER_METRICS = (
-    "t10_first_recorded_crossing_s",
+    "tail_onset_first_recorded_crossing_s",
     "maximum_absolute_liquid_mass_drift",
 )
 
@@ -60,7 +61,7 @@ def parse_args() -> argparse.Namespace:
         "--run-root",
         required=True,
         type=Path,
-        help="root containing member run directories and analysis_stage0_v1",
+        help="root containing member run directories and analysis_stage0_v2",
     )
     parser.add_argument(
         "--output-directory",
@@ -103,8 +104,8 @@ def write_csv_rows(filename: Path, rows: list[dict[str, object]]) -> None:
 
 
 def discover_member_tables(run_root: Path) -> tuple[list[Path], list[Path]]:
-    time_tables = sorted(run_root.glob("*/analysis_stage0_v1/member_time_diagnostics.csv"))
-    member_tables = sorted(run_root.glob("*/analysis_stage0_v1/member_summary.csv"))
+    time_tables = sorted(run_root.glob("*/analysis_stage0_v2/member_time_diagnostics.csv"))
+    member_tables = sorted(run_root.glob("*/analysis_stage0_v2/member_summary.csv"))
     if not time_tables:
         raise FileNotFoundError(f"no member_time_diagnostics.csv files found below {run_root}")
     if len(time_tables) != len(member_tables):
@@ -326,7 +327,7 @@ def main() -> None:
 
     onset_status_counts: dict[str, int] = defaultdict(int)
     for row in member_rows:
-        onset_status_counts[row["t10_status"]] += 1
+        onset_status_counts[row["tail_onset_status"]] += 1
 
     source_records = [
         {"path": str(path), "sha256": sha256_file(path)} for path in (*time_tables, *member_tables)
@@ -347,7 +348,8 @@ def main() -> None:
             "Student intervals describe the ensemble mean under the usual "
             "independent-member assumption.",
             "Bootstrap intervals are percentile intervals from deterministic resampling.",
-            "t10 remains interval-censored by the configured output interval.",
+            "Tail-growth timing remains interval-censored by the configured output interval.",
+            "The tail-growth time is not rain onset or surface precipitation.",
             "This summary does not by itself establish convergence or equivalence.",
         ],
     }

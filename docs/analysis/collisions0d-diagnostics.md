@@ -73,14 +73,15 @@ numerical-minus-analytical mass-distribution difference over the registered
 
 The per-time table additionally records radius moments \(M_0,M_3,M_6\), exact
 Golovin values and relative errors, fixed-bin overflow, mass-weighted q99, and
-the configured radius-threshold mass fractions. A per-member table records the
-interval-censored `t10` and maximum absolute liquid-mass drift. Full formulas
+the configured radius-threshold mass fractions. A per-member table records
+the interval-censored \(t_{R,f}\), its explicit threshold/fraction and maximum
+absolute liquid-mass drift. This is tail growth, not rain onset. Full formulas
 and interpretation are in the
 [Stage-0 implementation guide](../implementation/golovin-stage0-guide.md).
 
 ## Outputs
 
-Each fresh `analysis_stage0_v1` directory contains:
+Each fresh `analysis_stage0_v2` directory contains:
 
 - `<kernel>_mass_distribution.png`;
 - `<kernel>_bulk_diagnostics.png`;
@@ -91,5 +92,5 @@ Each fresh `analysis_stage0_v1` directory contains:
 
 The analysis refuses to overwrite an existing directory. The Levante wrapper
 writes to a job-specific staging directory and renames it to
-`analysis_stage0_v1` only after every output and checksum succeeds. A failed
+`analysis_stage0_v2` only after every output and checksum succeeds. A failed
 staging directory is preserved as `analysis_failed_job<jobid>` for diagnosis.
