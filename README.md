@@ -31,6 +31,13 @@ The repository does **not** yet contain a convergence result or a recommended
 number of superdroplets. Initial settings are an attributed reference starting
 point and will only be changed through documented experiments.
 
+The pre-registered scientific design for the first permanent-repository
+convergence study is the
+[`Golovin convergence protocol`](docs/experiments/golovin-convergence-protocol.md).
+It separates analytical mean bias, stochastic spread, ensemble precision,
+initialization sensitivity, timestep adequacy and cost. Its proposed numerical
+tolerances remain provisional until confirmed before model compute.
+
 ## CLEO dependency
 
 CLEO is fetched during CMake configuration and is not vendored here.
