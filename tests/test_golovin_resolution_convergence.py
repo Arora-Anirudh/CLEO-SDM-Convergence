@@ -149,6 +149,19 @@ def test_resolution_analysis_selects_smallest_confirmed_level() -> None:
     assert json.loads(json.dumps(decision)) == decision
 
 
+def test_portable_artifact_path_survives_analysis_root_move(tmp_path: Path) -> None:
+    module = load_module()
+    staging_root = tmp_path / ".analysis_v1_job123.tmp"
+    combined = staging_root / "ensemble_summary" / "all_member_time_diagnostics.csv"
+
+    published_path = module.portable_artifact_path(
+        combined,
+        analysis_root=staging_root,
+    )
+
+    assert published_path == "ensemble_summary/all_member_time_diagnostics.csv"
+
+
 def test_resolution_analysis_does_not_accept_failed_smallest_level() -> None:
     module = load_module()
     rows, matrix_rows, config, archives = synthetic_inputs(fail_smallest=True)

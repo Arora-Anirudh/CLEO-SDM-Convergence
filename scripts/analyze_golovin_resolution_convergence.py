@@ -14,6 +14,7 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -78,6 +79,12 @@ def sha256_file(filename: Path) -> str:
         for block in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def portable_artifact_path(path: Path, *, analysis_root: Path) -> str:
+    """Return an artifact path that remains valid when the analysis root moves."""
+    relative = os.path.relpath(path.resolve(), start=analysis_root.resolve())
+    return Path(relative).as_posix()
 
 
 def nominal_time(value: float, decision_times: list[float]) -> float:
@@ -647,7 +654,11 @@ def main() -> None:
     )
     decision.update(
         {
-            "combined_member_time": str(args.combined_member_time.resolve()),
+            "combined_member_time": portable_artifact_path(
+                args.combined_member_time,
+                analysis_root=output_directory.parent,
+            ),
+            "combined_member_time_path_base": "analysis_root",
             "combined_member_time_sha256": sha256_file(args.combined_member_time.resolve()),
             "matrix_file": str(args.matrix_file.resolve()),
             "matrix_sha256": sha256_file(args.matrix_file.resolve()),
