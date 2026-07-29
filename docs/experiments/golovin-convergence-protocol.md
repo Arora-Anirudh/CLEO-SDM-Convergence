@@ -1,11 +1,12 @@
 # Golovin convergence protocol
 
-- Status: scientific definitions accepted for implementation; production
-  compute not yet authorized
+- Status: all pre-convergence gates passed; actual resolution matrix prepared
+  but not submitted
 - Scope: permanent-repository `collisions0d` Golovin calibration
 - Model: pinned CLEO commit `83318c23223546d10759d202d70f4fa2f7fe4688`
 - Execution mode: one MPI rank and one Kokkos/OpenMP thread per member
-- Compute status: no convergence jobs authorized or submitted by this document
+- Compute status: timestep-screen compute completed; no
+  superdroplet-resolution convergence job submitted
 
 ## 1. Purpose
 
@@ -376,6 +377,13 @@ conservation, range-coverage and 250/500/1000-bin robustness gate against the
 The literature's \(0.1\,\mathrm{s}\) finding for another model is evidence for
 the ladder, not a substitute for this CLEO-specific test.
 
+Completion status on 2026-07-29: the registered 25-member screen completed and
+selected 0.1 s. The 0.1-s reference passed every self-equivalence,
+conservation and range-coverage gate. None of 0.25, 0.5, 1 or 2 s passed every
+registered time and bin-grid equivalence condition with five members. The
+compact checksum-verified decision is under
+`results/golovin_controlled_timestep_screen_v1/`.
+
 ### Stage 2: controlled \(N_\mathrm{SD}\) ladder
 
 With the accepted collision timestep, test:
@@ -563,27 +571,38 @@ The final Golovin report must state separate recommendations for:
 - controlled versus operational initialization;
 - transfer limitations for Long and later model hierarchy stages.
 
-## 10. Remaining gates before production
+## 10. State immediately before the actual resolution experiment
 
 Points 1–4 from the scientific-definition review—controlled initialization,
 diagnostic grid, numerical margins and Golovin tail-timing role—are resolved in
 [ADR 0004](../decisions/0004-golovin-production-definitions.md). The temporary
 Levante account is `bb1153`.
 
-The following still block the controlled resolution-convergence ensemble:
+The same-stack replay, immutable six-resolution bundle ladder, compiled direct
+reuse pilot, diagnostic correction and 16,384-SD collision-timestep screen
+have passed. The actual controlled matrix is now frozen as:
 
-1. execute the implemented same-stack replay gate;
-2. create and verify one immutable native bundle at every registered
-   resolution;
-3. rebuild the exact implementation commit and execute one compiled
-   direct-member reuse/runtime/storage pilot;
-4. execute and decide the implemented 16,384-SD collision-timestep screen,
-   including the 250/500/1000-bin and out-of-range gates;
-5. provide the actual resolution-ensemble compute disclosure;
-6. a decision about whether the present 10-km-box physical parameters remain
-   only a calibration case before the operational-initialization study;
-7. the eventual permanent Levante project account and persistent-storage
-   boundary.
+```text
+6 resolutions x 20 independent collision streams = 120 members
+collision timestep = 0.1 s
+```
+
+Its matrix, analyzer, restart rules, resource estimate and audit commands are
+in the
+[controlled Golovin resolution runbook](golovin-resolution-runbook.md).
+
+Only these actions remain before the model array starts:
+
+1. commit and pass quality checks for the final run package;
+2. synchronize that exact commit to the isolated Levante checkout;
+3. build that exact commit and verify its build manifest;
+4. repeat the model-array compute disclosure immediately before submission.
+
+The physical box remains a Golovin calibration case. Whether its present
+10-km-box parameters are retained in the later operational-initialization and
+Long studies is a separate decision and does not block this controlled
+calibration ladder. `bb1153` remains the temporary account; transition to the
+permanent account and storage boundary remains future project administration.
 
 The controlled initializer implementation and its exact local validation
 boundary are documented in the

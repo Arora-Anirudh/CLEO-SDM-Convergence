@@ -27,17 +27,18 @@ The first application is `collisions0d`:
 - a reproducible Python initializer based on Clara Bayley's
   [`PerformanceTestingCLEO/src/collisions0d`](https://github.com/yoctoyotta1024/PerformanceTestingCLEO/tree/main/src/collisions0d).
 
-The repository does **not** yet contain a convergence result or a recommended
-number of superdroplets. Initial settings are an attributed reference starting
-point and will only be changed through documented experiments.
+The repository does **not** yet contain a superdroplet-resolution convergence
+result or a recommended number of superdroplets. The controlled timestep gate
+is complete and selected 0.1 s; the next model submission is the actual
+six-resolution, 120-member Golovin convergence experiment.
 
 The pre-registered scientific design for the first permanent-repository
 convergence study is the
 [`Golovin convergence protocol`](docs/experiments/golovin-convergence-protocol.md).
 It separates analytical mean bias, stochastic spread, ensemble precision,
 initialization sensitivity, timestep adequacy and cost. Its previously
-provisional numerical tolerances are now documented project acceptance criteria;
-implementation and pilot validation still precede production model compute.
+provisional numerical tolerances are now documented project acceptance
+criteria; the preparatory implementation and pilot gates have passed.
 
 The local Stage-0 measurement, provenance and non-destructive matrix tooling is
 explained from first principles in the
@@ -58,12 +59,15 @@ definitions authorize implementation and pilot validation, not a production
 convergence claim.
 The controlled Golovin initializer now passes local numerical and unit tests.
 Its construction, code path, exact integer allocation, moment gates and
-remaining native-binary/frozen-artifact validation are explained in the
+completed native-binary/frozen-artifact validation are explained in the
 [`controlled-initialization guide`](docs/implementation/controlled-initialization-guide.md).
-The final replay, bundle-ladder, diagnostic-robustness, compiled-member and
+The replay, bundle-ladder, diagnostic-robustness, compiled-member and
 collision-timestep checks required before the actual resolution ensemble are
-implemented and explained in the
+complete and explained in the
 [`Golovin pre-convergence gates guide`](docs/implementation/golovin-preconvergence-gates.md).
+The immutable 120-row matrix, exact compute plan, audit steps and formal
+resolution decision are documented in the
+[`controlled Golovin resolution runbook`](docs/experiments/golovin-resolution-runbook.md).
 
 ## CLEO dependency
 
@@ -165,11 +169,11 @@ compact result is under
 Persistent frozen-bundle creation and independent verification then passed in
 job `26534596`; its compact record is under
 [`results/controlled_initialization_bundle_n4096_v1/`](results/controlled_initialization_bundle_n4096_v1/).
-Controlled matrix rows now require an explicit immutable bundle label. The
-pre-convergence timestep matrix is prepared but retains
-`submission_authorized=false`; same-stack replay, the resolution-bundle
-ladder, exact-commit rebuild, compiled direct-reuse member and timestep screen
-must all pass before the actual resolution matrix is submitted.
+Controlled matrix rows require an explicit immutable bundle label. All
+pre-convergence gates passed. The reviewed actual matrix is under
+[`experiments/golovin_controlled_resolution_convergence_v1/`](experiments/golovin_controlled_resolution_convergence_v1/)
+and deliberately retains `submission_authorized=false`: preparing metadata is
+not a Slurm submission or a convergence result.
 
 ## Quality checks
 
@@ -187,7 +191,7 @@ repository is installed on Levante.
 Project-owned Levante scripts are documented in
 [`scripts/levante/README.md`](scripts/levante/README.md). They retain the
 verified compiler/MPI/YAC recipe from CLEO while removing user-specific
-accounts, paths and GPU assumptions. The first staged workflow is:
+accounts, paths and GPU assumptions. The basic single-member workflow is:
 
 1. configure and build the pinned CLEO dependency and both collision-box
    executables;
@@ -218,9 +222,12 @@ Golovin replay audit is under
 of repository creation, the first model/diagnostic run and the seed-control work
 is maintained in the
 [`2026-07-28 work log`](docs/worklogs/2026-07-28.md).
-The controlled-initializer implementation, numerical issues, tests and
-remaining native-binary gate are recorded in the
+The controlled-initializer implementation, numerical issues, tests and native
+validation are recorded in the
 [`2026-07-29 work log`](docs/worklogs/2026-07-29.md).
+The checksum-verified compact timestep-screen record, including the 0.1-s
+selection and all equivalence tables, is under
+[`results/golovin_controlled_timestep_screen_v1/`](results/golovin_controlled_timestep_screen_v1/).
 
 ## Attribution
 

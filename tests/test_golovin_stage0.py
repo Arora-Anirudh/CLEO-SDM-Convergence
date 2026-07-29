@@ -82,6 +82,43 @@ def test_common_stream_bootstrap_is_zero_for_identical_stacks() -> None:
     assert ci_high == pytest.approx(0.0)
 
 
+def test_ensemble_mean_bootstrap_is_zero_for_exact_ensemble_mean() -> None:
+    stage0 = load_module(STAGE0_SCRIPT, "golovin_stage0_ensemble_bootstrap")
+    edges = np.asarray([1.0, np.e, np.e**2])
+    analytical = np.asarray([1.0, 1.0])
+    members = np.asarray([[0.0, 2.0], [2.0, 0.0]])
+
+    observed, _, _ = stage0.bootstrap_ensemble_mean_l1(
+        members,
+        analytical,
+        edges,
+        bootstrap_resamples=200,
+        bootstrap_seed=11,
+    )
+
+    assert observed == pytest.approx(0.0)
+
+
+def test_independent_bootstrap_difference_is_zero_for_constant_stacks() -> None:
+    stage0 = load_module(STAGE0_SCRIPT, "golovin_stage0_independent_bootstrap")
+    edges = np.asarray([1.0, np.e, np.e**2])
+    analytical = np.asarray([1.0, 1.0])
+    members = np.asarray([[0.9, 1.1], [0.9, 1.1], [0.9, 1.1]])
+
+    observed, ci_low, ci_high = stage0.independent_bootstrap_l1_difference(
+        members,
+        members.copy(),
+        analytical,
+        edges,
+        bootstrap_resamples=100,
+        bootstrap_seed=17,
+    )
+
+    assert observed == pytest.approx(0.0)
+    assert ci_low == pytest.approx(0.0)
+    assert ci_high == pytest.approx(0.0)
+
+
 def test_fixed_bin_distribution_accounts_for_in_range_and_overflow_mass() -> None:
     stage0 = load_module(STAGE0_SCRIPT, "golovin_stage0_histogram")
     edges = np.asarray([1.0, 10.0, 100.0])

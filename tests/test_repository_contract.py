@@ -68,6 +68,7 @@ def test_levante_scripts_are_project_owned_and_account_neutral() -> None:
         "run_golovin_matrix.sbatch",
         "run_golovin_timestep_screen.sbatch",
         "analyze_golovin_timestep_screen.sbatch",
+        "analyze_golovin_resolution_convergence.sbatch",
         "validate_controlled_initialization.sbatch",
         "validate_collision_seed_replay.sbatch",
     }
@@ -92,6 +93,7 @@ def test_slurm_entrypoints_resolve_common_from_explicit_project_root() -> None:
         "validate_controlled_bundle_replay.sbatch",
         "run_golovin_timestep_screen.sbatch",
         "analyze_golovin_timestep_screen.sbatch",
+        "analyze_golovin_resolution_convergence.sbatch",
     ):
         content = (levante_directory / script_name).read_text(encoding="utf-8")
         expected = 'SCRIPT_DIR="${CLEO_SDM_PROJECT_ROOT}/scripts/levante"'
@@ -263,3 +265,39 @@ def test_timestep_screen_uses_ensemble_distribution_and_current_summary_name() -
         config["screening"]["bin_robustness_policy"]
         == "require_timestep_equivalence_at_all_registered_bin_counts"
     )
+
+
+def test_actual_golovin_matrix_is_reviewed_but_not_compute_authorization() -> None:
+    config_filename = ROOT / "config" / "golovin_controlled_resolution_convergence.yaml"
+    experiment_root = ROOT / "experiments" / "golovin_controlled_resolution_convergence_v1"
+    config = YAML(typ="safe").load(config_filename.read_text(encoding="utf-8"))
+
+    assert config["experiment"]["status"] == "production_ready_not_submitted"
+    assert config["matrix"]["max_superdroplets"] == [512, 1024, 2048, 4096, 8192, 16384]
+    assert config["matrix"]["collision_timesteps_s"] == [0.1]
+    assert config["matrix"]["members_per_cell"] == 20
+    assert config["authorization"]["submission_authorized"] is False
+
+    matrix_rows = (experiment_root / "cases.tsv").read_text(encoding="utf-8").splitlines()
+    manifest = YAML(typ="safe").load(
+        (experiment_root / "matrix_manifest.json").read_text(encoding="utf-8")
+    )
+    assert len(matrix_rows) == 121
+    assert manifest["case_count"] == 120
+    assert manifest["array_index_minimum"] == 0
+    assert manifest["array_index_maximum"] == 119
+    assert manifest["submission_authorized"] is False
+
+    analyzer = ROOT / "scripts" / "analyze_golovin_resolution_convergence.py"
+    auditor = ROOT / "scripts" / "audit_golovin_matrix.py"
+    wrapper = ROOT / "scripts" / "levante" / "analyze_golovin_resolution_convergence.sbatch"
+    assert analyzer.is_file()
+    assert auditor.is_file()
+    assert wrapper.is_file()
+    analyzer_content = analyzer.read_text(encoding="utf-8")
+    wrapper_content = wrapper.read_text(encoding="utf-8")
+    assert "bootstrap_ensemble_mean_l1" in analyzer_content
+    assert "independent_bootstrap_l1_difference" in analyzer_content
+    assert "analysis_v1" in wrapper_content
+    assert "--times 0 600 1200 1800 2400 3000 3600" in wrapper_content
+    assert "audit_golovin_matrix.py" in wrapper_content

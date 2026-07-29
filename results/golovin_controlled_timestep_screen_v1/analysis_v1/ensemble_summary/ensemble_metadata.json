@@ -1,0 +1,223 @@
+{
+  "status": "completed",
+  "run_root": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1",
+  "member_count": 25,
+  "member_time_row_count": 325,
+  "confidence_level": 0.95,
+  "bootstrap_resamples": 10000,
+  "bootstrap_seed": 20260728,
+  "matrix_file": "/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/experiments/golovin_controlled_timestep_screen_v1/cases.tsv",
+  "matrix_sha256": "9f3a3094bfbde12ec0a852244c431186abd64905258a6b3521e1e2f87a576666",
+  "onset_status_counts": {
+    "crossed_between_outputs": 25
+  },
+  "sources": [
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "86539692f17b436e90251409d162abba2fd9dc0516fdcbf3cff2b86b9363426a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "e5df432b1fcffd162c3c932ff5f4cb82de16a5f55f99bef4881ef6998698a5d4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "f2738bbff305ac3f7e8a5ea66f20a712238a5d712f23ded72e45f545741c9849"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "c8041e35a2b6fbbe38d9e9e68ab2e19342b5bb5a21c7cfcfc3239a384089a938"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "6744510366ec82d393014f2e1440d4ad8d2303cbf3e6f9aa8903e5098c978612"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p25_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b34bbd01ec7236b681eaec724ef0866f6ab529a959a387199f9e4c72651948df"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p25_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "e3e7d2450feddcc9247bd627a94908b52780832dcbcb1acc6a14d6986d36f972"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p25_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "05c0007649cfcb8ef5e573e163893ac90a425eddd9f9708413e601bd5de54fb5"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p25_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "0fca5eb9ae5fb3d1a96a43ffb7f4db91ed14c81d8c1616f650010b399d6a9d11"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p25_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "a2638c5373d0d0793023ce50c29423ec5ce933311a98647ef5001a7fc4dacb29"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p5_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "8095cc46f19be5887a6df721517f641d5be9929c47fe51949455ac6d57a4c7df"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p5_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "2cbef2dfc60245c40e96d59246d5a099e292291e74a93081fabd0dd7f406d712"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p5_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "af1958a480b588d9be9e1bbd702481a04124fbd3e9ae5133fab7be9ea810929b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p5_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "984a812ba631bac32f73d4f9432a78e30e52575d5b0859532622a006728f06b5"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p5_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b7316bbc3fd77ebb0ac3445207e754bba284c6885b5549031f92ee278fb9f0aa"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "bde2d2dd6f32d5554adee670acbc67cdf211f9680c57e3209df020b0c607943a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "cb4e744202053e745f305d02685aa4fd68f5cd5979eb7f88bc22d3d1e67b7e49"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "5ab3d07b97836a10cfcd97277bd003acc924c50aba6eaef821a420c0b443c09e"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "ef46b56193e3df5c74d17dfab15561eba5a498ed7e8a424e6069dc9c2b707ed0"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b55d6f504759a7eb2d76d419710055bd5ff6f62df1da83d5e6f6692fef7f3d09"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt2_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "7eaa471c3afad8d5fa31a767adc36566eb104be9f33016e32fd759c0c81994dc"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt2_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "ff177653c816c5c1e0bbabf184cd9d70638d1a930768698bd33301d9004db408"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt2_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "2fccd8183c63a4f73314aad1fff6b87f3f4f52d2ef865dcdce4ead0c8ba30d61"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt2_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "475accf3f13329a6faf05b2970ae964b4cf967850ecb44e3bbe3e5a2ce0526fe"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt2_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "a8a65118f32b3015cd13d7f554c5e6b26cc6972c222ecf0b73cbff965f2ac995"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "37b15810a8e498ba6ab827568b5b37d0bbce8aa61324c1a77c1183453cb63bc8"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "af0cb53fe2188ceb0b930336f954e53408e1dba0bb9789db64918bea5bbfb72d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "22b5dd13f1b0147f6183f788f7cb7d0890255756e01f3d596ad1f3203ebf229e"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "188517aa3b75a96f480e5426767b706f502c7fdf3f6d0d70e1930a7193db0aef"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "ad243290d8c2c263aa419730cefdb3b4fb2fa31bf798a2daf2e68e85d018b643"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p25_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "b818f414b6c77694f232e2be8ff20dfb45b14a949aae83bb80e3533fb9533881"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p25_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "b98fb0dbc4b508887afc712099dc7c21f8354f0f2eb88dd42bbaba40933a7d4f"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p25_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "ab348279e8080ec649461f83753baa57d1f92eac9a105a2977de3de0c5082d0f"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p25_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "c8071d3293ab4ead7528d56af86186e6de8fc43e85d671ba7cf17e0871799db7"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p25_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "bfea89ee13cc3a3af3fac95fadc935e9b84407785be8bdecf5711fdfd5d11515"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p5_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "9ae13d7d26f6a5d24580e695b25b6dcf69f905b221c57bcd02d17616c7e4e9d0"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p5_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "c89d8df58d3aa3288c85030c44b1ec3831c31d20d37d8785e8561d96408720a7"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p5_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "898d186acc1e2d0b177e10c772b84a397c06959c9d3c995317a67a70bbc3f068"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p5_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "a02be6af10612972f31d0298eccc12ba30b3a182d484e2adbf3f7533b6821eb2"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt0p5_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "7917cb1e15f06ddc7189142d2b9d10f26eb786fb59fc9259126e4bc96f9db251"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "9307f91c55c032ba76c3a9f955fedf1d2a69df5d90d2ddf85b21f50e375b2827"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "02628168ff6a87901bc64c2a776e0748ed110b6c59378a3d14078de0b10abc7a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "e147a3ed229ab8083a2f3ece0598f35e6490daad79fd137bf5f605925a0369f4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "55d4a591aa189522e74990cd6f906bf769299cd2209c2e1de712f3c6c0aab6dd"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "5d4c5e0a108e2f45b09fa1bda031be522319c8f283bd7c6ae0decf63794f72ac"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt2_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "daddf1d8ea40ae188d8dd53ea2a7b2c2f399187f4e7ba36fef68fa53126ea44b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt2_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "4f28694cd118dd2f3deb7141c0be8aa363a4e44da37ff82bd6ad30e0011c9af3"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt2_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "4786cbee458cf22813de5790cb3b36f842c86047e627bb81d4644b5961852e9d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt2_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "0f1be4d13db6283741a56db49c7629e97d784faf6800663b60ee75c73c68d6e0"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1/golovin_controlled_timestep_screen_v1_N016384_dt2_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "2a54399c5f4ffef1d1945c519cc21e56a02dc1c582c0e6cd5a3bf811dbae772d"
+    }
+  ],
+  "notes": [
+    "Student intervals describe the ensemble mean under the usual independent-member assumption.",
+    "Bootstrap intervals are percentile intervals from deterministic resampling.",
+    "Tail-growth timing remains interval-censored by the configured output interval.",
+    "The tail-growth time is not rain onset or surface precipitation.",
+    "This summary does not by itself establish convergence or equivalence."
+  ]
+}

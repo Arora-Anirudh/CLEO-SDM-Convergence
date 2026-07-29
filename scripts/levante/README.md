@@ -38,6 +38,10 @@ verified absolute paths.
 12. `run_golovin_timestep_screen.sbatch` and
     `analyze_golovin_timestep_screen.sbatch` execute and decide the controlled
     16,384-SD, 25-member collision-timestep gate.
+13. `run_golovin_matrix.sbatch` executes one row of the reviewed actual
+    resolution matrix as a bounded Slurm-array task.
+14. `analyze_golovin_resolution_convergence.sbatch` creates/validates all 120
+    member diagnostics and applies the formal resolution decision.
 
 The permanent source and build trees are in HOME. Run-specific configuration,
 input binaries and Zarr output are stored under SCRATCH.
@@ -294,4 +298,25 @@ histories. The exact decision rules and output tables are documented in the
 The runner requests one node, one task, one CPU, 940 MiB and two hours on
 `shared`; the longer walltime is a conservative bound for the 16,384-SD
 0.1-s members. The analysis requests the same CPU/memory shape for 30 minutes.
-These requests must still be disclosed immediately before submission.
+The screen completed and selected 0.1 s. Its compact result is under
+`results/golovin_controlled_timestep_screen_v1/`.
+
+## Actual controlled resolution experiment
+
+The next model submission is:
+
+```text
+6 resolutions x 20 independent collision streams = 120 members
+```
+
+It uses the six frozen controlled bundles and the selected 0.1-s collision
+timestep. The planned model submission is an `0-119%12` bounded array. Each
+task requests one node, one task, one CPU, 940 MiB and 10 minutes on `shared`;
+it runs one rank/thread and no GPU. The analysis request is one CPU, 2 GiB and
+30 minutes and launches no CLEO model.
+
+The exact preflight, submission, resume, accounting and analysis commands are
+in the
+[`controlled Golovin resolution runbook`](../../docs/experiments/golovin-resolution-runbook.md).
+The resource disclosure there must be repeated immediately before either
+Slurm submission.

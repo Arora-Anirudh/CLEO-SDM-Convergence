@@ -80,8 +80,14 @@ def deterministic_seed(
 def validate_config(config: dict[str, Any]) -> None:
     experiment = config["experiment"]
     matrix = config["matrix"]
-    if experiment["status"] not in {"development_only", "preproduction_gate"}:
-        raise ValueError("matrix preparation accepts only development_only or preproduction_gate")
+    if experiment["status"] not in {
+        "development_only",
+        "preproduction_gate",
+        "production_ready_not_submitted",
+    }:
+        raise ValueError(
+            "matrix preparation accepts development, gate or reviewed-not-submitted status"
+        )
     if experiment["kernel"] != "golovin":
         raise ValueError("the Golovin matrix tool requires kernel=golovin")
     initialization_family = str(experiment["initialization_family"])

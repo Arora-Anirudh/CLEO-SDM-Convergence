@@ -1,10 +1,10 @@
 # Golovin pre-convergence gates: implementation and execution guide
 
-- Status: implemented locally; Levante execution pending
+- Status: all gates completed on Levante
 - Scope: the last controlled checks before the actual multi-resolution
   Golovin convergence ensemble
 - Production conclusion: none
-- Actual convergence compute: not submitted
+- Actual resolution-convergence compute: prepared but not submitted
 
 ## 1. Why these gates exist
 
@@ -287,7 +287,24 @@ Raw Zarr remains on SCRATCH. Compact matrices, inventories, summaries,
 figures, logs and checksums go to persistent HOME records and then into a
 versioned repository result directory.
 
-## 8. What becomes the next step after these gates pass
+## 8. Gate results and the immediate next step
+
+The gates passed as follows:
+
+- same-stack replay job `26535169`: exact native-byte match;
+- bundle-ladder job `26535202`: all six read-only bundles validated;
+- exact corrected build job `26535856`: both executables built;
+- controlled pilot job `26535414` and corrected analysis job `26535910`:
+  direct frozen-bundle use and registered diagnostics passed;
+- timestep model job `26535953`: all 25 members completed;
+- successful timestep aggregation job `26536377`: selected 0.1 s.
+
+The first analysis attempt correctly refused to publish a selection when an
+absolute cross-bin L1 condition rejected even the reference against itself.
+ADR 0005 records the scientific correction: equivalence is now required
+independently at all three registered bin grids, while absolute cross-grid L1
+differences are descriptive. No model output was changed or rerun for that
+correction.
 
 The next step is the actual controlled Golovin resolution experiment:
 
@@ -308,16 +325,16 @@ numeric seeds do not create paired droplet histories. The controlled design
 means that each run is exactly replayable and changes are attributable to the
 registered factors.
 
-The 120-member matrix will be prepared with
-`submission_authorized=false`. A separate compute disclosure and explicit
-researcher approval remain required before it is submitted.
+The 120-member matrix is prepared with `submission_authorized=false`. This
+means metadata preparation is not confused with a scheduler action. The exact
+matrix and execution/analysis instructions are in the
+[controlled Golovin resolution runbook](../experiments/golovin-resolution-runbook.md).
+A separate compute disclosure remains required immediately before submission.
 
-## 9. Local validation boundary
+## 9. Validation boundary
 
-The new Bash files pass `bash -n`, the Python files compile, `git diff --check`
-passes and the locally runnable targeted suite currently reports 38 passing
-tests. Five diagnostic-module tests cannot run in the macOS base Python
-because that interpreter lacks `awkward`; this is an environment limitation,
-not a test failure in the project environment. The complete locked
-Python-environment suite and Ruff checks remain required in GitHub Actions and
-on the exact Levante checkout before model execution.
+The corrected diagnostic and pre-convergence package passed the complete
+locked test, Ruff, format and Bash-parse checks. The resolution package adds
+synthetic tests for a successful \(N,2N,4N\) confirmation and for refusal when
+the smallest level fails. GitHub Actions and the exact Levante checkout remain
+the final software gates before the model array.
