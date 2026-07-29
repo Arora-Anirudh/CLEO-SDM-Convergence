@@ -39,7 +39,7 @@ diagnostics:
   bootstrap_seed: 20260728
 
 controlled_initialization:
-  status: specified_not_implemented
+  status: implemented_local_unit_validated_native_binary_pending
   method: deterministic_log_volume_bin_quadrature
   radius_support_um: [1.0, 75.0]
   integer_multiplicity_allocation: largest_remainder
@@ -74,6 +74,8 @@ levante:
 provisional_decisions:
   approved_for_production: false
   reason: >-
-    Scientific definitions are recorded in ADR 0004, but the controlled
-    initializer, robustness diagnostics and compute/storage pilot still require
-    implementation and validation before a production ensemble is authorized.
+    Scientific definitions are recorded in ADR 0004 and the controlled
+    initializer has passed local numerical and unit tests. Native CLEO binary
+    validation, robustness diagnostics, frozen-binary orchestration and a
+    compute/storage pilot still remain before a production ensemble is
+    authorized.

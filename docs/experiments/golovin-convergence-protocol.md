@@ -559,7 +559,8 @@ Levante account is `bb1153`.
 
 The following still block a production convergence ensemble:
 
-1. implementation and unit tests for the controlled initializer;
+1. native CLEO binary/readback validation and frozen-binary reuse for the
+   locally unit-tested controlled initializer;
 2. implementation of the out-of-range and 250/500/1000-bin robustness gates;
 3. a small runtime/storage pilot using the new controlled path;
 4. the pre-submission compute disclosure;
@@ -567,6 +568,10 @@ The following still block a production convergence ensemble:
    only a calibration case before the operational-initialization study;
 6. the eventual permanent Levante project account and persistent-storage
    boundary.
+
+The controlled initializer implementation and its exact local validation
+boundary are documented in the
+[controlled-initialization guide](../implementation/controlled-initialization-guide.md).
 
 Resolving definitions does not establish convergence and does not authorize a
 production submission.

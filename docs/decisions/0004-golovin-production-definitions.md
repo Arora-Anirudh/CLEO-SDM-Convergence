@@ -348,13 +348,24 @@ distribution and is strongly cadence-dependent.
 
 ## 7. Consequences and next gate
 
+Implementation update, 2026-07-29:
+
+- the project-owned scientific constructor and CLEO attribute-generator
+  adapter are implemented;
+- local numerical tests pass through \(N_\mathrm{SD}=32768\);
+- ten unit tests cover exact allocation, moment and bin gates, determinism,
+  CLEO-compatible arrays, auditing, family-option refusal and deliberate
+  failure;
+- the native CLEO binary/readback, frozen-bundle reuse and compiled-model
+  pilot remain pending;
+- production compute remains unauthorized.
+
 Before any production compute:
 
-1. implement the controlled initializer;
-2. unit-test exact \(M_0/M_3\), \(M_6\), bin containment and deterministic
-   integer allocation;
+1. validate one native controlled binary and readback on Levante;
+2. implement and verify one frozen binary bundle per resolution;
 3. add numerical under/overflow and 250/500/1000-bin sensitivity summaries;
-4. test the implementation on a tiny local or single-member Levante pilot;
+4. test the compiled model on a tiny single-member Levante pilot;
 5. report the complete proposed `bb1153` Slurm request before submission.
 
 Passing these gates validates the experiment machinery. It does not itself

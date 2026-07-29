@@ -87,7 +87,7 @@ def validate_config(config: dict[str, Any]) -> None:
         raise ValueError("the Golovin matrix tool requires kernel=golovin")
     if experiment["initialization_family"] != "operational_stochastic":
         raise ValueError(
-            "controlled/frozen initialization is not implemented yet; "
+            "controlled/frozen matrix execution is not enabled yet; "
             "use operational_stochastic only for the development matrix"
         )
     if not experiment["name"] or not experiment["seed_namespace"]:

@@ -56,6 +56,10 @@ tail timing are recorded in
 [`ADR 0004`](docs/decisions/0004-golovin-production-definitions.md). These
 definitions authorize implementation and pilot validation, not a production
 convergence claim.
+The controlled Golovin initializer now passes local numerical and unit tests.
+Its construction, code path, exact integer allocation, moment gates and
+remaining native-binary/frozen-artifact validation are explained in the
+[`controlled-initialization guide`](docs/implementation/controlled-initialization-guide.md).
 
 ## CLEO dependency
 
@@ -138,6 +142,23 @@ The reference initializer follows `PerformanceTestingCLEO/collisions0d`:
 The exact values are visible in
 [`config/collisions0d_reference.yaml`](config/collisions0d_reference.yaml).
 
+For a deterministic controlled population, use a fresh materialized runtime
+configuration and add:
+
+```bash
+uv run python scripts/prepare_collisions0d_inputs.py \
+  --cleo-source build/_deps/cleo-src \
+  --config /path/to/fresh/runtime-config.yaml \
+  --initialization-family controlled \
+  --controlled-config config/golovin_stage0_development.yaml \
+  --audit-file /path/to/fresh/controlled-initialization-audit.json
+```
+
+This path does not accept an initialization seed. It is locally tested but
+still awaits a native CLEO binary/readback pilot on Levante. The production
+matrix runner deliberately remains on `operational_stochastic` until one
+frozen-binary bundle per resolution is implemented and validated.
+
 ## Quality checks
 
 ```bash
@@ -185,6 +206,9 @@ Golovin replay audit is under
 of repository creation, the first model/diagnostic run and the seed-control work
 is maintained in the
 [`2026-07-28 work log`](docs/worklogs/2026-07-28.md).
+The controlled-initializer implementation, numerical issues, tests and
+remaining native-binary gate are recorded in the
+[`2026-07-29 work log`](docs/worklogs/2026-07-29.md).
 
 ## Attribution
 

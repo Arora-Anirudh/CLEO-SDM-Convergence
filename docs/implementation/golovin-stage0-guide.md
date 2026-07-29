@@ -650,14 +650,16 @@ interpretation are in the
 
 Still not validated or concluded:
 
-- the controlled/frozen mass-matched initializer is not implemented;
-- the exact production bin range, larger threshold and observation interval
-  remain provisional;
+- the controlled initializer is locally implemented and unit-tested, but its
+  native CLEO binary/readback and frozen-bundle reuse are not yet validated;
+- the registered distribution-grid robustness calculation is not yet
+  implemented;
 - no value of \(N_\mathrm{SD}\) has been declared converged;
 - no production matrix is authorized.
 
-The software/provenance gate is complete. The next step is scientific review
-of the provisional definitions before production compute.
+The detailed controlled-initialization construction and current validation
+boundary are in the
+[controlled-initialization guide](controlled-initialization-guide.md).
 
 ## 20. How to explain this to Clara
 
@@ -672,39 +674,36 @@ A concise explanation is:
 > non-overwriting Slurm-array semantics, plus Student and bootstrap ensemble
 > summaries. The local tests and one-member Levante software/provenance gate
 > pass, including one-thread A/A/B replay and incomplete-matrix refusal. This
-> is not a convergence result. We still need to agree on the controlled
-> initializer, production radius/tail thresholds and numerical margins. The
-> development tail timing is now explicitly 10% mass at 1000 μm and is not
-> called rain onset.
+> is not a convergence result. The controlled initializer and convergence
+> definitions are now registered, and its local numerical/unit gates pass.
+> Native binary/readback, frozen-artifact reuse, grid robustness and a small
+> compute pilot remain. The development tail timing is explicitly 10% mass at
+> 1000 μm and is not called rain onset.
 
 Useful review questions are:
 
-1. Should the formal distribution interval remain 1-5000 μm, or should it be
-   wider for the intended 3600 s Golovin calibration?
-2. Is 1000 μm the desired larger-radius tail proxy, or should the metric be
-   tied to a different physical size?
-3. Is \(t_{1000\,\mu\mathrm{m},0.10}\) useful as a secondary Golovin tail
-   metric, and what observation interval should be stored?
-4. For the controlled initialization, which moments must match exactly or to
-   integer-multiplicity tolerance?
-5. Are the provisional 5% core and 10% onset/tail equivalence margins
-   acceptable?
-6. Which new Levante project account and permanent record location should be
+1. Does the finite-support conditioned exponential match the intended
+   interpretation of the Clara-derived Golovin calibration?
+2. Is one deterministic log-volume-bin representative with exact \(M_0/M_3\)
+   and checked-but-unforced \(M_6\) the desired controlled family?
+3. Should the present 10-km box and number concentration remain only a Golovin
+   calibration case before defining the physical Long case?
+4. Which new Levante project account and permanent record location should be
    used?
 
 ## 21. Immediate next gate
 
-The implementation, build, one-member analysis, replay and audit gates are
-complete. Before any production matrix:
+The implementation, build, one-member analysis, replay, scientific-definition
+and local controlled-initializer gates are complete. Before any production
+matrix:
 
-1. decide which moments the controlled/mass-matched initializer must hold;
-2. approve the production radius interval and bin count;
-3. confirm or replace the provisional \(t_{1000\,\mu\mathrm{m},0.10}\)
-   tail-growth definition;
-4. approve the larger-drop threshold and numerical margins;
-5. record the new permanent Levante project account;
-6. regenerate a reviewed production matrix;
-7. disclose compute and storage from the measured 67 MiB per Zarr store;
+1. validate native CLEO controlled-binary write/read;
+2. implement and verify frozen-binary reuse;
+3. implement the registered diagnostic-grid robustness checks;
+4. run one disclosed, bounded compute/storage pilot;
+5. record the eventual permanent Levante project account;
+6. generate and review a production matrix;
+7. disclose compute and storage from measured pilot use;
 8. begin with the bounded Golovin timestep screen, not the Long ensemble.
 
 Production timestep and resolution stages remain blocked until their

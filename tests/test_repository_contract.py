@@ -131,7 +131,7 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
     ]
 
     initialization = config["controlled_initialization"]
-    assert initialization["status"] == "specified_not_implemented"
+    assert initialization["status"] == "implemented_local_unit_validated_native_binary_pending"
     assert initialization["maximum_relative_moment0_error"] == 1.0e-10
     assert initialization["maximum_relative_moment3_error"] == 1.0e-10
     assert initialization["maximum_relative_moment6_error"] == 0.01
@@ -145,6 +145,13 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
 
     decision = ROOT / "docs" / "decisions" / "0004-golovin-production-definitions.md"
     assert decision.is_file()
+
+    initializer = ROOT / "scripts" / "controlled_initialization.py"
+    initializer_tests = ROOT / "tests" / "test_controlled_initialization.py"
+    initializer_guide = ROOT / "docs" / "implementation" / "controlled-initialization-guide.md"
+    assert initializer.is_file()
+    assert initializer_tests.is_file()
+    assert initializer_guide.is_file()
 
 
 def test_collision_seed_is_required_and_recorded() -> None:
