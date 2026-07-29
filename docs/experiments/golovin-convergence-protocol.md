@@ -591,12 +591,12 @@ Its matrix, analyzer, restart rules, resource estimate and audit commands are
 in the
 [controlled Golovin resolution runbook](golovin-resolution-runbook.md).
 
-Only these actions remain before the model array starts:
+Only these actions remain before the model job starts:
 
 1. commit and pass quality checks for the final run package;
 2. synchronize that exact commit to the isolated Levante checkout;
 3. build that exact commit and verify its build manifest;
-4. repeat the model-array compute disclosure immediately before submission.
+4. repeat the single-job compute disclosure immediately before submission.
 
 The physical box remains a Golovin calibration case. Whether its present
 10-km-box parameters are retained in the later operational-initialization and

@@ -30,16 +30,16 @@ verified absolute paths.
    the canonical 4096-SD bundle.
 9. `run_collisions0d.sbatch` can point a controlled Golovin member directly
    at that bundle and verifies it before and after model execution.
-10. `run_golovin_matrix.sbatch` maps one reviewed TSV row to one unique Slurm
-   array task and skips only explicitly resumed completed cases.
+10. `run_golovin_matrix.sbatch` maps one reviewed TSV row to one unique
+    member and skips only explicitly resumed, matrix-matching completed cases.
 11. `analyze_collisions0d.sbatch` reads one completed run through CLEO's own
    `cleopy`/`plotcleo` tools and writes non-overwriting fixed-bin, moment,
    onset, tail and conservation diagnostics.
 12. `run_golovin_timestep_screen.sbatch` and
     `analyze_golovin_timestep_screen.sbatch` execute and decide the controlled
     16,384-SD, 25-member collision-timestep gate.
-13. `run_golovin_matrix.sbatch` executes one row of the reviewed actual
-    resolution matrix as a bounded Slurm-array task.
+13. `run_golovin_resolution_convergence.sbatch` executes all 120 rows of the
+    reviewed actual resolution matrix sequentially in one restartable job.
 14. `analyze_golovin_resolution_convergence.sbatch` creates/validates all 120
     member diagnostics and applies the formal resolution decision.
 
@@ -310,10 +310,12 @@ The next model submission is:
 ```
 
 It uses the six frozen controlled bundles and the selected 0.1-s collision
-timestep. The planned model submission is an `0-119%12` bounded array. Each
-task requests one node, one task, one CPU, 940 MiB and 10 minutes on `shared`;
-it runs one rank/thread and no GPU. The analysis request is one CPU, 2 GiB and
-30 minutes and launches no CLEO model.
+timestep. The planned model submission is one restartable job that loops over
+all 120 matrix rows sequentially. It requests one node, one task, one CPU,
+940 MiB and one hour on `shared`; every CLEO member uses one rank/thread and no
+GPU. Separate seeds, configurations, outputs and manifests preserve scientific
+member identity independently of the scheduler layout. The analysis request is
+one CPU, 2 GiB and 30 minutes and launches no CLEO model.
 
 The exact preflight, submission, resume, accounting and analysis commands are
 in the

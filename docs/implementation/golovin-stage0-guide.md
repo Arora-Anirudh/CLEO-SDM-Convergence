@@ -431,7 +431,7 @@ reads the development YAML and creates:
 
 - `cases.tsv`: one immutable row per member;
 - `source_config.yaml`: byte copy of the input settings;
-- `matrix_manifest.json`: case count, SHA-256 checksums and array bounds.
+- `matrix_manifest.json`: case count, SHA-256 checksums and case-index bounds.
 
 The current tiny development matrix has:
 
@@ -457,12 +457,14 @@ directory already exists.
 ## 13. Non-destructive Levante execution
 
 [`scripts/levante/run_golovin_matrix.sbatch`](../../scripts/levante/run_golovin_matrix.sbatch)
-maps one Slurm array index to exactly one `cases.tsv` row.
+maps one explicit `MATRIX_CASE_INDEX` to exactly one `cases.tsv` row.
+`SLURM_ARRAY_TASK_ID` remains only as a compatibility fallback for the earlier
+development runner.
 
 Safety rules:
 
 1. The header must exactly match the registered schema.
-2. The row's `case_index` must equal `SLURM_ARRAY_TASK_ID`.
+2. The row's `case_index` must equal the selected matrix case index.
 3. Only a Golovin row is accepted.
 4. A missing run path is owned by that row.
 5. An existing path fails by default.
@@ -531,7 +533,8 @@ scientifically correct.
 | `scripts/prepare_golovin_matrix.py` | create immutable cases and deterministic seeds; no compute |
 | `scripts/materialize_collisions0d_config.py` | make one complete absolute-path member config with explicit overrides |
 | `scripts/levante/run_collisions0d.sbatch` | execute one member and record provenance |
-| `scripts/levante/run_golovin_matrix.sbatch` | safely map one array index to one member |
+| `scripts/levante/run_golovin_matrix.sbatch` | safely map one explicit matrix index to one member |
+| `scripts/levante/run_golovin_resolution_convergence.sbatch` | run the actual 120-member matrix sequentially in one restartable allocation |
 | `scripts/levante/analyze_collisions0d.sbatch` | analyze one member into a fresh staging directory, checksum, then publish |
 | `tests/test_golovin_stage0.py` | formula/statistics tests |
 | `tests/test_golovin_matrix.py` | deterministic matrix and refusal/resume tests |
@@ -675,7 +678,7 @@ A concise explanation is:
 > the same pinned Golovin analytical solution. Each member also reports exact
 > Golovin radius-moment errors, conservation, interval-censored \(t_{R,f}\), tail
 > mass fractions and q99. I added immutable matrix/seed generation and
-> non-overwriting Slurm-array semantics, plus Student and bootstrap ensemble
+> non-overwriting matrix-member semantics, plus Student and bootstrap ensemble
 > summaries. The local tests and one-member Levante software/provenance gate
 > pass, including one-thread A/A/B replay and incomplete-matrix refusal. This
 > is not a convergence result. The controlled initializer and convergence

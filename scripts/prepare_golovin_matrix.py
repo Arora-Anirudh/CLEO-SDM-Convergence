@@ -248,13 +248,13 @@ def write_matrix(
         "matrix_sha256": sha256_file(matrix_filename),
         "source_config": config_copy.name,
         "source_config_sha256": sha256_file(config_copy),
-        "array_index_minimum": 0,
-        "array_index_maximum": len(cases) - 1,
+        "case_index_minimum": 0,
+        "case_index_maximum": len(cases) - 1,
         "submission_authorized": False,
         "notes": [
             "Preparing this matrix does not submit compute.",
             "This manifest does not authorize production convergence compute.",
-            "Each array index owns one unique run label and output path.",
+            "Each case index owns one unique run label and output path.",
         ],
     }
     (output_directory / "matrix_manifest.json").write_text(

@@ -12,7 +12,8 @@
 # Execute exactly one row of a prepared Stage-0 Golovin matrix.
 #
 # MATRIX_FILE must name the immutable tab-separated cases.tsv file.
-# Submit the array bounds explicitly after inspecting matrix_manifest.json.
+# MATRIX_CASE_INDEX is the preferred row selector. SLURM_ARRAY_TASK_ID remains
+# a compatibility fallback for older bounded-array development runs.
 # Existing completed cases are skipped only with RESUME_COMPLETED=1. Existing
 # incomplete paths always fail because CLEO has no safe partial-output resume.
 #
@@ -34,8 +35,15 @@ fi
 source "${SCRIPT_DIR}/common.sh"
 
 : "${MATRIX_FILE:?Set MATRIX_FILE to an immutable cases.tsv file.}"
-: "${SLURM_ARRAY_TASK_ID:?Submit this script as a bounded Slurm array.}"
 RESUME_COMPLETED="${RESUME_COMPLETED:-0}"
+if [[ -n "${MATRIX_CASE_INDEX:-}" ]]; then
+  selected_case_index="${MATRIX_CASE_INDEX}"
+elif [[ -n "${SLURM_ARRAY_TASK_ID:-}" ]]; then
+  selected_case_index="${SLURM_ARRAY_TASK_ID}"
+else
+  echo "ERROR: set MATRIX_CASE_INDEX (or legacy SLURM_ARRAY_TASK_ID)." >&2
+  exit 2
+fi
 
 if [[ "${RESUME_COMPLETED}" != "0" && "${RESUME_COMPLETED}" != "1" ]]; then
   echo "ERROR: RESUME_COMPLETED must be 0 or 1." >&2
@@ -45,8 +53,8 @@ if [[ ! -f "${MATRIX_FILE}" ]]; then
   echo "ERROR: matrix file is missing: ${MATRIX_FILE}" >&2
   exit 2
 fi
-if [[ ! "${SLURM_ARRAY_TASK_ID}" =~ ^[0-9]+$ ]]; then
-  echo "ERROR: SLURM_ARRAY_TASK_ID must be a non-negative integer." >&2
+if [[ ! "${selected_case_index}" =~ ^[0-9]+$ ]]; then
+  echo "ERROR: the selected matrix case index must be a non-negative integer." >&2
   exit 2
 fi
 
@@ -57,10 +65,10 @@ if [[ "${actual_header}" != "${expected_header}" ]]; then
   exit 2
 fi
 
-line_number=$((SLURM_ARRAY_TASK_ID + 2))
+line_number=$((selected_case_index + 2))
 case_line="$(sed -n "${line_number}p" "${MATRIX_FILE}")"
 if [[ -z "${case_line}" ]]; then
-  echo "ERROR: array index ${SLURM_ARRAY_TASK_ID} is outside the matrix." >&2
+  echo "ERROR: case index ${selected_case_index} is outside the matrix." >&2
   exit 2
 fi
 
@@ -80,8 +88,8 @@ IFS=$'\t' read -r \
   collision_seed \
   controlled_bundle_label <<<"${case_line}"
 
-if [[ "${case_index}" != "${SLURM_ARRAY_TASK_ID}" ]]; then
-  echo "ERROR: row case_index=${case_index} does not match array index." >&2
+if [[ "${case_index}" != "${selected_case_index}" ]]; then
+  echo "ERROR: row case_index=${case_index} does not match selected index." >&2
   exit 2
 fi
 if [[ "${kernel}" != "golovin" ]]; then
@@ -89,11 +97,36 @@ if [[ "${kernel}" != "golovin" ]]; then
   exit 2
 fi
 
+MATRIX_SHA256="$(sha256sum "${MATRIX_FILE}" | awk '{print $1}')"
 run_directory="${CLEO_SDM_RUN_ROOT}/${run_label}"
 if [[ -e "${run_directory}" ]]; then
   if [[ "${RESUME_COMPLETED}" == "1" ]] \
     && [[ -f "${run_directory}/manifest.txt" ]] \
     && grep -qx "status=completed" "${run_directory}/manifest.txt"; then
+    required_manifest_records=(
+      "run_label=${run_label}"
+      "matrix_stage=${matrix_stage}"
+      "matrix_case_index=${case_index}"
+      "member_index=${member_index}"
+      "initialization_family=${initialization_family}"
+      "kernel=${kernel}"
+      "initialization_seed=${initialization_seed}"
+      "collision_seed=${collision_seed}"
+      "matrix_sha256=${MATRIX_SHA256}"
+      "max_superdroplets=${max_superdroplets}"
+      "collision_timestep_s=${collision_timestep_s}"
+      "observation_timestep_s=${observation_timestep_s}"
+      "end_time_s=${end_time_s}"
+    )
+    for manifest_record in "${required_manifest_records[@]}"; do
+      if ! grep -Fqx \
+        "${manifest_record}" \
+        "${run_directory}/manifest.txt"; then
+        echo "ERROR: completed-case manifest does not match this matrix row:" >&2
+        echo "${run_directory}/manifest.txt (${manifest_record%%=*})" >&2
+        exit 1
+      fi
+    done
     echo "CASE_ALREADY_COMPLETED=1"
     echo "run_directory=${run_directory}"
     exit 0
@@ -128,7 +161,6 @@ export MATRIX_CASE_INDEX="${case_index}"
 export MEMBER_INDEX="${member_index}"
 export MATRIX_FILE
 export MATRIX_SHA256
-MATRIX_SHA256="$(sha256sum "${MATRIX_FILE}" | awk '{print $1}')"
 
 echo "matrix_file=${MATRIX_FILE}"
 echo "matrix_sha256=${MATRIX_SHA256}"

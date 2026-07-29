@@ -1,3 +1,4 @@
+import hashlib
 import importlib.util
 import os
 import subprocess
@@ -25,6 +26,27 @@ def load_yaml(filename: Path) -> dict:
     yaml = YAML(typ="safe")
     with filename.open("r", encoding="utf-8") as stream:
         return yaml.load(stream)
+
+
+def completed_manifest(case: dict[str, object], matrix_file: Path) -> str:
+    matrix_sha256 = hashlib.sha256(matrix_file.read_bytes()).hexdigest()
+    records = {
+        "status": "completed",
+        "run_label": case["run_label"],
+        "matrix_stage": case["matrix_stage"],
+        "matrix_case_index": case["case_index"],
+        "member_index": case["member_index"],
+        "initialization_family": case["initialization_family"],
+        "kernel": case["kernel"],
+        "initialization_seed": case["initialization_seed"],
+        "collision_seed": case["collision_seed"],
+        "matrix_sha256": matrix_sha256,
+        "max_superdroplets": case["max_superdroplets"],
+        "collision_timestep_s": case["collision_timestep_s"],
+        "observation_timestep_s": case["observation_timestep_s"],
+        "end_time_s": case["end_time_s"],
+    }
+    return "".join(f"{key}={value}\n" for key, value in records.items())
 
 
 def test_development_matrix_is_deterministic_and_unique() -> None:
@@ -170,12 +192,16 @@ def test_matrix_wrapper_skips_only_explicitly_resumed_completed_case(
     run_root = tmp_path / "runs"
     completed = run_root / str(cases[0]["run_label"])
     completed.mkdir(parents=True)
-    (completed / "manifest.txt").write_text("status=completed\n", encoding="utf-8")
+    matrix_file = matrix_directory / "cases.tsv"
+    (completed / "manifest.txt").write_text(
+        completed_manifest(cases[0], matrix_file),
+        encoding="utf-8",
+    )
 
     environment = {
         **os.environ,
-        "MATRIX_FILE": str(matrix_directory / "cases.tsv"),
-        "SLURM_ARRAY_TASK_ID": "0",
+        "MATRIX_FILE": str(matrix_file),
+        "MATRIX_CASE_INDEX": "0",
         "RESUME_COMPLETED": "1",
         "CLEO_SDM_RUN_ROOT": str(run_root),
     }
@@ -201,6 +227,40 @@ def test_matrix_wrapper_skips_only_explicitly_resumed_completed_case(
     assert "case path exists" in refusal.stderr
 
 
+def test_matrix_wrapper_refuses_completed_case_from_different_matrix(
+    tmp_path: Path,
+) -> None:
+    matrix = load_module(MATRIX_SCRIPT, "prepare_golovin_matrix_mismatch")
+    cases = matrix.build_cases(load_yaml(DEVELOPMENT_CONFIG))
+    matrix_directory = tmp_path / "matrix"
+    matrix.write_matrix(DEVELOPMENT_CONFIG, matrix_directory, cases)
+
+    run_root = tmp_path / "runs"
+    completed = run_root / str(cases[0]["run_label"])
+    completed.mkdir(parents=True)
+    manifest = completed_manifest(cases[0], matrix_directory / "cases.tsv")
+    (completed / "manifest.txt").write_text(
+        manifest.replace("matrix_sha256=", "matrix_sha256=different"),
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        ["bash", str(ROOT / "scripts" / "levante" / "run_golovin_matrix.sbatch")],
+        env={
+            **os.environ,
+            "MATRIX_FILE": str(matrix_directory / "cases.tsv"),
+            "MATRIX_CASE_INDEX": "0",
+            "RESUME_COMPLETED": "1",
+            "CLEO_SDM_RUN_ROOT": str(run_root),
+        },
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 1
+    assert "manifest does not match this matrix row" in result.stderr
+
+
 def test_matrix_wrapper_refuses_incomplete_case_even_in_resume_mode(
     tmp_path: Path,
 ) -> None:
@@ -222,7 +282,7 @@ def test_matrix_wrapper_refuses_incomplete_case_even_in_resume_mode(
         env={
             **os.environ,
             "MATRIX_FILE": str(matrix_directory / "cases.tsv"),
-            "SLURM_ARRAY_TASK_ID": "1",
+            "MATRIX_CASE_INDEX": "1",
             "RESUME_COMPLETED": "1",
             "CLEO_SDM_RUN_ROOT": str(run_root),
         },

@@ -107,7 +107,7 @@ export MATRIX_FILE
 export RESUME_COMPLETED=1
 for ((case_index = 0; case_index < EXPECTED_CASE_COUNT; case_index++)); do
   echo "TIMESTEP_SCREEN_CASE_BEGIN=${case_index}"
-  export SLURM_ARRAY_TASK_ID="${case_index}"
+  export MATRIX_CASE_INDEX="${case_index}"
   bash "${SCRIPT_DIR}/run_golovin_matrix.sbatch"
   echo "TIMESTEP_SCREEN_CASE_END=${case_index}"
 done

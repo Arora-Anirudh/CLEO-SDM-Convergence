@@ -1,7 +1,7 @@
 # Controlled Golovin resolution experiment: execution runbook
 
 - Experiment: `golovin_controlled_resolution_convergence_v1`
-- Status: fully prepared; model array not submitted
+- Status: fully prepared; model job not submitted
 - Account while permanent allocation is pending: `bb1153`
 - Scientific role: first actual Golovin superdroplet-resolution convergence
   experiment
@@ -62,30 +62,40 @@ After the first wave:
 
 ## 4. Requested model compute
 
-The planned submission is a bounded Slurm array:
+The planned submission is one restartable serial Slurm job. All 120 scientific
+members run sequentially inside that allocation:
 
 | Item | Request |
 | --- | --- |
 | account / partition | `bb1153` / `shared` |
-| array | `0-119%12` |
-| maximum simultaneous tasks | 12 |
-| resources per task | 1 node, 1 task, 1 CPU |
-| memory per task | 940 MiB |
-| walltime per task | 10 minutes |
+| Slurm jobs | 1 |
+| cases inside the job | 120, sequential |
+| resources | 1 node, 1 task, 1 CPU |
+| memory | 940 MiB |
+| walltime | 1 hour |
 | mode | serial CLEO; one MPI rank; one Kokkos/OpenMP thread |
 | GPU | none |
 | new members | 120 |
-| retry behavior | skip only manifest-complete members when explicitly resumed |
+| retry behavior | resubmit the same job; skip only matching manifest-complete members |
 
-The hard reservation ceiling is 20 requested CPU-hours
-(\(120\times10\) CPU-minutes), but it is not an estimate of consumption.
+The hard reservation ceiling is one requested CPU-hour, but it is not an
+estimate of consumption. Levante may report more `AllocCPUS` than the one
+requested CPU because of shared-node allocation granularity; the model is
+still explicitly limited to one thread, and final accounting records both
+requested and allocated CPUs.
 The 0.1-s timestep-screen members at 16,384 SDs used 74 member-wall-seconds
 for five cases (mean 14.8 s, maximum 19 s). Assuming approximately linear
 work with the number of sampled superdroplets, the six-level 20-member ladder
 has about 583 seconds (0.16 CPU-hour) of model/member-wrapper time before
-per-job startup. The earlier single-job measurements show that module,
-environment and scheduler overhead can dominate such small models, so the
-final report will use `sacct`, not the estimate.
+per-case configuration and filesystem overhead. The earlier sequential screen
+shows that this overhead can dominate such small models. One hour is therefore
+a conservative restartable allocation; the final report will use `sacct`, not
+the estimate.
+
+The one-job layout changes only scheduler packaging. Every member still owns a
+distinct collision seed, configuration, output directory and manifest.
+Scientific ensemble independence therefore does not depend on creating 120
+separate Slurm tasks.
 
 Every completed member produced about 70,001,744 Zarr bytes in the timestep
 screen. A conservative raw-output estimate is therefore 8.4 GB for 120
@@ -104,12 +114,14 @@ export CLEO_SDM_BUILD_ROOT=/home/b/b383673/SDM/cleo_builds/CLEO-SDM-Convergence/
 export CLEO_SDM_RUN_ROOT=/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1
 export CLEO_SDM_BUNDLE_ROOT=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles
 export MATRIX_FILE=${CLEO_SDM_PROJECT_ROOT}/experiments/golovin_controlled_resolution_convergence_v1/cases.tsv
+export RESOLUTION_RECORD_ROOT=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/golovin_controlled_resolution_convergence_v1
 
 cd "${CLEO_SDM_PROJECT_ROOT}"
 git status --short --branch
 git rev-parse HEAD
 test "$(wc -l <"${MATRIX_FILE}")" -eq 121
 test ! -e "${CLEO_SDM_RUN_ROOT}"
+test ! -e "${RESOLUTION_RECORD_ROOT}"
 sha256sum "${MATRIX_FILE}"
 find "${CLEO_SDM_BUNDLE_ROOT}" -maxdepth 1 -type d \
   -name 'golovin_controlled_N*_v1' -print | sort
@@ -129,26 +141,30 @@ mkdir -p /scratch/b/b383673/SDM/logs
 
 sbatch \
   --account=bb1153 \
-  --array=0-119%12 \
-  --export=ALL,CLEO_SDM_PROJECT_ROOT="${CLEO_SDM_PROJECT_ROOT}",CLEO_SDM_BUILD_ROOT="${CLEO_SDM_BUILD_ROOT}",CLEO_SDM_RUN_ROOT="${CLEO_SDM_RUN_ROOT}",CLEO_SDM_BUNDLE_ROOT="${CLEO_SDM_BUNDLE_ROOT}",MATRIX_FILE="${MATRIX_FILE}",RESUME_COMPLETED=0 \
-  "${CLEO_SDM_PROJECT_ROOT}/scripts/levante/run_golovin_matrix.sbatch"
+  --export=ALL,CLEO_SDM_PROJECT_ROOT="${CLEO_SDM_PROJECT_ROOT}",CLEO_SDM_BUILD_ROOT="${CLEO_SDM_BUILD_ROOT}",CLEO_SDM_RUN_ROOT="${CLEO_SDM_RUN_ROOT}",CLEO_SDM_BUNDLE_ROOT="${CLEO_SDM_BUNDLE_ROOT}",MATRIX_FILE="${MATRIX_FILE}",RESOLUTION_RECORD_ROOT="${RESOLUTION_RECORD_ROOT}",EXPECTED_CASE_COUNT=120,RESUME_COMPLETED=1 \
+  "${CLEO_SDM_PROJECT_ROOT}/scripts/levante/run_golovin_resolution_convergence.sbatch"
 ```
 
-Record the returned array job ID. Do not infer completion from the presence of
-some directories. Audit the whole array:
+Record the returned job ID. Do not infer completion from the presence of some
+directories. Audit the job and the whole matrix:
 
 ```bash
 sacct \
-  --jobs=<ARRAY_JOB_ID> \
+  --jobs=<MODEL_JOB_ID> \
   --format=JobID,JobName%24,State,ExitCode,Elapsed,ReqCPUS,AllocCPUS,ReqMem,MaxRSS
 
 find "${CLEO_SDM_RUN_ROOT}" -mindepth 2 -maxdepth 2 \
   -name manifest.txt -exec grep -l '^status=completed$' {} + | wc -l
+
+test -f "${RESOLUTION_RECORD_ROOT}/model_inventory.json"
+test -f "${RESOLUTION_RECORD_ROOT}/runner_completed_job<MODEL_JOB_ID>.txt"
 ```
 
-Exactly 120 complete manifests are required. A retry uses the identical
-matrix with `RESUME_COMPLETED=1`; incomplete pre-existing paths are never
-silently overwritten.
+Exactly 120 matching complete manifests and a completed model inventory are
+required. If the one-hour allocation ends before all cases finish, submit the
+identical command again. It skips only manifest-complete cases that match the
+same matrix row. Incomplete or mismatched pre-existing paths are never silently
+overwritten.
 
 ## 7. Analysis submission after all 120 members finish
 
@@ -157,7 +173,6 @@ one task, one CPU, 2 GiB and 30 minutes on `bb1153/shared`, with no GPU.
 
 ```bash
 export RESOLUTION_CONFIG=${CLEO_SDM_PROJECT_ROOT}/config/golovin_controlled_resolution_convergence.yaml
-export RESOLUTION_RECORD_ROOT=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/golovin_controlled_resolution_convergence_v1
 
 sbatch \
   --account=bb1153 \

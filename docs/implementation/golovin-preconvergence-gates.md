@@ -337,4 +337,4 @@ The corrected diagnostic and pre-convergence package passed the complete
 locked test, Ruff, format and Bash-parse checks. The resolution package adds
 synthetic tests for a successful \(N,2N,4N\) confirmation and for refusal when
 the smallest level fails. GitHub Actions and the exact Levante checkout remain
-the final software gates before the model array.
+the final software gates before the model job.

@@ -66,6 +66,7 @@ def test_levante_scripts_are_project_owned_and_account_neutral() -> None:
         "validate_controlled_bundle_replay.sbatch",
         "run_collisions0d.sbatch",
         "run_golovin_matrix.sbatch",
+        "run_golovin_resolution_convergence.sbatch",
         "run_golovin_timestep_screen.sbatch",
         "analyze_golovin_timestep_screen.sbatch",
         "analyze_golovin_resolution_convergence.sbatch",
@@ -87,6 +88,7 @@ def test_slurm_entrypoints_resolve_common_from_explicit_project_root() -> None:
         "build.sbatch",
         "run_collisions0d.sbatch",
         "run_golovin_matrix.sbatch",
+        "run_golovin_resolution_convergence.sbatch",
         "analyze_collisions0d.sbatch",
         "validate_controlled_initialization.sbatch",
         "prepare_controlled_bundle_ladder.sbatch",
@@ -99,6 +101,22 @@ def test_slurm_entrypoints_resolve_common_from_explicit_project_root() -> None:
         expected = 'SCRIPT_DIR="${CLEO_SDM_PROJECT_ROOT}/scripts/levante"'
         assert expected in content
         assert content.index(expected) < content.index('source "${SCRIPT_DIR}/common.sh"')
+
+
+def test_resolution_runner_is_one_restartable_serial_allocation() -> None:
+    runner = (ROOT / "scripts" / "levante" / "run_golovin_resolution_convergence.sbatch").read_text(
+        encoding="utf-8"
+    )
+
+    assert "#SBATCH --partition=shared" in runner
+    assert "#SBATCH --cpus-per-task=1" in runner
+    assert "#SBATCH --mem=940M" in runner
+    assert "#SBATCH --time=01:00:00" in runner
+    assert "#SBATCH --array" not in runner
+    assert 'EXPECTED_CASE_COUNT="${EXPECTED_CASE_COUNT:-120}"' in runner
+    assert 'export MATRIX_CASE_INDEX="${case_index}"' in runner
+    assert 'bash "${SCRIPT_DIR}/run_golovin_matrix.sbatch"' in runner
+    assert "GOLOVIN_CONTROLLED_RESOLUTION_RUN_PASS=1" in runner
 
 
 def test_runtime_config_materializer_exists() -> None:
@@ -284,8 +302,8 @@ def test_actual_golovin_matrix_is_reviewed_but_not_compute_authorization() -> No
     )
     assert len(matrix_rows) == 121
     assert manifest["case_count"] == 120
-    assert manifest["array_index_minimum"] == 0
-    assert manifest["array_index_maximum"] == 119
+    assert manifest["case_index_minimum"] == 0
+    assert manifest["case_index_maximum"] == 119
     assert manifest["submission_authorized"] is False
 
     analyzer = ROOT / "scripts" / "analyze_golovin_resolution_convergence.py"
