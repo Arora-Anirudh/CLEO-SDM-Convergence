@@ -50,7 +50,7 @@ if [[ ! "${SLURM_ARRAY_TASK_ID}" =~ ^[0-9]+$ ]]; then
   exit 2
 fi
 
-expected_header=$'case_index\trun_label\tmatrix_stage\tinitialization_family\tkernel\tmax_superdroplets\tcollision_timestep_s\tobservation_timestep_s\tend_time_s\tmodel_threads\tmember_index\tinitialization_seed\tcollision_seed'
+expected_header=$'case_index\trun_label\tmatrix_stage\tinitialization_family\tkernel\tmax_superdroplets\tcollision_timestep_s\tobservation_timestep_s\tend_time_s\tmodel_threads\tmember_index\tinitialization_seed\tcollision_seed\tcontrolled_bundle_label'
 actual_header="$(head -n 1 "${MATRIX_FILE}")"
 if [[ "${actual_header}" != "${expected_header}" ]]; then
   echo "ERROR: matrix header is not the registered Stage-0 schema." >&2
@@ -77,7 +77,8 @@ IFS=$'\t' read -r \
   model_threads \
   member_index \
   initialization_seed \
-  collision_seed <<<"${case_line}"
+  collision_seed \
+  controlled_bundle_label <<<"${case_line}"
 
 if [[ "${case_index}" != "${SLURM_ARRAY_TASK_ID}" ]]; then
   echo "ERROR: row case_index=${case_index} does not match array index." >&2
@@ -113,6 +114,16 @@ export OBSERVATION_TIMESTEP_S="${observation_timestep_s}"
 export END_TIME_S="${end_time_s}"
 export MATRIX_STAGE="${matrix_stage}"
 export INITIALIZATION_FAMILY="${initialization_family}"
+if [[ "${initialization_family}" == "controlled" ]]; then
+  if [[ "${controlled_bundle_label}" == "not_applicable" ]]; then
+    echo "ERROR: controlled row has no bundle label." >&2
+    exit 2
+  fi
+  export CONTROLLED_BUNDLE="${CLEO_SDM_BUNDLE_ROOT}/${controlled_bundle_label}"
+elif [[ "${controlled_bundle_label}" != "not_applicable" ]]; then
+  echo "ERROR: operational row unexpectedly contains a controlled bundle label." >&2
+  exit 2
+fi
 export MATRIX_CASE_INDEX="${case_index}"
 export MEMBER_INDEX="${member_index}"
 export MATRIX_FILE

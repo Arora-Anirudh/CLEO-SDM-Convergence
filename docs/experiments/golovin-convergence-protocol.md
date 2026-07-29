@@ -353,15 +353,17 @@ Use \(N_\mathrm{SD}=16\,384\) and initially test:
 2,\;1,\;0.5,\;0.25,\;0.1\,\mathrm{s}.
 \]
 
-Start with five independent collision members per timestep using a controlled
-frozen initialization. The screen asks whether the mean differences between
-neighboring timestep levels satisfy the registered practical-equivalence
-margins.
+Start with five collision-stream labels per timestep using one controlled
+frozen initialization. The same labels are reused at every timestep for
+reproducible common-stream comparisons, while recognizing that different
+timesteps do not create paired event histories. Compare each timestep directly
+with the 0.1 s reference and require the registered practical-equivalence
+margins at every decision time.
 
 If uncertainty is too large to decide, extend only the ambiguous timestep
-levels. Choose the largest timestep that passes the pre-registered equivalence
-criterion against the next smaller timestep and is confirmed by the following
-level where available.
+levels. Choose the largest timestep that passes every registered diagnostic,
+conservation, range-coverage and 250/500/1000-bin robustness gate against the
+0.1 s reference.
 
 The literature's \(0.1\,\mathrm{s}\) finding for another model is evidence for
 the ladder, not a substitute for this CLEO-specific test.
@@ -557,16 +559,19 @@ diagnostic grid, numerical margins and Golovin tail-timing role—are resolved i
 [ADR 0004](../decisions/0004-golovin-production-definitions.md). The temporary
 Levante account is `bb1153`.
 
-The following still block a production convergence ensemble:
+The following still block the controlled resolution-convergence ensemble:
 
-1. same-stack replay and compiled direct-member reuse of the now
-   Levante-validated persistent frozen bundle;
-2. implementation of the out-of-range and 250/500/1000-bin robustness gates;
-3. a small runtime/storage pilot using the new controlled path;
-4. the pre-submission compute disclosure;
-5. a decision about whether the present 10-km-box physical parameters remain
+1. execute the implemented same-stack replay gate;
+2. create and verify one immutable native bundle at every registered
+   resolution;
+3. rebuild the exact implementation commit and execute one compiled
+   direct-member reuse/runtime/storage pilot;
+4. execute and decide the implemented 16,384-SD collision-timestep screen,
+   including the 250/500/1000-bin and out-of-range gates;
+5. provide the actual resolution-ensemble compute disclosure;
+6. a decision about whether the present 10-km-box physical parameters remain
    only a calibration case before the operational-initialization study;
-6. the eventual permanent Levante project account and persistent-storage
+7. the eventual permanent Levante project account and persistent-storage
    boundary.
 
 The controlled initializer implementation and its exact local validation

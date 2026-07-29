@@ -60,6 +60,10 @@ The controlled Golovin initializer now passes local numerical and unit tests.
 Its construction, code path, exact integer allocation, moment gates and
 remaining native-binary/frozen-artifact validation are explained in the
 [`controlled-initialization guide`](docs/implementation/controlled-initialization-guide.md).
+The final replay, bundle-ladder, diagnostic-robustness, compiled-member and
+collision-timestep checks required before the actual resolution ensemble are
+implemented and explained in the
+[`Golovin pre-convergence gates guide`](docs/implementation/golovin-preconvergence-gates.md).
 
 ## CLEO dependency
 
@@ -161,10 +165,11 @@ compact result is under
 Persistent frozen-bundle creation and independent verification then passed in
 job `26534596`; its compact record is under
 [`results/controlled_initialization_bundle_n4096_v1/`](results/controlled_initialization_bundle_n4096_v1/).
-The production matrix runner deliberately remains on
-`operational_stochastic`. Controlled matrix execution stays disabled until
-same-stack replay, diagnostic-bin robustness and one compiled controlled
-single-member reuse gate pass.
+Controlled matrix rows now require an explicit immutable bundle label. The
+pre-convergence timestep matrix is prepared but retains
+`submission_authorized=false`; same-stack replay, the resolution-bundle
+ladder, exact-commit rebuild, compiled direct-reuse member and timestep screen
+must all pass before the actual resolution matrix is submitted.
 
 ## Quality checks
 

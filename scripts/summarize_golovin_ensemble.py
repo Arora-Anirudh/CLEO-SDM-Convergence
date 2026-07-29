@@ -34,6 +34,9 @@ MEMBER_GROUP_COLUMNS = TIME_GROUP_COLUMNS[:-1]
 
 TIME_METRICS = (
     "golovin_fixed_bin_l1_relative",
+    "golovin_fixed_bin_l1_relative_bins_250",
+    "golovin_fixed_bin_l1_relative_bins_500",
+    "golovin_fixed_bin_l1_relative_bins_1000",
     "radius_moment_0_m3",
     "radius_moment_3_um3_m3",
     "radius_moment_6_um6_m3",
@@ -48,6 +51,12 @@ TIME_METRICS = (
     "mass_weighted_radius_q99_um",
     "fixed_bin_mass_below_range_fraction",
     "fixed_bin_mass_above_range_fraction",
+    "fixed_bin_mass_below_range_fraction_bins_250",
+    "fixed_bin_mass_below_range_fraction_bins_500",
+    "fixed_bin_mass_below_range_fraction_bins_1000",
+    "fixed_bin_mass_above_range_fraction_bins_250",
+    "fixed_bin_mass_above_range_fraction_bins_500",
+    "fixed_bin_mass_above_range_fraction_bins_1000",
 )
 MEMBER_METRICS = (
     "tail_onset_first_recorded_crossing_s",

@@ -4,7 +4,8 @@
   CLEO write/read gate passed
 - Native CLEO binary status: 4096-SD pilot validated in job `26534015`
 - Frozen-bundle status: persistent 4096-SD creation/verification validated in
-  job `26534596`; independent replay and compiled direct reuse pending
+  job `26534596`; independent replay, the six-resolution bundle ladder and
+  compiled direct reuse are implemented but not yet run
 - Production status: not authorized
 - Scientific decision: [ADR 0004](../decisions/0004-golovin-production-definitions.md)
 - Main implementation: [`scripts/controlled_initialization.py`](../../scripts/controlled_initialization.py)

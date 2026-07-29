@@ -85,6 +85,11 @@ def parse_args() -> argparse.Namespace:
         default=(0.0, 1200.0, 2400.0, 3600.0),
         help="exact output times in seconds for distribution curves",
     )
+    parser.add_argument(
+        "--skip-figures",
+        action="store_true",
+        help="write tables/metadata only; useful for multi-member screening",
+    )
     return parser.parse_args()
 
 
@@ -114,12 +119,17 @@ def load_key_value_manifest(filename: Path) -> dict[str, str]:
     return records
 
 
-def validate_paths(cleo_source: Path, run_directory: Path, output_directory: Path) -> None:
+def validate_paths(
+    cleo_source: Path,
+    run_directory: Path,
+    output_directory: Path,
+    grid_filename: Path,
+) -> None:
     required = (
         cleo_source / "cleopy" / "__init__.py",
         cleo_source / "examples" / "exampleplotting" / "plotcleo" / "plotcleo" / "shima2009fig.py",
         run_directory / "config.yaml",
-        run_directory / "inputs" / "grid.dat",
+        grid_filename,
         run_directory / "output" / "collisions0d_setup.txt",
         run_directory / "output" / "collisions0d_solution.zarr",
         run_directory / "manifest.txt",
@@ -255,6 +265,50 @@ def relative_l1_error(
     return float(np.trapezoid(np.abs(numerical - reference), x=log_radius) / reference_integral)
 
 
+def calculate_fixed_bin_robustness(
+    *,
+    radius_um: np.ndarray,
+    multiplicity: np.ndarray,
+    wet_mass_g: np.ndarray,
+    domain_volume_m3: float,
+    edges_by_count: dict[int, np.ndarray],
+    time_s: float,
+    number_concentration_m3: float,
+    volume_exponential_scale_m: float,
+    liquid_water_density_kgm3: float,
+) -> dict[str, float]:
+    """Calculate the registered no-smoothing metric on every robustness grid."""
+    results: dict[str, float] = {}
+    for bin_count, fixed_edges_um in edges_by_count.items():
+        fixed_numerical = fixed_bin_mass_density(
+            radius_um=radius_um,
+            multiplicity=multiplicity,
+            droplet_mass_g=wet_mass_g,
+            domain_volume_m3=domain_volume_m3,
+            edges_um=fixed_edges_um,
+        )
+        fixed_analytical = golovin_analytical_mass_density(
+            edges_um=fixed_edges_um,
+            time_s=time_s,
+            initial_number_concentration_m3=number_concentration_m3,
+            volume_exponential_scale_radius_m=volume_exponential_scale_m,
+            liquid_water_density_kgm3=liquid_water_density_kgm3,
+        )
+        suffix = f"_bins_{bin_count}"
+        results[f"golovin_fixed_bin_l1_relative{suffix}"] = fixed_bin_relative_l1(
+            fixed_numerical.mass_density_gm3_per_ln_radius,
+            fixed_analytical,
+            fixed_edges_um,
+        )
+        results[f"fixed_bin_mass_below_range_fraction{suffix}"] = (
+            fixed_numerical.mass_below_range_fraction
+        )
+        results[f"fixed_bin_mass_above_range_fraction{suffix}"] = (
+            fixed_numerical.mass_above_range_fraction
+        )
+    return results
+
+
 def calculate_diagnostics(
     *,
     time,
@@ -265,7 +319,8 @@ def calculate_diagnostics(
     volume_exponential_scale_m: float,
     max_superdroplets: int,
     shima2009fig,
-    fixed_edges_um: np.ndarray,
+    fixed_edges_by_count: dict[int, np.ndarray],
+    primary_fixed_bin_count: int,
     cloud_drop_threshold_um: float,
     large_drop_threshold_um: float,
     onset_radius_threshold_um: float,
@@ -334,27 +389,30 @@ def calculate_diagnostics(
                 radius_um,
                 superdrops.RHO_L(),
             )
-            fixed_numerical = fixed_bin_mass_density(
-                radius_um=radius_um,
-                multiplicity=multiplicity,
-                droplet_mass_g=wet_mass_g,
-                domain_volume_m3=domain_volume_m3,
-                edges_um=fixed_edges_um,
+            row.update(
+                calculate_fixed_bin_robustness(
+                    radius_um=radius_um,
+                    multiplicity=multiplicity,
+                    wet_mass_g=wet_mass_g,
+                    domain_volume_m3=domain_volume_m3,
+                    edges_by_count=fixed_edges_by_count,
+                    time_s=float(time_s),
+                    number_concentration_m3=number_concentration_m3,
+                    volume_exponential_scale_m=volume_exponential_scale_m,
+                    liquid_water_density_kgm3=superdrops.RHO_L(),
+                )
             )
-            fixed_analytical = golovin_analytical_mass_density(
-                edges_um=fixed_edges_um,
-                time_s=float(time_s),
-                initial_number_concentration_m3=number_concentration_m3,
-                volume_exponential_scale_radius_m=volume_exponential_scale_m,
-                liquid_water_density_kgm3=superdrops.RHO_L(),
-            )
-            row["golovin_fixed_bin_l1_relative"] = fixed_bin_relative_l1(
-                fixed_numerical.mass_density_gm3_per_ln_radius,
-                fixed_analytical,
-                fixed_edges_um,
-            )
-            row["fixed_bin_mass_below_range_fraction"] = fixed_numerical.mass_below_range_fraction
-            row["fixed_bin_mass_above_range_fraction"] = fixed_numerical.mass_above_range_fraction
+
+            primary_suffix = f"_bins_{primary_fixed_bin_count}"
+            row["golovin_fixed_bin_l1_relative"] = row[
+                f"golovin_fixed_bin_l1_relative{primary_suffix}"
+            ]
+            row["fixed_bin_mass_below_range_fraction"] = row[
+                f"fixed_bin_mass_below_range_fraction{primary_suffix}"
+            ]
+            row["fixed_bin_mass_above_range_fraction"] = row[
+                f"fixed_bin_mass_above_range_fraction{primary_suffix}"
+            ]
 
             analytical_moments = golovin_analytical_radius_moments(
                 time_s=float(time_s),
@@ -376,6 +434,11 @@ def calculate_diagnostics(
             row["golovin_fixed_bin_l1_relative"] = float("nan")
             row["fixed_bin_mass_below_range_fraction"] = float("nan")
             row["fixed_bin_mass_above_range_fraction"] = float("nan")
+            for bin_count in fixed_edges_by_count:
+                suffix = f"_bins_{bin_count}"
+                row[f"golovin_fixed_bin_l1_relative{suffix}"] = float("nan")
+                row[f"fixed_bin_mass_below_range_fraction{suffix}"] = float("nan")
+                row[f"fixed_bin_mass_above_range_fraction{suffix}"] = float("nan")
             for column in (
                 "radius_moment_0_m3",
                 "radius_moment_3_um3_m3",
@@ -480,27 +543,39 @@ def main() -> None:
         else run_directory / "analysis_stage0_v2"
     )
     stage0_config_filename = args.stage0_config.resolve()
-    validate_paths(cleo_source, run_directory, output_directory)
     if not stage0_config_filename.is_file():
         raise FileNotFoundError(f"Stage-0 configuration is missing: {stage0_config_filename}")
 
+    runtime_config = load_yaml(run_directory / "config.yaml")
+    grid_filename = Path(runtime_config["inputfiles"]["grid_filename"]).resolve()
+    validate_paths(cleo_source, run_directory, output_directory, grid_filename)
     pygbxsdat, pysetuptxt, pyzarr, shima2009fig = import_cleo_plotting(cleo_source)
 
-    runtime_config = load_yaml(run_directory / "config.yaml")
     run_manifest = load_key_value_manifest(run_directory / "manifest.txt")
     stage0_config = load_yaml(stage0_config_filename)
     diagnostic_config = stage0_config["diagnostics"]
-    fixed_edges_um = logarithmic_radius_edges(
-        float(diagnostic_config["radius_minimum_um"]),
-        float(diagnostic_config["radius_maximum_um"]),
-        int(diagnostic_config["number_of_log_radius_bins"]),
-    )
+    primary_fixed_bin_count = int(diagnostic_config["number_of_log_radius_bins"])
+    fixed_bin_counts = [int(value) for value in diagnostic_config["bin_robustness_counts"]]
+    if len(fixed_bin_counts) != len(set(fixed_bin_counts)):
+        raise ValueError("bin_robustness_counts must be unique")
+    if any(value < 1 for value in fixed_bin_counts):
+        raise ValueError("bin_robustness_counts must contain positive integers")
+    if primary_fixed_bin_count not in fixed_bin_counts:
+        raise ValueError("the primary fixed-bin count must appear in bin_robustness_counts")
+    fixed_edges_by_count = {
+        bin_count: logarithmic_radius_edges(
+            float(diagnostic_config["radius_minimum_um"]),
+            float(diagnostic_config["radius_maximum_um"]),
+            bin_count,
+        )
+        for bin_count in fixed_bin_counts
+    }
+    fixed_edges_um = fixed_edges_by_count[primary_fixed_bin_count]
     cloud_drop_threshold_um = float(diagnostic_config["cloud_drop_threshold_um"])
     large_drop_threshold_um = float(diagnostic_config["large_drop_threshold_um"])
     onset_radius_threshold_um = float(diagnostic_config["onset_radius_threshold_um"])
     mass_quantile = float(diagnostic_config["mass_weighted_radius_quantile"])
     setup_filename = run_directory / "output" / "collisions0d_setup.txt"
-    grid_filename = run_directory / "inputs" / "grid.dat"
     dataset = run_directory / "output" / "collisions0d_solution.zarr"
 
     setup_config = pysetuptxt.get_config(setup_filename, nattrs=3, isprint=True)
@@ -528,27 +603,29 @@ def main() -> None:
     domain_volume_m3 = float(gridboxes["domainvol"])
     smooth_sigma = 0.62 * max_superdroplets ** (-1.0 / 5.0)
 
-    distribution_figure = output_directory / f"{args.kernel}_mass_distribution.png"
-    with warnings.catch_warnings():
-        warnings.filterwarnings(
-            "ignore",
-            message="invalid value encountered in multiply",
-            category=RuntimeWarning,
-        )
-        shima2009fig.plot_validation_figure(
-            args.kernel == "golovin",
-            time,
-            superdrops,
-            requested_times,
-            domain_volume_m3,
-            number_concentration_m3,
-            volume_exponential_scale_m,
-            smooth_sigma,
-            xlims=[10, 5000],
-            savename=distribution_figure,
-            withgol=args.kernel == "golovin",
-        )
-    plt.close("all")
+    distribution_figure: Path | None = None
+    if not args.skip_figures:
+        distribution_figure = output_directory / f"{args.kernel}_mass_distribution.png"
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                message="invalid value encountered in multiply",
+                category=RuntimeWarning,
+            )
+            shima2009fig.plot_validation_figure(
+                args.kernel == "golovin",
+                time,
+                superdrops,
+                requested_times,
+                domain_volume_m3,
+                number_concentration_m3,
+                volume_exponential_scale_m,
+                smooth_sigma,
+                xlims=[10, 5000],
+                savename=distribution_figure,
+                withgol=args.kernel == "golovin",
+            )
+        plt.close("all")
 
     with warnings.catch_warnings():
         warnings.filterwarnings(
@@ -565,7 +642,8 @@ def main() -> None:
             volume_exponential_scale_m=volume_exponential_scale_m,
             max_superdroplets=max_superdroplets,
             shima2009fig=shima2009fig,
-            fixed_edges_um=fixed_edges_um,
+            fixed_edges_by_count=fixed_edges_by_count,
+            primary_fixed_bin_count=primary_fixed_bin_count,
             cloud_drop_threshold_um=cloud_drop_threshold_um,
             large_drop_threshold_um=large_drop_threshold_um,
             onset_radius_threshold_um=onset_radius_threshold_um,
@@ -620,14 +698,16 @@ def main() -> None:
     }
     write_diagnostics_csv(output_directory / "member_summary.csv", [member_summary])
 
-    bulk_figure = output_directory / f"{args.kernel}_bulk_diagnostics.png"
-    plot_bulk_diagnostics(
-        rows,
-        kernel=args.kernel,
-        cloud_drop_threshold_um=cloud_drop_threshold_um,
-        large_drop_threshold_um=large_drop_threshold_um,
-        savename=bulk_figure,
-    )
+    bulk_figure: Path | None = None
+    if not args.skip_figures:
+        bulk_figure = output_directory / f"{args.kernel}_bulk_diagnostics.png"
+        plot_bulk_diagnostics(
+            rows,
+            kernel=args.kernel,
+            cloud_drop_threshold_um=cloud_drop_threshold_um,
+            large_drop_threshold_um=large_drop_threshold_um,
+            savename=bulk_figure,
+        )
 
     metadata = {
         "status": "completed",
@@ -642,6 +722,7 @@ def main() -> None:
         "fixed_bin_radius_minimum_um": float(fixed_edges_um[0]),
         "fixed_bin_radius_maximum_um": float(fixed_edges_um[-1]),
         "fixed_bin_count": int(fixed_edges_um.size - 1),
+        "fixed_bin_robustness_counts": fixed_bin_counts,
         "fixed_bin_smoothing": None,
         "cloud_drop_threshold_um": cloud_drop_threshold_um,
         "large_drop_threshold_um": large_drop_threshold_um,
@@ -666,8 +747,10 @@ def main() -> None:
         ),
         "outputs": {
             "bulk_csv": diagnostics_csv.name,
-            "distribution_figure": distribution_figure.name,
-            "bulk_figure": bulk_figure.name,
+            "distribution_figure": (
+                distribution_figure.name if distribution_figure is not None else None
+            ),
+            "bulk_figure": bulk_figure.name if bulk_figure is not None else None,
         },
     }
     metadata_filename = output_directory / "diagnostic_metadata.json"

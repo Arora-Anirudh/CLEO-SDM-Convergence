@@ -33,6 +33,7 @@ FIELDNAMES = (
     "member_index",
     "initialization_seed",
     "collision_seed",
+    "controlled_bundle_label",
 )
 
 
@@ -79,17 +80,13 @@ def deterministic_seed(
 def validate_config(config: dict[str, Any]) -> None:
     experiment = config["experiment"]
     matrix = config["matrix"]
-    if experiment["status"] != "development_only":
-        raise ValueError(
-            "Stage-0 matrix preparation currently accepts only status=development_only"
-        )
+    if experiment["status"] not in {"development_only", "preproduction_gate"}:
+        raise ValueError("matrix preparation accepts only development_only or preproduction_gate")
     if experiment["kernel"] != "golovin":
         raise ValueError("the Golovin matrix tool requires kernel=golovin")
-    if experiment["initialization_family"] != "operational_stochastic":
-        raise ValueError(
-            "controlled/frozen matrix execution is not enabled yet; "
-            "use operational_stochastic only for the development matrix"
-        )
+    initialization_family = str(experiment["initialization_family"])
+    if initialization_family not in {"operational_stochastic", "controlled"}:
+        raise ValueError("unsupported initialization_family")
     if not experiment["name"] or not experiment["seed_namespace"]:
         raise ValueError("experiment name and seed namespace must be non-empty")
     if re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", str(experiment["name"])) is None:
@@ -113,6 +110,21 @@ def validate_config(config: dict[str, Any]) -> None:
         raise ValueError("end time must be at least one observation interval")
     if int(matrix["model_threads"]) < 1:
         raise ValueError("model_threads must be positive")
+    seed_design = str(matrix.get("collision_seed_design", "unique_per_case"))
+    if seed_design not in {"unique_per_case", "reused_across_timesteps"}:
+        raise ValueError("unsupported collision_seed_design")
+    if initialization_family == "controlled":
+        raw_bundle_labels = matrix.get("controlled_bundle_labels")
+        if not isinstance(raw_bundle_labels, dict):
+            raise ValueError("controlled initialization requires controlled_bundle_labels")
+        bundle_labels = {int(key): str(value) for key, value in raw_bundle_labels.items()}
+        if set(bundle_labels) != set(resolutions):
+            raise ValueError(
+                "controlled_bundle_labels must contain exactly one label per resolution"
+            )
+        for label in bundle_labels.values():
+            if re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", label) is None:
+                raise ValueError("controlled bundle label contains unsupported characters")
 
 
 def build_cases(config: dict[str, Any]) -> list[dict[str, int | float | str]]:
@@ -120,6 +132,11 @@ def build_cases(config: dict[str, Any]) -> list[dict[str, int | float | str]]:
     experiment = config["experiment"]
     matrix = config["matrix"]
     namespace = str(experiment["seed_namespace"])
+    initialization_family = str(experiment["initialization_family"])
+    seed_design = str(matrix.get("collision_seed_design", "unique_per_case"))
+    bundle_labels = {
+        int(key): str(value) for key, value in matrix.get("controlled_bundle_labels", {}).items()
+    }
     cases: list[dict[str, int | float | str]] = []
 
     for max_superdroplets in sorted(int(value) for value in matrix["max_superdroplets"]):
@@ -147,29 +164,50 @@ def build_cases(config: dict[str, Any]) -> list[dict[str, int | float | str]]:
                         "end_time_s": float(matrix["end_time_s"]),
                         "model_threads": int(matrix["model_threads"]),
                         "member_index": member_index,
-                        "initialization_seed": deterministic_seed(
-                            namespace=namespace,
-                            role="initialization",
-                            max_superdroplets=max_superdroplets,
-                            collision_timestep_s=collision_timestep_s,
-                            member_index=member_index,
-                            bits=32,
+                        "initialization_seed": (
+                            deterministic_seed(
+                                namespace=namespace,
+                                role="initialization",
+                                max_superdroplets=max_superdroplets,
+                                collision_timestep_s=collision_timestep_s,
+                                member_index=member_index,
+                                bits=32,
+                            )
+                            if initialization_family == "operational_stochastic"
+                            else "not_applicable"
                         ),
                         "collision_seed": deterministic_seed(
                             namespace=namespace,
                             role="collision",
                             max_superdroplets=max_superdroplets,
-                            collision_timestep_s=collision_timestep_s,
+                            collision_timestep_s=(
+                                0.0
+                                if seed_design == "reused_across_timesteps"
+                                else collision_timestep_s
+                            ),
                             member_index=member_index,
                             bits=64,
+                        ),
+                        "controlled_bundle_label": (
+                            bundle_labels[max_superdroplets]
+                            if initialization_family == "controlled"
+                            else "not_applicable"
                         ),
                     }
                 )
     if len({str(case["run_label"]) for case in cases}) != len(cases):
         raise RuntimeError("generated run labels are not unique")
-    if len({int(case["initialization_seed"]) for case in cases}) != len(cases):
+    if initialization_family == "operational_stochastic" and len(
+        {int(case["initialization_seed"]) for case in cases}
+    ) != len(cases):
         raise RuntimeError("generated initialization seeds are not unique")
-    if len({int(case["collision_seed"]) for case in cases}) != len(cases):
+    collision_seed_count = len({int(case["collision_seed"]) for case in cases})
+    expected_collision_seed_count = (
+        len(cases)
+        if seed_design == "unique_per_case"
+        else len({(int(case["max_superdroplets"]), int(case["member_index"])) for case in cases})
+    )
+    if collision_seed_count != expected_collision_seed_count:
         raise RuntimeError("generated collision seeds are not unique")
     return cases
 
@@ -209,7 +247,7 @@ def write_matrix(
         "submission_authorized": False,
         "notes": [
             "Preparing this matrix does not submit compute.",
-            "The development configuration is not approved for production.",
+            "This manifest does not authorize production convergence compute.",
             "Each array index owns one unique run label and output path.",
         ],
     }

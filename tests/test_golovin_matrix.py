@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MATRIX_SCRIPT = ROOT / "scripts" / "prepare_golovin_matrix.py"
 MATERIALIZER_SCRIPT = ROOT / "scripts" / "materialize_collisions0d_config.py"
 DEVELOPMENT_CONFIG = ROOT / "config" / "golovin_stage0_development.yaml"
+TIMESTEP_SCREEN_CONFIG = ROOT / "config" / "golovin_controlled_timestep_screen.yaml"
 
 
 def load_module(filename: Path, name: str):
@@ -39,6 +40,24 @@ def test_development_matrix_is_deterministic_and_unique() -> None:
     assert len({case["run_label"] for case in first}) == 4
     assert len({case["initialization_seed"] for case in first}) == 4
     assert len({case["collision_seed"] for case in first}) == 4
+    assert {case["controlled_bundle_label"] for case in first} == {"not_applicable"}
+
+
+def test_controlled_timestep_screen_reuses_bundle_and_seed_labels() -> None:
+    matrix = load_module(MATRIX_SCRIPT, "prepare_golovin_controlled_timestep")
+    cases = matrix.build_cases(load_yaml(TIMESTEP_SCREEN_CONFIG))
+
+    assert len(cases) == 25
+    assert {case["initialization_seed"] for case in cases} == {"not_applicable"}
+    assert {case["controlled_bundle_label"] for case in cases} == {"golovin_controlled_N016384_v1"}
+    assert len({case["collision_seed"] for case in cases}) == 5
+
+    seeds_by_member: dict[int, set[int]] = {}
+    for case in cases:
+        seeds_by_member.setdefault(int(case["member_index"]), set()).add(
+            int(case["collision_seed"])
+        )
+    assert all(len(seeds) == 1 for seeds in seeds_by_member.values())
 
 
 def test_matrix_writer_refuses_existing_directory(tmp_path: Path) -> None:

@@ -62,8 +62,12 @@ def test_levante_scripts_are_project_owned_and_account_neutral() -> None:
         "build.sbatch",
         "common.sh",
         "prepare_controlled_bundle.sbatch",
+        "prepare_controlled_bundle_ladder.sbatch",
+        "validate_controlled_bundle_replay.sbatch",
         "run_collisions0d.sbatch",
         "run_golovin_matrix.sbatch",
+        "run_golovin_timestep_screen.sbatch",
+        "analyze_golovin_timestep_screen.sbatch",
         "validate_controlled_initialization.sbatch",
         "validate_collision_seed_replay.sbatch",
     }
@@ -84,6 +88,10 @@ def test_slurm_entrypoints_resolve_common_from_explicit_project_root() -> None:
         "run_golovin_matrix.sbatch",
         "analyze_collisions0d.sbatch",
         "validate_controlled_initialization.sbatch",
+        "prepare_controlled_bundle_ladder.sbatch",
+        "validate_controlled_bundle_replay.sbatch",
+        "run_golovin_timestep_screen.sbatch",
+        "analyze_golovin_timestep_screen.sbatch",
     ):
         content = (levante_directory / script_name).read_text(encoding="utf-8")
         expected = 'SCRIPT_DIR="${CLEO_SDM_PROJECT_ROOT}/scripts/levante"'
@@ -174,6 +182,18 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
     bundle_preparer_content = bundle_preparer.read_text(encoding="utf-8")
     assert "CONTROLLED_BUNDLE_PREPARATION_PASS=1" in bundle_preparer_content
     assert "srun" not in bundle_preparer_content
+
+    replay_gate = ROOT / "scripts" / "levante" / "validate_controlled_bundle_replay.sbatch"
+    replay_gate_content = replay_gate.read_text(encoding="utf-8")
+    assert "CONTROLLED_BUNDLE_SAME_STACK_REPLAY_PASS=1" in replay_gate_content
+    assert "cmp --silent" in replay_gate_content
+    assert "srun" not in replay_gate_content
+
+    bundle_ladder = ROOT / "scripts" / "levante" / "prepare_controlled_bundle_ladder.sbatch"
+    bundle_ladder_content = bundle_ladder.read_text(encoding="utf-8")
+    assert "CONTROLLED_BUNDLE_LADDER_PASS=1" in bundle_ladder_content
+    assert "CANONICAL_N4096_BUNDLE" in bundle_ladder_content
+    assert "srun" not in bundle_ladder_content
 
 
 def test_collision_seed_is_required_and_recorded() -> None:

@@ -23,13 +23,21 @@ verified absolute paths.
    4096-SD bundle and checks it through CLEO's own native binary reader.
 6. `prepare_controlled_bundle.sbatch` creates one persistent, read-only,
    checksummed native bundle for one resolution.
-7. `run_collisions0d.sbatch` can point a controlled Golovin member directly
+7. `validate_controlled_bundle_replay.sbatch` independently regenerates the
+   4096-SD population and requires byte-identical native inputs.
+8. `prepare_controlled_bundle_ladder.sbatch` creates the missing immutable
+   bundles for 512, 1024, 2048, 8192 and 16384 SDs while verifying and reusing
+   the canonical 4096-SD bundle.
+9. `run_collisions0d.sbatch` can point a controlled Golovin member directly
    at that bundle and verifies it before and after model execution.
-8. `run_golovin_matrix.sbatch` maps one reviewed TSV row to one unique Slurm
+10. `run_golovin_matrix.sbatch` maps one reviewed TSV row to one unique Slurm
    array task and skips only explicitly resumed completed cases.
-9. `analyze_collisions0d.sbatch` reads one completed run through CLEO's own
+11. `analyze_collisions0d.sbatch` reads one completed run through CLEO's own
    `cleopy`/`plotcleo` tools and writes non-overwriting fixed-bin, moment,
    onset, tail and conservation diagnostics.
+12. `run_golovin_timestep_screen.sbatch` and
+    `analyze_golovin_timestep_screen.sbatch` execute and decide the controlled
+    16,384-SD, 25-member collision-timestep gate.
 
 The permanent source and build trees are in HOME. Run-specific configuration,
 input binaries and Zarr output are stored under SCRATCH.
@@ -167,6 +175,30 @@ sbatch \
   scripts/levante/prepare_controlled_bundle.sbatch
 ```
 
+### Same-stack replay and resolution ladder
+
+The replay request is one node, one task, one CPU, 940 MiB and 10 minutes on
+`shared`. It runs input generation/readback only:
+
+```bash
+sbatch \
+  --account=bb1153 \
+  --export=ALL,MAX_SUPERDROPLETS=4096,REPLAY_LABEL=golovin_controlled_N004096_replay_v1,CANONICAL_BUNDLE=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1 \
+  scripts/levante/validate_controlled_bundle_replay.sbatch
+```
+
+The bundle-ladder request has the same resource shape and creates five missing
+native input bundles, not simulations:
+
+```bash
+sbatch \
+  --account=bb1153 \
+  --export=ALL,CANONICAL_N4096_BUNDLE=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1 \
+  scripts/levante/prepare_controlled_bundle_ladder.sbatch
+```
+
+Both scripts refuse pre-existing output paths and create no Zarr store.
+
 ## Single-member frozen-bundle reuse
 
 After one bundle has passed creation validation, a controlled Golovin member
@@ -244,3 +276,22 @@ run.
 The complete design, output schema, seed mapping, refusal/resume semantics and
 remaining scientific decisions are documented in the
 [`Golovin Stage-0 implementation guide`](../../docs/implementation/golovin-stage0-guide.md).
+
+## Controlled timestep-screen status
+
+The registered pre-convergence screen uses one immutable 16,384-SD
+initialization, five collision timesteps and five collision-stream labels:
+
+```text
+5 timesteps x 5 streams = 25 sequential members
+```
+
+The same five seed labels are reused across timesteps for reproducible
+common-stream comparisons; changing timestep still changes collision-update
+histories. The exact decision rules and output tables are documented in the
+[`pre-convergence gates guide`](../../docs/implementation/golovin-preconvergence-gates.md).
+
+The runner requests one node, one task, one CPU, 940 MiB and two hours on
+`shared`; the longer walltime is a conservative bound for the 16,384-SD
+0.1-s members. The analysis requests the same CPU/memory shape for 30 minutes.
+These requests must still be disclosed immediately before submission.
