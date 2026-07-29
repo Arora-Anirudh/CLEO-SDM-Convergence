@@ -113,13 +113,32 @@ row records:
 - liquid-mass fraction below the registered radius range;
 - liquid-mass fraction above the registered radius range.
 
-For bin count \(B\), the member diagnostic is
+For bin count \(B\), the single-member diagnostic is
 
 \[
 E_{L1,B}(t)=
 \frac{\sum_b |g_{\mathrm{num},b}-g_{\mathrm{ana},b}|\Delta\ln r}
      {\sum_b |g_{\mathrm{ana},b}|\Delta\ln r}.
 \]
+
+Each analysis also stores the numerical and analytical fixed-bin
+distributions in `fixed_bin_distributions.npz`. The ensemble statistic is
+computed in the required order:
+
+\[
+\overline{g}_{\mathrm{num},b} =
+\frac{1}{J}\sum_{j=1}^{J}g_{\mathrm{num},j,b},
+\qquad
+E_{L1,B}^{\mathrm{ensemble}} =
+\frac{\sum_b |\overline{g}_{\mathrm{num},b}-g_{\mathrm{ana},b}|
+\Delta\ln r}
+{\sum_b |g_{\mathrm{ana},b}|\Delta\ln r}.
+\]
+
+This is deliberately **not** the mean of the members' L1 values. Absolute
+value makes L1 nonlinear, so averaging scalar member errors would answer a
+different question and would not measure the error of the ensemble-mean
+distribution.
 
 The registered robustness gates are:
 
@@ -201,15 +220,22 @@ reduces unrelated random-stream variation in the numerical comparison.
 Changing the timestep changes how often the collision operator is called, so
 these are common-stream comparisons, not paired event histories.
 
-For each coarser timestep and diagnostic \(D\), the code calculates five
-common-stream differences against 0.1 s:
+For signed relative \(M_0\) and \(M_6\), the code calculates five
+common-stream member differences against 0.1 s:
 
 \[
 d_j=D_j(\Delta t)-D_j(0.1\,\mathrm{s}).
 \]
 
-It forms a two-sided Student 95% confidence interval for the mean difference.
-The entire interval must lie inside:
+It forms a two-sided Student 95% confidence interval for each mean moment
+difference.
+
+For L1, the code first forms each timestep's ensemble-mean fixed-bin
+distribution. It then uses a common-stream percentile bootstrap: every
+bootstrap replicate resamples the same five stream indices for the candidate
+and 0.1-s reference, recalculates both ensemble distributions and takes the
+difference between their nonlinear L1 values. The entire interval must lie
+inside:
 
 | Diagnostic | Equivalence interval |
 | --- | ---: |

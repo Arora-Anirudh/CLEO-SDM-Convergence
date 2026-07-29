@@ -36,6 +36,7 @@ source "${SCRIPT_DIR}/common.sh"
 
 : "${KERNEL:?Set KERNEL to golovin or long at submission.}"
 : "${RUN_LABEL:?Set the completed RUN_LABEL at submission.}"
+ANALYSIS_LABEL="${ANALYSIS_LABEL:-analysis_stage0_v2}"
 
 if [[ "${KERNEL}" != "golovin" && "${KERNEL}" != "long" ]]; then
   echo "ERROR: KERNEL must be golovin or long, got ${KERNEL}" >&2
@@ -43,6 +44,10 @@ if [[ "${KERNEL}" != "golovin" && "${KERNEL}" != "long" ]]; then
 fi
 if [[ ! "${RUN_LABEL}" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
   echo "ERROR: RUN_LABEL contains unsupported characters: ${RUN_LABEL}" >&2
+  exit 2
+fi
+if [[ ! "${ANALYSIS_LABEL}" =~ ^analysis_stage0_v[0-9]+$ ]]; then
+  echo "ERROR: ANALYSIS_LABEL must match analysis_stage0_v<number>: ${ANALYSIS_LABEL}" >&2
   exit 2
 fi
 
@@ -53,8 +58,8 @@ cleo_sdm_print_environment
 
 run_directory="${CLEO_SDM_RUN_ROOT}/${RUN_LABEL}"
 cleo_source="${CLEO_SDM_BUILD_ROOT}/_deps/cleo-src"
-output_directory="${run_directory}/analysis_stage0_v2"
-staging_directory="${run_directory}/.analysis_stage0_v2_job${SLURM_JOB_ID}.tmp"
+output_directory="${run_directory}/${ANALYSIS_LABEL}"
+staging_directory="${run_directory}/.${ANALYSIS_LABEL}_job${SLURM_JOB_ID}.tmp"
 failed_directory="${run_directory}/analysis_failed_job${SLURM_JOB_ID}"
 python="${CLEO_SDM_PROJECT_ROOT}/.venv/bin/python"
 
@@ -89,19 +94,26 @@ trap preserve_failed_analysis EXIT
 
 test -f "${staging_directory}/member_time_diagnostics.csv"
 test -f "${staging_directory}/member_summary.csv"
+if [[ "${KERNEL}" == "golovin" ]]; then
+  test -f "${staging_directory}/fixed_bin_distributions.npz"
+fi
 test -f "${staging_directory}/${KERNEL}_mass_distribution.png"
 test -f "${staging_directory}/${KERNEL}_bulk_diagnostics.png"
 test -f "${staging_directory}/diagnostic_metadata.json"
 
 (
   cd "${staging_directory}"
-  sha256sum \
-    member_time_diagnostics.csv \
-    member_summary.csv \
-    "${KERNEL}_mass_distribution.png" \
-    "${KERNEL}_bulk_diagnostics.png" \
-    diagnostic_metadata.json \
-    >SHA256SUMS
+  checksum_files=(
+    member_time_diagnostics.csv
+    member_summary.csv
+    "${KERNEL}_mass_distribution.png"
+    "${KERNEL}_bulk_diagnostics.png"
+    diagnostic_metadata.json
+  )
+  if [[ "${KERNEL}" == "golovin" ]]; then
+    checksum_files+=(fixed_bin_distributions.npz)
+  fi
+  sha256sum "${checksum_files[@]}" >SHA256SUMS
   sha256sum -c SHA256SUMS
 )
 

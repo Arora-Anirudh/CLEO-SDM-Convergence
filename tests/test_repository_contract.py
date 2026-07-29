@@ -240,3 +240,23 @@ def test_collision_box_analyzer_uses_pinned_cleo_tools() -> None:
         encoding="utf-8"
     )
     assert wrapper.count("sha256sum -c SHA256SUMS") == 2
+    assert "fixed_bin_distributions.npz" in analyzer
+    assert "fixed_bin_distributions.npz" in wrapper
+    assert "ANALYSIS_LABEL" in wrapper
+
+
+def test_timestep_screen_uses_ensemble_distribution_and_current_summary_name() -> None:
+    analyzer = (ROOT / "scripts" / "analyze_golovin_timestep_screen.py").read_text(encoding="utf-8")
+    wrapper = (ROOT / "scripts" / "levante" / "analyze_golovin_timestep_screen.sbatch").read_text(
+        encoding="utf-8"
+    )
+    config = YAML(typ="safe").load(
+        (ROOT / "config" / "golovin_controlled_timestep_screen.yaml").read_text(encoding="utf-8")
+    )
+
+    assert "ensemble_mean_fixed_bin_relative_l1" in analyzer
+    assert "common_stream_bootstrap_l1_difference" in analyzer
+    assert "fixed_bin_distributions.npz" in analyzer
+    assert "all_member_time_diagnostics.csv" in wrapper
+    assert "fixed_bin_distributions.npz" in wrapper
+    assert config["screening"]["maximum_bin_robustness_absolute_difference"] == 0.005

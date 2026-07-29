@@ -101,3 +101,34 @@ def test_fixed_bin_robustness_reports_every_registered_grid() -> None:
         assert np.isfinite(result[f"golovin_fixed_bin_l1_relative_bins_{count}"])
         assert result[f"fixed_bin_mass_below_range_fraction_bins_{count}"] == pytest.approx(0.0)
         assert result[f"fixed_bin_mass_above_range_fraction_bins_{count}"] == pytest.approx(0.0)
+
+
+def test_fixed_bin_products_preserve_member_and_analytical_distributions() -> None:
+    analyzer = load_analyzer()
+    radius_um = np.asarray([5.0, 20.0, 80.0])
+    multiplicity = np.asarray([4.0, 2.0, 1.0])
+    wet_mass_g = analyzer.water_equivalent_droplet_mass_g(radius_um, 998.203)
+    edges_by_count = {
+        count: analyzer.logarithmic_radius_edges(1.0, 5000.0, count) for count in (250, 500, 1000)
+    }
+
+    metrics, numerical, analytical = analyzer.calculate_fixed_bin_products(
+        radius_um=radius_um,
+        multiplicity=multiplicity,
+        wet_mass_g=wet_mass_g,
+        domain_volume_m3=1.0e6,
+        edges_by_count=edges_by_count,
+        time_s=0.0,
+        number_concentration_m3=8.388608e6,
+        volume_exponential_scale_m=30.531e-6,
+        liquid_water_density_kgm3=998.203,
+    )
+
+    assert set(numerical) == set(edges_by_count)
+    assert set(analytical) == set(edges_by_count)
+    for count in edges_by_count:
+        assert numerical[count].shape == (count,)
+        assert analytical[count].shape == (count,)
+        assert np.all(np.isfinite(numerical[count]))
+        assert np.all(np.isfinite(analytical[count]))
+        assert np.isfinite(metrics[f"golovin_fixed_bin_l1_relative_bins_{count}"])

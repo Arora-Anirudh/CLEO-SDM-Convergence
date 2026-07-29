@@ -540,6 +540,9 @@ scientifically correct.
 
 Every fresh `analysis_stage0_v2` directory contains:
 
+- `fixed_bin_distributions.npz` for Golovin, with member numerical and
+  analytical arrays on the registered 250/500/1000-bin grids;
+
 ### `member_time_diagnostics.csv`
 
 One row per stored output time. It includes:

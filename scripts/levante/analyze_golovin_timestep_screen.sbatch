@@ -119,6 +119,7 @@ tail -n +2 "${MATRIX_FILE}" |
       sha256sum \
         member_time_diagnostics.csv \
         member_summary.csv \
+        fixed_bin_distributions.npz \
         diagnostic_metadata.json \
         >SHA256SUMS
       sha256sum -c SHA256SUMS
@@ -137,7 +138,8 @@ summary_directory="${staging_directory}/ensemble_summary"
   --bootstrap-seed 20260728
 
 "${python}" "${CLEO_SDM_PROJECT_ROOT}/scripts/analyze_golovin_timestep_screen.py" \
-  --combined-member-time "${summary_directory}/combined_member_time.csv" \
+  --combined-member-time "${summary_directory}/all_member_time_diagnostics.csv" \
+  --run-root "${CLEO_SDM_RUN_ROOT}" \
   --matrix-file "${MATRIX_FILE}" \
   --config "${SCREEN_CONFIG}" \
   --output-directory "${staging_directory}/screen"

@@ -87,10 +87,14 @@ Each fresh `analysis_stage0_v2` directory contains:
 - `<kernel>_bulk_diagnostics.png`;
 - `member_time_diagnostics.csv`;
 - `member_summary.csv`;
+- `fixed_bin_distributions.npz` for Golovin, containing the numerical and
+  analytical 250/500/1000-bin arrays required to calculate the ensemble
+  estimand in the correct order;
 - `diagnostic_metadata.json`;
 - `SHA256SUMS` when run through the Levante batch wrapper.
 
 The analysis refuses to overwrite an existing directory. The Levante wrapper
-writes to a job-specific staging directory and renames it to
-`analysis_stage0_v2` only after every output and checksum succeeds. A failed
-staging directory is preserved as `analysis_failed_job<jobid>` for diagnosis.
+writes to a job-specific staging directory and renames it to the requested
+`ANALYSIS_LABEL` (default `analysis_stage0_v2`) only after every output and
+checksum succeeds. A failed staging directory is preserved as
+`analysis_failed_job<jobid>` for diagnosis.

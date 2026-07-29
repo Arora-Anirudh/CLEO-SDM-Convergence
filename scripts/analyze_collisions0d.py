@@ -278,7 +278,36 @@ def calculate_fixed_bin_robustness(
     liquid_water_density_kgm3: float,
 ) -> dict[str, float]:
     """Calculate the registered no-smoothing metric on every robustness grid."""
+    results, _, _ = calculate_fixed_bin_products(
+        radius_um=radius_um,
+        multiplicity=multiplicity,
+        wet_mass_g=wet_mass_g,
+        domain_volume_m3=domain_volume_m3,
+        edges_by_count=edges_by_count,
+        time_s=time_s,
+        number_concentration_m3=number_concentration_m3,
+        volume_exponential_scale_m=volume_exponential_scale_m,
+        liquid_water_density_kgm3=liquid_water_density_kgm3,
+    )
+    return results
+
+
+def calculate_fixed_bin_products(
+    *,
+    radius_um: np.ndarray,
+    multiplicity: np.ndarray,
+    wet_mass_g: np.ndarray,
+    domain_volume_m3: float,
+    edges_by_count: dict[int, np.ndarray],
+    time_s: float,
+    number_concentration_m3: float,
+    volume_exponential_scale_m: float,
+    liquid_water_density_kgm3: float,
+) -> tuple[dict[str, float], dict[int, np.ndarray], dict[int, np.ndarray]]:
+    """Return scalar member metrics and the distributions needed by ensembles."""
     results: dict[str, float] = {}
+    numerical_by_count: dict[int, np.ndarray] = {}
+    analytical_by_count: dict[int, np.ndarray] = {}
     for bin_count, fixed_edges_um in edges_by_count.items():
         fixed_numerical = fixed_bin_mass_density(
             radius_um=radius_um,
@@ -294,6 +323,8 @@ def calculate_fixed_bin_robustness(
             volume_exponential_scale_radius_m=volume_exponential_scale_m,
             liquid_water_density_kgm3=liquid_water_density_kgm3,
         )
+        numerical_by_count[bin_count] = fixed_numerical.mass_density_gm3_per_ln_radius
+        analytical_by_count[bin_count] = fixed_analytical
         suffix = f"_bins_{bin_count}"
         results[f"golovin_fixed_bin_l1_relative{suffix}"] = fixed_bin_relative_l1(
             fixed_numerical.mass_density_gm3_per_ln_radius,
@@ -306,7 +337,7 @@ def calculate_fixed_bin_robustness(
         results[f"fixed_bin_mass_above_range_fraction{suffix}"] = (
             fixed_numerical.mass_above_range_fraction
         )
-    return results
+    return results, numerical_by_count, analytical_by_count
 
 
 def calculate_diagnostics(
@@ -325,7 +356,7 @@ def calculate_diagnostics(
     large_drop_threshold_um: float,
     onset_radius_threshold_um: float,
     mass_quantile: float,
-) -> list[dict[str, float | int]]:
+) -> tuple[list[dict[str, float | int]], dict[str, np.ndarray]]:
     radii = superdrops["radius"]
     multiplicities = superdrops["xi"]
     solute_masses = superdrops["msol"]
@@ -334,6 +365,15 @@ def calculate_diagnostics(
     smooth_sigma = 0.62 * max_superdroplets ** (-1.0 / 5.0)
 
     rows: list[dict[str, float | int]] = []
+    fixed_bin_archive: dict[str, np.ndarray | list[np.ndarray]] = {
+        "time_s": np.asarray(time.secs, dtype=float),
+        "bin_counts": np.asarray(sorted(fixed_edges_by_count), dtype=np.int64),
+    }
+    for bin_count, edges_um in fixed_edges_by_count.items():
+        fixed_bin_archive[f"edges_um_{bin_count}"] = edges_um
+        if kernel == "golovin":
+            fixed_bin_archive[f"numerical_gm3_per_ln_radius_{bin_count}"] = []
+            fixed_bin_archive[f"analytical_gm3_per_ln_radius_{bin_count}"] = []
     initial_liquid_water_gm3: float | None = None
     for index, time_s in enumerate(np.asarray(time.secs, dtype=float)):
         radius_um = np.asarray(ak.to_numpy(radii[index]), dtype=float)
@@ -389,19 +429,31 @@ def calculate_diagnostics(
                 radius_um,
                 superdrops.RHO_L(),
             )
-            row.update(
-                calculate_fixed_bin_robustness(
-                    radius_um=radius_um,
-                    multiplicity=multiplicity,
-                    wet_mass_g=wet_mass_g,
-                    domain_volume_m3=domain_volume_m3,
-                    edges_by_count=fixed_edges_by_count,
-                    time_s=float(time_s),
-                    number_concentration_m3=number_concentration_m3,
-                    volume_exponential_scale_m=volume_exponential_scale_m,
-                    liquid_water_density_kgm3=superdrops.RHO_L(),
-                )
+            (
+                fixed_metrics,
+                numerical_by_count,
+                analytical_by_count,
+            ) = calculate_fixed_bin_products(
+                radius_um=radius_um,
+                multiplicity=multiplicity,
+                wet_mass_g=wet_mass_g,
+                domain_volume_m3=domain_volume_m3,
+                edges_by_count=fixed_edges_by_count,
+                time_s=float(time_s),
+                number_concentration_m3=number_concentration_m3,
+                volume_exponential_scale_m=volume_exponential_scale_m,
+                liquid_water_density_kgm3=superdrops.RHO_L(),
             )
+            row.update(fixed_metrics)
+            for bin_count in fixed_edges_by_count:
+                numerical_key = f"numerical_gm3_per_ln_radius_{bin_count}"
+                analytical_key = f"analytical_gm3_per_ln_radius_{bin_count}"
+                numerical_values = fixed_bin_archive[numerical_key]
+                analytical_values = fixed_bin_archive[analytical_key]
+                assert isinstance(numerical_values, list)
+                assert isinstance(analytical_values, list)
+                numerical_values.append(numerical_by_count[bin_count])
+                analytical_values.append(analytical_by_count[bin_count])
 
             primary_suffix = f"_bins_{primary_fixed_bin_count}"
             row["golovin_fixed_bin_l1_relative"] = row[
@@ -449,7 +501,13 @@ def calculate_diagnostics(
 
         rows.append(row)
 
-    return rows
+    completed_archive: dict[str, np.ndarray] = {}
+    for key, value in fixed_bin_archive.items():
+        if isinstance(value, list):
+            completed_archive[key] = np.stack(value)
+        else:
+            completed_archive[key] = value
+    return rows, completed_archive
 
 
 def write_diagnostics_csv(filename: Path, rows: list[dict[str, object]]) -> None:
@@ -633,7 +691,7 @@ def main() -> None:
             message="invalid value encountered in multiply",
             category=RuntimeWarning,
         )
-        rows = calculate_diagnostics(
+        rows, fixed_bin_archive = calculate_diagnostics(
             time=time,
             superdrops=superdrops,
             domain_volume_m3=domain_volume_m3,
@@ -669,6 +727,14 @@ def main() -> None:
     rows = [{**member_identifiers, **row} for row in rows]
     diagnostics_csv = output_directory / "member_time_diagnostics.csv"
     write_diagnostics_csv(diagnostics_csv, rows)
+    fixed_bin_archive_filename: Path | None = None
+    if args.kernel == "golovin":
+        fixed_bin_archive_filename = output_directory / "fixed_bin_distributions.npz"
+        np.savez_compressed(
+            fixed_bin_archive_filename,
+            diagnostic_schema_version=np.asarray([3], dtype=np.int64),
+            **fixed_bin_archive,
+        )
 
     crossing = first_threshold_crossing(
         np.asarray([float(row["time_s"]) for row in rows]),
@@ -711,7 +777,7 @@ def main() -> None:
 
     metadata = {
         "status": "completed",
-        "diagnostic_schema_version": 2,
+        "diagnostic_schema_version": 3,
         "kernel": args.kernel,
         "run_directory": str(run_directory),
         "cleo_source": str(cleo_source),
@@ -747,6 +813,9 @@ def main() -> None:
         ),
         "outputs": {
             "bulk_csv": diagnostics_csv.name,
+            "fixed_bin_distributions": (
+                fixed_bin_archive_filename.name if fixed_bin_archive_filename is not None else None
+            ),
             "distribution_figure": (
                 distribution_figure.name if distribution_figure is not None else None
             ),

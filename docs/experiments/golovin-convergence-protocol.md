@@ -115,17 +115,23 @@ Each experiment record must include:
 ### 4.1 Distribution metric
 
 The primary distribution metric is a fixed-bin relative L1 difference between
-the numerical and analytical mass-density distributions:
+the **ensemble-mean numerical** and analytical mass-density distributions:
 
 \[
 E_{L1}(t)=
 \frac{
-  \sum_b \left|g_{\mathrm{num},b}(t)-g_{\mathrm{ana},b}(t)\right|
+  \sum_b \left|\overline{g}_{\mathrm{num},b}(t)-g_{\mathrm{ana},b}(t)\right|
   \Delta\ln r
 }{
   \sum_b \left|g_{\mathrm{ana},b}(t)\right|\Delta\ln r
 }.
 \]
+
+Here
+\(\overline{g}_{\mathrm{num},b}=J^{-1}\sum_j g_{\mathrm{num},j,b}\).
+The ensemble members are averaged bin by bin before applying the absolute
+value. This is not interchangeable with averaging the members' scalar L1
+errors because L1 is nonlinear.
 
 The formal convergence calculation must use:
 
@@ -454,9 +460,12 @@ every decision time.
 
 ### 7.3 Adjacent-resolution agreement
 
-For \(N\) and \(2N\), or adjacent timestep levels, form the confidence interval
-for the difference between independent ensemble means. The entire interval
-must lie within:
+For signed moment diagnostics at \(N\) and \(2N\), form the confidence interval
+for the difference between independent ensemble means. For distribution L1,
+bootstrap the difference between L1 values recalculated from resampled
+ensemble-mean distributions. At adjacent timestep levels, reuse the registered
+common collision-stream labels in both bootstrap samples without calling the
+histories paired. The entire interval must lie within:
 
 - \([-0.01,+0.01]\) absolute for fixed-bin L1;
 - \([-0.05,+0.05]\) for signed relative \(M_0\);

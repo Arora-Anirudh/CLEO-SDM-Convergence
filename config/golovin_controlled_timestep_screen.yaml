@@ -31,8 +31,10 @@ screening:
   maximum_moment0_mean_relative_difference: 0.05
   maximum_moment6_mean_relative_difference: 0.10
   maximum_relative_liquid_mass_drift: 1.0e-7
-  maximum_bin_robustness_mean_absolute_difference: 0.005
+  maximum_bin_robustness_absolute_difference: 0.005
   maximum_out_of_range_mass_fraction: 1.0e-6
+  bootstrap_resamples: 10000
+  bootstrap_seed: 20260729
   require_pass_at_every_decision_time: true
   selection_rule: largest_timestep_passing_all_registered_gates
 

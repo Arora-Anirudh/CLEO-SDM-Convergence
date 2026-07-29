@@ -44,6 +44,44 @@ def test_fixed_bin_l1_detects_known_perturbation() -> None:
     assert stage0.fixed_bin_relative_l1(numerical, analytical, edges) == pytest.approx(0.5)
 
 
+def test_ensemble_mean_l1_is_not_mean_of_member_l1_values() -> None:
+    stage0 = load_module(STAGE0_SCRIPT, "golovin_stage0_ensemble_mean")
+    edges = np.asarray([1.0, np.e, np.e**2])
+    analytical = np.asarray([1.0, 1.0])
+    member_distributions = np.asarray([[0.0, 2.0], [2.0, 0.0]])
+
+    member_l1_values = [
+        stage0.fixed_bin_relative_l1(member, analytical, edges) for member in member_distributions
+    ]
+
+    assert np.mean(member_l1_values) == pytest.approx(1.0)
+    assert stage0.ensemble_mean_fixed_bin_relative_l1(
+        member_distributions,
+        analytical,
+        edges,
+    ) == pytest.approx(0.0)
+
+
+def test_common_stream_bootstrap_is_zero_for_identical_stacks() -> None:
+    stage0 = load_module(STAGE0_SCRIPT, "golovin_stage0_bootstrap")
+    edges = np.asarray([1.0, np.e, np.e**2])
+    analytical = np.asarray([1.0, 1.0])
+    members = np.asarray([[0.8, 1.2], [1.1, 0.9], [1.0, 1.0]])
+
+    observed, ci_low, ci_high = stage0.common_stream_bootstrap_l1_difference(
+        members,
+        members.copy(),
+        analytical,
+        edges,
+        bootstrap_resamples=100,
+        bootstrap_seed=7,
+    )
+
+    assert observed == pytest.approx(0.0)
+    assert ci_low == pytest.approx(0.0)
+    assert ci_high == pytest.approx(0.0)
+
+
 def test_fixed_bin_distribution_accounts_for_in_range_and_overflow_mass() -> None:
     stage0 = load_module(STAGE0_SCRIPT, "golovin_stage0_histogram")
     edges = np.asarray([1.0, 10.0, 100.0])

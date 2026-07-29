@@ -167,6 +167,108 @@ def fixed_bin_relative_l1(
     return numerator / denominator
 
 
+def ensemble_mean_fixed_bin_relative_l1(
+    member_distributions_gm3_per_ln_radius: np.ndarray,
+    analytical_gm3_per_ln_radius: np.ndarray,
+    edges_um: np.ndarray,
+) -> float:
+    """Calculate L1 after averaging member distributions.
+
+    The experiment's estimand is the distance between the ensemble-mean
+    numerical distribution and the analytical solution. It is not the mean of
+    each member's nonlinear L1 distance.
+    """
+    member_distributions = np.asarray(
+        member_distributions_gm3_per_ln_radius,
+        dtype=float,
+    )
+    if member_distributions.ndim != 2 or member_distributions.shape[0] < 1:
+        raise ValueError("member distributions must have shape (members, bins)")
+    return fixed_bin_relative_l1(
+        np.mean(member_distributions, axis=0),
+        analytical_gm3_per_ln_radius,
+        edges_um,
+    )
+
+
+def common_stream_bootstrap_l1_difference(
+    member_distributions_gm3_per_ln_radius: np.ndarray,
+    reference_member_distributions_gm3_per_ln_radius: np.ndarray,
+    analytical_gm3_per_ln_radius: np.ndarray,
+    edges_um: np.ndarray,
+    *,
+    bootstrap_resamples: int,
+    bootstrap_seed: int,
+    confidence_level: float = 0.95,
+) -> tuple[float, float, float]:
+    """Bootstrap an ensemble-mean L1 difference with common stream indices.
+
+    The same bootstrap member-index counts are applied to the candidate and
+    reference stacks. Reused random-stream labels improve the comparison, but
+    different collision timesteps still do not create paired event histories.
+    """
+    candidate = np.asarray(member_distributions_gm3_per_ln_radius, dtype=float)
+    reference = np.asarray(
+        reference_member_distributions_gm3_per_ln_radius,
+        dtype=float,
+    )
+    analytical = np.asarray(analytical_gm3_per_ln_radius, dtype=float)
+    edges_um = np.asarray(edges_um, dtype=float)
+    if candidate.shape != reference.shape:
+        raise ValueError("candidate and reference member stacks must match")
+    if candidate.ndim != 2 or candidate.shape[0] < 2:
+        raise ValueError("at least two common-stream members are required")
+    if candidate.shape[1:] != analytical.shape:
+        raise ValueError("member and analytical bin counts must match")
+    if bootstrap_resamples < 1:
+        raise ValueError("bootstrap_resamples must be positive")
+    if not 0.0 < confidence_level < 1.0:
+        raise ValueError("confidence_level must lie strictly between zero and one")
+
+    member_count = candidate.shape[0]
+    generator = np.random.default_rng(bootstrap_seed)
+    indices = generator.integers(
+        0,
+        member_count,
+        size=(bootstrap_resamples, member_count),
+    )
+    counts = np.stack(
+        [np.sum(indices == member, axis=1) for member in range(member_count)],
+        axis=1,
+    )
+    unique_counts, inverse = np.unique(counts, axis=0, return_inverse=True)
+    weights = unique_counts.astype(float) / member_count
+    candidate_means = weights @ candidate
+    reference_means = weights @ reference
+
+    delta_ln_radius = np.diff(np.log(edges_um))
+    denominator = float(np.sum(np.abs(analytical) * delta_ln_radius))
+    if denominator <= 0:
+        raise ValueError("analytical L1 denominator must be positive")
+    candidate_l1 = (
+        np.sum(np.abs(candidate_means - analytical) * delta_ln_radius, axis=1) / denominator
+    )
+    reference_l1 = (
+        np.sum(np.abs(reference_means - analytical) * delta_ln_radius, axis=1) / denominator
+    )
+    bootstrap_difference = (candidate_l1 - reference_l1)[inverse]
+    alpha = 1.0 - confidence_level
+    ci_low, ci_high = np.quantile(
+        bootstrap_difference,
+        [alpha / 2.0, 1.0 - alpha / 2.0],
+    )
+    observed_difference = ensemble_mean_fixed_bin_relative_l1(
+        candidate,
+        analytical,
+        edges_um,
+    ) - ensemble_mean_fixed_bin_relative_l1(
+        reference,
+        analytical,
+        edges_um,
+    )
+    return float(observed_difference), float(ci_low), float(ci_high)
+
+
 def golovin_analytical_mass_density(
     *,
     edges_um: np.ndarray,
