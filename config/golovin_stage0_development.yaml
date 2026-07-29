@@ -39,7 +39,7 @@ diagnostics:
   bootstrap_seed: 20260728
 
 controlled_initialization:
-  status: implemented_local_unit_validated_native_binary_pending
+  status: implemented_local_unit_and_levante_native_readback_validated_frozen_bundle_pending
   method: deterministic_log_volume_bin_quadrature
   radius_support_um: [1.0, 75.0]
   integer_multiplicity_allocation: largest_remainder

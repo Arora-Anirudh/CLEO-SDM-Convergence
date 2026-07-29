@@ -1,7 +1,8 @@
 # Controlled Golovin initialization: implementation and learning guide
 
-- Implementation status: local numerical and unit tests passed
-- Native CLEO binary status: pending a small Levante pilot
+- Implementation status: local numerical/unit tests and one Levante native
+  CLEO write/read gate passed
+- Native CLEO binary status: 4096-SD pilot validated in job `26534015`
 - Production status: not authorized
 - Scientific decision: [ADR 0004](../decisions/0004-golovin-production-definitions.md)
 - Main implementation: [`scripts/controlled_initialization.py`](../../scripts/controlled_initialization.py)
@@ -144,10 +145,18 @@ subtraction was numerically unreliable near 32,768 bins; the stable formulas
 pass through that resolution.
 
 The numerical arrays explicitly use float64. NumPy `longdouble` has different
-precision on different operating systems, so using it would weaken the
-cross-platform definition of the population hash. The later native-binary
-pilot still checks the actual Levante artifact rather than assuming that a
-local scientific-array hash is a binary checksum.
+precision on different operating systems, so float64 gives a narrower and
+more portable numerical contract. It does **not** guarantee identical
+transcendental-function results across NumPy/libm versions. The Levante pilot
+confirmed that tiny platform-level differences can change raw array bytes
+while leaving every registered physical moment gate unchanged. Therefore:
+
+- the scientific method, tolerances and moment gates define equivalence across
+  software platforms;
+- an array SHA-256 identifies one exact constructor output in one recorded
+  environment;
+- the CLEO native-binary SHA-256 identifies the exact artifact that ensemble
+  members must reuse.
 
 ### 4.3 Convert desired multiplicities to exact integers
 
@@ -237,7 +246,7 @@ population resolves the large-drop tail. If all three moments were optimized
 to match by construction, a weakness in the tail representation could be
 hidden.
 
-For the current 4096-SD population, the local calculation gives:
+For the current 4096-SD population, the macOS local calculation gives:
 
 | Quantity | Value |
 | --- | ---: |
@@ -253,6 +262,14 @@ For the current 4096-SD population, the local calculation gives:
 
 The liquid-water content is a consequence of the finite-support conditioned
 DSD. It is not independently rescaled to exactly \(1\,\mathrm{g\,m^{-3}}\).
+
+The Levante NumPy 2.5.1 constructor gives the same printed physical values and
+passes the same gates, but its source-array fingerprint is
+`11d4871d...c5d08`. A direct comparison found 86 multiplicities differing by
+small integer redistributions and radius differences no larger than
+`1.60e-18 m` (`2.34e-13` relative). This is why the production workflow will
+freeze and reuse one Levante-native bundle per resolution instead of asking
+every member to regenerate it.
 
 As a deliberate negative test, \(N_\mathrm{SD}=16\) gives about a 4.55% \(M_6\)
 error and is rejected by the 1% gate. This proves the gate can fail an
@@ -382,10 +399,11 @@ The next operational layer must:
 7. reject any run whose requested physical configuration disagrees with the
    frozen bundle.
 
-Adding a `--controlled` option directly to the existing matrix runner before
-this reuse contract exists could regenerate inputs in every member directory.
-They should be deterministic, but regeneration is weaker evidence than reuse
-of one explicitly frozen artifact.
+The 4096-SD pilot has completed steps 1–3 once. Adding a `--controlled` option
+directly to the existing matrix runner before steps 4–7 exist could regenerate
+inputs in every member directory. Even deterministic regeneration is weaker
+evidence than reuse of one explicitly frozen artifact, and exact regeneration
+can depend on the software stack.
 
 ## 10. What has and has not been validated
 
@@ -395,27 +413,37 @@ Validated locally:
 - exact integer physical-droplet total;
 - \(M_0\), \(M_3\), \(M_6\) gates;
 - source-bin containment;
-- deterministic population arrays and hash;
+- repeatable population arrays and hash in the same tested environment;
 - CLEO-compatible multiplicity/radius/solute-mass dtypes;
 - deterministic coordinate generation contract;
 - audit content, artifact hashes and overwrite refusal;
 - deliberate failure for an under-resolved 16-SD case.
 
+Validated on Levante in input-only job `26534015`:
+
+- CLEO wrote one 4096-SD controlled native binary;
+- CLEO's own reader recovered 4096 complete attribute records;
+- the binary checksum matched the initializer audit;
+- the exact `8388608000000000000` physical-droplet total survived round-trip;
+- read-back \(M_0\), \(M_3\) and \(M_6\) matched the audit;
+- all droplets belonged to the one box and all coordinates lay inside it;
+- no model executable or Zarr output was created;
+- stderr was empty.
+
 Not yet validated:
 
-- CLEO writing and reading the new native binary on Levante;
-- byte identity of two independently written native binaries;
+- byte identity of two independently written native binaries in one pinned
+  environment;
 - the frozen-bundle reuse layer;
 - a compiled model run using the controlled binary;
 - runtime and storage scaling;
 - any convergence result.
 
-No model compute was used to implement or locally test this code.
+The native gate used one serial Slurm allocation but no model compute.
 
-## 11. Planned Levante pilot
+## 11. Completed Levante pilot
 
-Before submission, the full request will be disclosed to Anirudh. The pilot
-should be deliberately small:
+The request was disclosed to Anirudh before submission:
 
 - temporary account: `bb1153`;
 - partition: `shared`;
@@ -424,9 +452,23 @@ should be deliberately small:
 - CPUs per task: 1;
 - memory: 940 MiB;
 - walltime: 10 minutes;
-- first action: generate and read one 4096-SD controlled binary;
-- optional second action only after the input gate passes: one short serial
-  Golovin model run.
+- action: generate and read one 4096-SD controlled binary;
+- no collision model and no ensemble.
+
+Job `26534015` completed in 11 seconds. Slurm recorded one requested CPU but
+allocated two CPUs under the shared-partition policy; the code remained
+serial with `OMP_NUM_THREADS=1`. Requested memory was 940 MiB and batch
+`MaxRSS` was 3916 KiB. The complete input-only directory is 248 KiB:
+
+```text
+/scratch/b/b383673/SDM/CLEO-SDM-Convergence/runs/
+  controlled_initialization_validation/controlled_init_n4096_v1
+```
+
+The native superdroplet binary SHA-256 is
+`d805fb278ed070396d8bf3bb0d655138f5f1124901d5ea917279f99e270420f2`.
+The compact result record is
+[`results/controlled_initialization_native_n4096_v1/`](../../results/controlled_initialization_native_n4096_v1/).
 
 This is a validation pilot, not a convergence ensemble.
 

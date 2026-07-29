@@ -133,7 +133,10 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
     ]
 
     initialization = config["controlled_initialization"]
-    assert initialization["status"] == "implemented_local_unit_validated_native_binary_pending"
+    assert (
+        initialization["status"]
+        == "implemented_local_unit_and_levante_native_readback_validated_frozen_bundle_pending"
+    )
     assert initialization["maximum_relative_moment0_error"] == 1.0e-10
     assert initialization["maximum_relative_moment3_error"] == 1.0e-10
     assert initialization["maximum_relative_moment6_error"] == 0.01

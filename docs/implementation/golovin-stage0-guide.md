@@ -650,8 +650,9 @@ interpretation are in the
 
 Still not validated or concluded:
 
-- the controlled initializer is locally implemented and unit-tested, but its
-  native CLEO binary/readback and frozen-bundle reuse are not yet validated;
+- the controlled initializer is locally implemented, unit-tested and
+  4096-SD-native-readback validated, but frozen-bundle reuse is not yet
+  implemented;
 - the registered distribution-grid robustness calculation is not yet
   implemented;
 - no value of \(N_\mathrm{SD}\) has been declared converged;

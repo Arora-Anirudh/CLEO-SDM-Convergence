@@ -154,10 +154,13 @@ uv run python scripts/prepare_collisions0d_inputs.py \
   --audit-file /path/to/fresh/controlled-initialization-audit.json
 ```
 
-This path does not accept an initialization seed. It is locally tested but
-still awaits a native CLEO binary/readback pilot on Levante. The production
-matrix runner deliberately remains on `operational_stochastic` until one
-frozen-binary bundle per resolution is implemented and validated.
+This path does not accept an initialization seed. Local tests and the
+4096-SD CLEO-native write/read gate passed on Levante in job `26534015`; the
+compact result is under
+[`results/controlled_initialization_native_n4096_v1/`](results/controlled_initialization_native_n4096_v1/).
+The production matrix runner deliberately remains on
+`operational_stochastic` until one frozen-binary bundle per resolution is
+implemented and validated.
 
 ## Quality checks
 

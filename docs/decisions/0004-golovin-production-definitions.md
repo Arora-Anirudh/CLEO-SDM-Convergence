@@ -356,17 +356,19 @@ Implementation update, 2026-07-29:
 - ten unit tests cover exact allocation, moment and bin gates, determinism,
   CLEO-compatible arrays, auditing, family-option refusal and deliberate
   failure;
-- the native CLEO binary/readback, frozen-bundle reuse and compiled-model
-  pilot remain pending;
+- one 4096-SD native CLEO write/read gate passed on Levante in job `26534015`;
+- the frozen-bundle reuse and compiled-model pilot remain pending;
+- exact macOS/Levante source-array hashes differ because tiny
+  NumPy/libm-version differences change raw bytes, reinforcing the decision to
+  freeze and reuse one Levante-native artifact per resolution;
 - production compute remains unauthorized.
 
 Before any production compute:
 
-1. validate one native controlled binary and readback on Levante;
-2. implement and verify one frozen binary bundle per resolution;
-3. add numerical under/overflow and 250/500/1000-bin sensitivity summaries;
-4. test the compiled model on a tiny single-member Levante pilot;
-5. report the complete proposed `bb1153` Slurm request before submission.
+1. implement and verify one frozen binary bundle per resolution;
+2. add numerical under/overflow and 250/500/1000-bin sensitivity summaries;
+3. test the compiled model on a tiny single-member Levante pilot;
+4. report the complete proposed `bb1153` Slurm request before submission.
 
 Passing these gates validates the experiment machinery. It does not itself
 establish Golovin convergence.
