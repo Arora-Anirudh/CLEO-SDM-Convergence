@@ -14,6 +14,7 @@ fi
 export CLEO_SDM_PROJECT_ROOT="${CLEO_SDM_PROJECT_ROOT:-/home/b/b383673/SDM/CLEO-SDM-Convergence}"
 export CLEO_SDM_BUILD_ROOT="${CLEO_SDM_BUILD_ROOT:-/home/b/b383673/SDM/cleo_builds/CLEO-SDM-Convergence/openmp}"
 export CLEO_SDM_RUN_ROOT="${CLEO_SDM_RUN_ROOT:-/scratch/b/b383673/SDM/CLEO-SDM-Convergence/runs}"
+export CLEO_SDM_BUNDLE_ROOT="${CLEO_SDM_BUNDLE_ROOT:-/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles}"
 
 export CLEO_SDM_YACYAXT_ROOT="${CLEO_SDM_YACYAXT_ROOT:-/home/b/b383673/SDM/cleo_dependencies/yacyaxt/gcc}"
 export CLEO_SDM_UV="${CLEO_SDM_UV:-/home/b/b383673/.conda/envs/cleo_tools/bin/uv}"
@@ -88,6 +89,7 @@ cleo_sdm_print_environment() {
   echo "project_root=${CLEO_SDM_PROJECT_ROOT}"
   echo "build_root=${CLEO_SDM_BUILD_ROOT}"
   echo "run_root=${CLEO_SDM_RUN_ROOT}"
+  echo "bundle_root=${CLEO_SDM_BUNDLE_ROOT}"
   echo "yacyaxt_root=${CLEO_SDM_YACYAXT_ROOT}"
   echo "pinned_cleo_commit=${CLEO_SDM_PINNED_CLEO_COMMIT}"
   echo "slurm_job_id=${SLURM_JOB_ID:-none}"

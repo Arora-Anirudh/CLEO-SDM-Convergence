@@ -26,6 +26,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--collision-timestep-s", type=float, default=None)
     parser.add_argument("--observation-timestep-s", type=float, default=None)
     parser.add_argument("--end-time-s", type=float, default=None)
+    parser.add_argument("--grid-file", type=Path, default=None)
+    parser.add_argument("--superdroplet-file", type=Path, default=None)
     return parser.parse_args()
 
 
@@ -39,6 +41,8 @@ def materialize(
     collision_timestep_s: float | None = None,
     observation_timestep_s: float | None = None,
     end_time_s: float | None = None,
+    grid_file: Path | None = None,
+    superdroplet_file: Path | None = None,
 ) -> None:
     if num_threads < 1:
         raise ValueError("num_threads must be at least one")
@@ -59,10 +63,23 @@ def materialize(
         if value is not None and value <= 0:
             raise ValueError(f"{name} must be positive")
 
-    input_directory = run_directory / "inputs"
+    if (grid_file is None) != (superdroplet_file is None):
+        raise ValueError("--grid-file and --superdroplet-file must be supplied together")
+
     output_directory = run_directory / "output"
-    input_directory.mkdir(parents=True, exist_ok=False)
     output_directory.mkdir(parents=True, exist_ok=False)
+    if grid_file is None:
+        input_directory = run_directory / "inputs"
+        input_directory.mkdir(parents=True, exist_ok=False)
+        grid_file = input_directory / "grid.dat"
+        superdroplet_file = input_directory / "superdroplets.dat"
+    else:
+        grid_file = grid_file.resolve()
+        superdroplet_file = superdroplet_file.resolve()
+        if not grid_file.is_file():
+            raise FileNotFoundError(f"frozen grid file is missing: {grid_file}")
+        if not superdroplet_file.is_file():
+            raise FileNotFoundError(f"frozen superdroplet file is missing: {superdroplet_file}")
 
     config["kokkos_settings"]["num_threads"] = num_threads
     if max_superdroplets is not None:
@@ -78,8 +95,8 @@ def materialize(
     config["inputfiles"]["constants_filename"] = str(
         build_root / "_deps" / "cleo-src" / "libs" / "cleoconstants.hpp"
     )
-    config["inputfiles"]["grid_filename"] = str(input_directory / "grid.dat")
-    config["initsupers"]["initsupers_filename"] = str(input_directory / "superdroplets.dat")
+    config["inputfiles"]["grid_filename"] = str(grid_file)
+    config["initsupers"]["initsupers_filename"] = str(superdroplet_file)
     config["outputdata"]["setup_filename"] = str(output_directory / "collisions0d_setup.txt")
     config["outputdata"]["zarrbasedir"] = str(output_directory / "collisions0d_solution.zarr")
 
@@ -100,6 +117,8 @@ def main() -> None:
         args.collision_timestep_s,
         args.observation_timestep_s,
         args.end_time_s,
+        args.grid_file,
+        args.superdroplet_file,
     )
     print(f"runtime_config={args.output.resolve()}")
 

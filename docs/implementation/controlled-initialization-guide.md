@@ -3,6 +3,8 @@
 - Implementation status: local numerical/unit tests and one Levante native
   CLEO write/read gate passed
 - Native CLEO binary status: 4096-SD pilot validated in job `26534015`
+- Frozen-bundle software status: locally validated; Levante creation/reuse
+  pending
 - Production status: not authorized
 - Scientific decision: [ADR 0004](../decisions/0004-golovin-production-definitions.md)
 - Main implementation: [`scripts/controlled_initialization.py`](../../scripts/controlled_initialization.py)
@@ -382,28 +384,51 @@ identity check.
 The audit writer refuses to overwrite an existing file. A previous experiment
 cannot be silently replaced by a newly generated population.
 
-## 9. Frozen initialization workflow: what remains
+## 9. Frozen initialization workflow
 
-The scientific constructor is implemented, but the production matrix runner
-still accepts only `operational_stochastic`. This is intentional.
+The scientific constructor and native reader gate are complete. The
+project-owned frozen-artifact layer now implements:
 
-The next operational layer must:
+1. `prepare_controlled_bundle.sbatch` generates one controlled grid and
+   superdroplet binary for one \(N_\mathrm{SD}\);
+2. CLEO's reader writes the creation audit and native-readback report;
+3. `controlled_bundle.py finalize` checks their agreement and writes
+   `bundle_manifest.json`;
+4. every required file size and SHA-256 is recorded;
+5. the normalized scientific definition is recorded separately from absolute
+   paths and documentation-only status metadata;
+6. source snapshots and Python/NumPy/platform provenance are retained;
+7. write bits are removed from every bundle file;
+8. `run_collisions0d.sbatch` verifies the bundle before and after a controlled
+   Golovin member;
+9. the member configuration points directly at the frozen files and no
+   member-local initialization is generated;
+10. resolution, CLEO pin, scientific-definition, checksum, size and read-only
+    mismatches stop the run.
 
-1. generate one controlled grid and superdroplet binary per \(N_\mathrm{SD}\);
-2. run the native CLEO reader on it;
-3. save its JSON audit and SHA-256;
-4. freeze that bundle in a resolution-specific immutable directory;
-5. make every collision-stream member at that resolution reuse the exact same
-   binary;
-6. verify the binary checksum before and after every member;
-7. reject any run whose requested physical configuration disagrees with the
-   frozen bundle.
+The persistent layout is:
 
-The 4096-SD pilot has completed steps 1–3 once. Adding a `--controlled` option
-directly to the existing matrix runner before steps 4–7 exist could regenerate
-inputs in every member directory. Even deterministic regeneration is weaker
-evidence than reuse of one explicitly frozen artifact, and exact regeneration
-can depend on the software stack.
+```text
+controlled_bundles/<bundle label>/
+├── bundle_manifest.json
+├── config.yaml
+├── source_reference_config.yaml
+├── source_controlled_config.yaml
+├── controlled_initialization_audit.json
+├── native_readback.json
+├── inputs/
+│   ├── grid.dat
+│   └── superdroplets.dat
+├── output/                       # remains empty during bundle creation
+└── provenance/
+    ├── controlled_initialization.py
+    ├── prepare_collisions0d_inputs.py
+    └── validate_controlled_initialization_binary.py
+```
+
+The matrix generator still accepts only `operational_stochastic`. This is
+intentional: single-bundle creation and one compiled member must pass on
+Levante before controlled array execution is enabled.
 
 ## 10. What has and has not been validated
 
@@ -418,6 +443,13 @@ Validated locally:
 - deterministic coordinate generation contract;
 - audit content, artifact hashes and overwrite refusal;
 - deliberate failure for an under-resolved 16-SD case.
+- frozen-manifest creation and same-definition verification;
+- wrong-resolution and changed-byte refusal;
+- file write-bit removal;
+- member configuration referencing frozen inputs without copying;
+- refusal when only one frozen input path is supplied;
+- source-level run contract separating controlled reuse from operational
+  generation.
 
 Validated on Levante in input-only job `26534015`:
 
@@ -432,9 +464,10 @@ Validated on Levante in input-only job `26534015`:
 
 Not yet validated:
 
+- creation of the new persistent bundle layout on Levante;
+- pre/post identity when one compiled member reuses the bundle;
 - byte identity of two independently written native binaries in one pinned
-  environment;
-- the frozen-bundle reuse layer;
+  environment, if regeneration replay is retained as an additional check;
 - a compiled model run using the controlled binary;
 - runtime and storage scaling;
 - any convergence result.
@@ -469,6 +502,25 @@ The native superdroplet binary SHA-256 is
 `d805fb278ed070396d8bf3bb0d655138f5f1124901d5ea917279f99e270420f2`.
 The compact result record is
 [`results/controlled_initialization_native_n4096_v1/`](../../results/controlled_initialization_native_n4096_v1/).
+
+## 12. Proposed frozen-bundle validation
+
+No new Levante job has been submitted for the frozen-bundle implementation.
+The first proposed validation is input-only:
+
+| Resource | Request |
+| --- | --- |
+| account / partition | `bb1153` / `shared` |
+| nodes / tasks | 1 / 1 |
+| CPUs per task | 1 |
+| memory | 940 MiB |
+| walltime | 10 minutes |
+| execution | serial CPU, no GPU |
+| scope | create/read/finalize one 4096-SD bundle; no model or ensemble |
+
+After that passes, a separate disclosed action would rebuild the exact project
+commit if necessary and run one short controlled Golovin member. No matrix
+should be submitted at either gate.
 
 This is a validation pilot, not a convergence ensemble.
 

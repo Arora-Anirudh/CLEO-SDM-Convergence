@@ -159,8 +159,10 @@ This path does not accept an initialization seed. Local tests and the
 compact result is under
 [`results/controlled_initialization_native_n4096_v1/`](results/controlled_initialization_native_n4096_v1/).
 The production matrix runner deliberately remains on
-`operational_stochastic` until one frozen-binary bundle per resolution is
-implemented and validated.
+`operational_stochastic`. Frozen-bundle creation, verification and direct
+single-member reuse are implemented and locally tested, but controlled matrix
+execution remains disabled until the creation/reuse contract passes on
+Levante.
 
 ## Quality checks
 

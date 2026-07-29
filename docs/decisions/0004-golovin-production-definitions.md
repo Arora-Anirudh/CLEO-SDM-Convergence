@@ -357,7 +357,9 @@ Implementation update, 2026-07-29:
   CLEO-compatible arrays, auditing, family-option refusal and deliberate
   failure;
 - one 4096-SD native CLEO write/read gate passed on Levante in job `26534015`;
-- the frozen-bundle reuse and compiled-model pilot remain pending;
+- frozen-bundle creation/verification and direct member-reuse software are
+  locally implemented; their Levante creation/reuse gate and the
+  compiled-model pilot remain pending;
 - exact macOS/Levante source-array hashes differ because tiny
   NumPy/libm-version differences change raw bytes, reinforcing the decision to
   freeze and reuse one Levante-native artifact per resolution;
@@ -365,10 +367,10 @@ Implementation update, 2026-07-29:
 
 Before any production compute:
 
-1. implement and verify one frozen binary bundle per resolution;
-2. add numerical under/overflow and 250/500/1000-bin sensitivity summaries;
-3. test the compiled model on a tiny single-member Levante pilot;
-4. report the complete proposed `bb1153` Slurm request before submission.
+1. validate one persistent 4096-SD frozen bundle on Levante;
+2. validate pre/post identity in one compiled member reusing that bundle;
+3. add numerical under/overflow and 250/500/1000-bin sensitivity summaries;
+4. report every proposed `bb1153` Slurm request before submission.
 
 Passing these gates validates the experiment machinery. It does not itself
 establish Golovin convergence.

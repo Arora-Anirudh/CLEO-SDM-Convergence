@@ -21,9 +21,13 @@ verified absolute paths.
    one frozen initialization and two controlled collision streams.
 5. `validate_controlled_initialization.sbatch` generates one deterministic
    4096-SD bundle and checks it through CLEO's own native binary reader.
-6. `run_golovin_matrix.sbatch` maps one reviewed TSV row to one unique Slurm
+6. `prepare_controlled_bundle.sbatch` creates one persistent, read-only,
+   checksummed native bundle for one resolution.
+7. `run_collisions0d.sbatch` can point a controlled Golovin member directly
+   at that bundle and verifies it before and after model execution.
+8. `run_golovin_matrix.sbatch` maps one reviewed TSV row to one unique Slurm
    array task and skips only explicitly resumed completed cases.
-7. `analyze_collisions0d.sbatch` reads one completed run through CLEO's own
+9. `analyze_collisions0d.sbatch` reads one completed run through CLEO's own
    `cleopy`/`plotcleo` tools and writes non-overwriting fixed-bin, moment,
    onset, tail and conservation diagnostics.
 
@@ -134,6 +138,59 @@ sbatch \
 `VALIDATION_LABEL` is non-overwriting. The raw native inputs and compact JSON
 audit/readback records are written under
 `$CLEO_SDM_RUN_ROOT/controlled_initialization_validation/`.
+
+## Frozen controlled-bundle request
+
+The bundle-preparation script requests:
+
+- one node and one task;
+- one CPU core;
+- 940 MiB memory;
+- 10 minutes;
+- `shared` partition;
+- serial input generation and CLEO-native readback;
+- no collision executable, model output, ensemble or GPU.
+
+A bundle is stored persistently under
+`$CLEO_SDM_BUNDLE_ROOT/<BUNDLE_LABEL>`. The final manifest records the
+normalized scientific definition, project/CLEO commits, Python/NumPy
+environment, source snapshots and SHA-256/size of every required artifact.
+All files have their write bits removed. The path is non-overwriting.
+
+Proposed first validation command—do not submit without the researcher's
+explicit compute approval:
+
+```bash
+sbatch \
+  --account=bb1153 \
+  --export=ALL,MAX_SUPERDROPLETS=4096,BUNDLE_LABEL=golovin_controlled_N004096_v1 \
+  scripts/levante/prepare_controlled_bundle.sbatch
+```
+
+## Single-member frozen-bundle reuse
+
+After one bundle has passed creation validation, a controlled Golovin member
+uses:
+
+```bash
+sbatch \
+  --account=bb1153 \
+  --export=ALL,KERNEL=golovin,INITIALIZATION_FAMILY=controlled,CONTROLLED_BUNDLE=/absolute/frozen/bundle,COLLISION_SEED=67890,RUN_LABEL=controlled_golovin_reuse_v1,MODEL_THREADS=1,MAX_SUPERDROPLETS=4096 \
+  scripts/levante/run_collisions0d.sbatch
+```
+
+The controlled path:
+
+1. rejects an initialization seed;
+2. validates the bundle's resolution, pinned CLEO commit, scientific
+   definition, file sizes, checksums and read-only modes;
+3. materializes a member configuration pointing directly to the frozen files;
+4. does not create a member-local input directory or call the initializer;
+5. verifies the bundle again after CLEO exits;
+6. records the bundle path and manifest/grid/superdroplet hashes.
+
+The existing `operational_stochastic` path remains seeded and continues to
+generate member-local inputs.
 
 ## Scientific and machine configuration
 

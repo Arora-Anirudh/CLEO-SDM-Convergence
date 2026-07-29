@@ -93,6 +93,53 @@ def test_materializer_refuses_existing_output(tmp_path: Path) -> None:
         )
 
 
+def test_materializer_reuses_frozen_inputs_without_copying(tmp_path: Path) -> None:
+    materializer = load_module(MATERIALIZER_SCRIPT, "collisions0d_frozen_materializer")
+    frozen = tmp_path / "frozen"
+    frozen.mkdir()
+    grid = frozen / "grid.dat"
+    superdroplets = frozen / "superdroplets.dat"
+    grid.write_bytes(b"grid")
+    superdroplets.write_bytes(b"superdroplets")
+    run_directory = tmp_path / "run"
+    output = run_directory / "config.yaml"
+
+    materializer.materialize(
+        ROOT / "config" / "collisions0d_reference.yaml",
+        tmp_path / "build",
+        run_directory,
+        output,
+        1,
+        max_superdroplets=4096,
+        grid_file=grid,
+        superdroplet_file=superdroplets,
+    )
+    config = load_yaml(output)
+
+    assert config["inputfiles"]["grid_filename"] == str(grid.resolve())
+    assert config["initsupers"]["initsupers_filename"] == str(superdroplets.resolve())
+    assert not (run_directory / "inputs").exists()
+
+
+def test_materializer_requires_both_frozen_input_paths(tmp_path: Path) -> None:
+    materializer = load_module(
+        MATERIALIZER_SCRIPT,
+        "collisions0d_incomplete_frozen_materializer",
+    )
+    grid = tmp_path / "grid.dat"
+    grid.write_bytes(b"grid")
+
+    with pytest.raises(ValueError, match="must be supplied together"):
+        materializer.materialize(
+            ROOT / "config" / "collisions0d_reference.yaml",
+            tmp_path / "build",
+            tmp_path / "run",
+            tmp_path / "run" / "config.yaml",
+            1,
+            grid_file=grid,
+        )
+
+
 def test_matrix_wrapper_skips_only_explicitly_resumed_completed_case(
     tmp_path: Path,
 ) -> None:

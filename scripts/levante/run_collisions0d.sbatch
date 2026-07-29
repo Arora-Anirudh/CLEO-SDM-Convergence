@@ -9,7 +9,7 @@
 #SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
 #SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%j.err
 
-# Generate one initialization and run one collision-only box.
+# Generate or reuse one initialization and run one collision-only box.
 #
 # Required submission form:
 #
@@ -37,7 +37,6 @@ fi
 source "${SCRIPT_DIR}/common.sh"
 
 : "${KERNEL:?Set KERNEL to golovin or long at submission.}"
-: "${INITIALIZATION_SEED:?Set INITIALIZATION_SEED at submission.}"
 : "${COLLISION_SEED:?Set COLLISION_SEED at submission.}"
 : "${RUN_LABEL:?Set a unique RUN_LABEL at submission.}"
 MODEL_THREADS="${MODEL_THREADS:-1}"
@@ -46,7 +45,9 @@ COLLISION_TIMESTEP_S="${COLLISION_TIMESTEP_S:-1}"
 OBSERVATION_TIMESTEP_S="${OBSERVATION_TIMESTEP_S:-300}"
 END_TIME_S="${END_TIME_S:-3600}"
 MATRIX_STAGE="${MATRIX_STAGE:-single_run}"
-INITIALIZATION_FAMILY="${INITIALIZATION_FAMILY:-unspecified}"
+INITIALIZATION_FAMILY="${INITIALIZATION_FAMILY:-operational_stochastic}"
+INITIALIZATION_SEED="${INITIALIZATION_SEED:-not_applicable}"
+CONTROLLED_BUNDLE="${CONTROLLED_BUNDLE:-}"
 MATRIX_CASE_INDEX="${MATRIX_CASE_INDEX:--1}"
 MEMBER_INDEX="${MEMBER_INDEX:--1}"
 
@@ -54,12 +55,34 @@ if [[ "${KERNEL}" != "golovin" && "${KERNEL}" != "long" ]]; then
   echo "ERROR: KERNEL must be golovin or long, got ${KERNEL}" >&2
   exit 2
 fi
-if [[ ! "${INITIALIZATION_SEED}" =~ ^[0-9]+$ ]]; then
-  echo "ERROR: INITIALIZATION_SEED must be a non-negative integer." >&2
-  exit 2
-fi
 if [[ ! "${COLLISION_SEED}" =~ ^[0-9]+$ ]]; then
   echo "ERROR: COLLISION_SEED must be an integer in [0, 2^64 - 1]." >&2
+  exit 2
+fi
+if [[ "${INITIALIZATION_FAMILY}" == "operational_stochastic" ]]; then
+  if [[ ! "${INITIALIZATION_SEED}" =~ ^[0-9]+$ ]]; then
+    echo "ERROR: operational_stochastic requires a non-negative INITIALIZATION_SEED." >&2
+    exit 2
+  fi
+  if [[ -n "${CONTROLLED_BUNDLE}" ]]; then
+    echo "ERROR: CONTROLLED_BUNDLE is valid only for controlled initialization." >&2
+    exit 2
+  fi
+elif [[ "${INITIALIZATION_FAMILY}" == "controlled" ]]; then
+  if [[ "${KERNEL}" != "golovin" ]]; then
+    echo "ERROR: the current controlled bundle contract is Golovin-only." >&2
+    exit 2
+  fi
+  if [[ "${INITIALIZATION_SEED}" != "not_applicable" ]]; then
+    echo "ERROR: controlled initialization does not accept INITIALIZATION_SEED." >&2
+    exit 2
+  fi
+  if [[ -z "${CONTROLLED_BUNDLE}" ]]; then
+    echo "ERROR: controlled initialization requires CONTROLLED_BUNDLE." >&2
+    exit 2
+  fi
+else
+  echo "ERROR: unsupported INITIALIZATION_FAMILY=${INITIALIZATION_FAMILY}." >&2
   exit 2
 fi
 if [[ ! "${RUN_LABEL}" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
@@ -167,26 +190,66 @@ trap preserve_failed_manifest EXIT
 python="${CLEO_SDM_PROJECT_ROOT}/.venv/bin/python"
 test -x "${python}"
 
-echo "--- materialize absolute-path runtime configuration ---"
-"${python}" "${CLEO_SDM_PROJECT_ROOT}/scripts/materialize_collisions0d_config.py" \
-  --template "${CLEO_SDM_PROJECT_ROOT}/config/collisions0d_reference.yaml" \
-  --build-root "${CLEO_SDM_BUILD_ROOT}" \
-  --run-directory "${run_directory}" \
-  --output "${runtime_config}" \
-  --num-threads "${MODEL_THREADS}" \
-  --max-superdroplets "${MAX_SUPERDROPLETS}" \
-  --collision-timestep-s "${COLLISION_TIMESTEP_S}" \
-  --observation-timestep-s "${OBSERVATION_TIMESTEP_S}" \
-  --end-time-s "${END_TIME_S}"
+bundle_manifest_sha256="none"
+bundle_grid_sha256="none"
+bundle_superdroplet_sha256="none"
+if [[ "${INITIALIZATION_FAMILY}" == "controlled" ]]; then
+  CONTROLLED_BUNDLE="$(cd "${CONTROLLED_BUNDLE}" && pwd)"
+  "${python}" "${CLEO_SDM_PROJECT_ROOT}/scripts/controlled_bundle.py" verify \
+    --bundle-directory "${CONTROLLED_BUNDLE}" \
+    --expected-superdroplets "${MAX_SUPERDROPLETS}" \
+    --expected-cleo-commit "${CLEO_SDM_PINNED_CLEO_COMMIT}" \
+    --reference-config "${CLEO_SDM_PROJECT_ROOT}/config/collisions0d_reference.yaml" \
+    --controlled-config "${CLEO_SDM_PROJECT_ROOT}/config/golovin_stage0_development.yaml"
+  bundle_manifest_sha256="$(
+    sha256sum "${CONTROLLED_BUNDLE}/bundle_manifest.json" | awk '{print $1}'
+  )"
+  bundle_grid_sha256="$(
+    sha256sum "${CONTROLLED_BUNDLE}/inputs/grid.dat" | awk '{print $1}'
+  )"
+  bundle_superdroplet_sha256="$(
+    sha256sum "${CONTROLLED_BUNDLE}/inputs/superdroplets.dat" | awk '{print $1}'
+  )"
+fi
 
-echo "--- generate the initial grid and superdroplets ---"
-cd "${run_directory}"
-"${python}" "${CLEO_SDM_PROJECT_ROOT}/scripts/prepare_collisions0d_inputs.py" \
-  --cleo-source "${CLEO_SDM_BUILD_ROOT}/_deps/cleo-src" \
-  --config "${runtime_config}" \
-  --seed "${INITIALIZATION_SEED}"
+echo "--- materialize absolute-path runtime configuration ---"
+materialize_arguments=(
+  --template "${CLEO_SDM_PROJECT_ROOT}/config/collisions0d_reference.yaml"
+  --build-root "${CLEO_SDM_BUILD_ROOT}"
+  --run-directory "${run_directory}"
+  --output "${runtime_config}"
+  --num-threads "${MODEL_THREADS}"
+  --max-superdroplets "${MAX_SUPERDROPLETS}"
+  --collision-timestep-s "${COLLISION_TIMESTEP_S}"
+  --observation-timestep-s "${OBSERVATION_TIMESTEP_S}"
+  --end-time-s "${END_TIME_S}"
+)
+if [[ "${INITIALIZATION_FAMILY}" == "controlled" ]]; then
+  materialize_arguments+=(
+    --grid-file "${CONTROLLED_BUNDLE}/inputs/grid.dat"
+    --superdroplet-file "${CONTROLLED_BUNDLE}/inputs/superdroplets.dat"
+  )
+fi
+"${python}" "${CLEO_SDM_PROJECT_ROOT}/scripts/materialize_collisions0d_config.py" \
+  "${materialize_arguments[@]}"
+
+if [[ "${INITIALIZATION_FAMILY}" == "operational_stochastic" ]]; then
+  echo "--- generate the operational stochastic grid and superdroplets ---"
+  cd "${run_directory}"
+  "${python}" "${CLEO_SDM_PROJECT_ROOT}/scripts/prepare_collisions0d_inputs.py" \
+    --cleo-source "${CLEO_SDM_BUILD_ROOT}/_deps/cleo-src" \
+    --config "${runtime_config}" \
+    --seed "${INITIALIZATION_SEED}"
+else
+  echo "--- reuse verified controlled initialization bundle ---"
+  echo "controlled_bundle=${CONTROLLED_BUNDLE}"
+  echo "bundle_manifest_sha256=${bundle_manifest_sha256}"
+  echo "bundle_grid_sha256=${bundle_grid_sha256}"
+  echo "bundle_superdroplet_sha256=${bundle_superdroplet_sha256}"
+fi
 
 echo "--- run CLEO collisions0d (${KERNEL}) ---"
+cd "${run_directory}"
 srun \
   --mpi=pmix_v3 \
   --ntasks=1 \
@@ -194,6 +257,15 @@ srun \
   "${executable}" \
   "${runtime_config}" \
   "${COLLISION_SEED}"
+
+if [[ "${INITIALIZATION_FAMILY}" == "controlled" ]]; then
+  "${python}" "${CLEO_SDM_PROJECT_ROOT}/scripts/controlled_bundle.py" verify \
+    --bundle-directory "${CONTROLLED_BUNDLE}" \
+    --expected-superdroplets "${MAX_SUPERDROPLETS}" \
+    --expected-cleo-commit "${CLEO_SDM_PINNED_CLEO_COMMIT}" \
+    --reference-config "${CLEO_SDM_PROJECT_ROOT}/config/collisions0d_reference.yaml" \
+    --controlled-config "${CLEO_SDM_PROJECT_ROOT}/config/golovin_stage0_development.yaml"
+fi
 
 zarr_output="${run_directory}/output/collisions0d_solution.zarr"
 setup_output="${run_directory}/output/collisions0d_setup.txt"
@@ -230,6 +302,10 @@ module_list="$(module -t list 2>&1 | paste -sd, -)"
   echo "matrix_case_index=${MATRIX_CASE_INDEX}"
   echo "member_index=${MEMBER_INDEX}"
   echo "initialization_family=${INITIALIZATION_FAMILY}"
+  echo "controlled_bundle=${CONTROLLED_BUNDLE:-none}"
+  echo "bundle_manifest_sha256=${bundle_manifest_sha256}"
+  echo "bundle_grid_sha256=${bundle_grid_sha256}"
+  echo "bundle_superdroplet_sha256=${bundle_superdroplet_sha256}"
   echo "matrix_file=${MATRIX_FILE:-none}"
   echo "matrix_sha256=${MATRIX_SHA256:-none}"
   echo "slurm_job_id=${SLURM_JOB_ID}"
@@ -251,11 +327,19 @@ module_list="$(module -t list 2>&1 | paste -sd, -)"
   echo "zarr_tree_sha256=${zarr_sha256}"
   sha256sum \
     "${runtime_config}" \
-    "${run_directory}/inputs/grid.dat" \
-    "${run_directory}/inputs/superdroplets.dat" \
     "${setup_output}" \
     "${executable}" \
     "${CLEO_SDM_BUILD_ROOT}/build_manifest.txt"
+  if [[ "${INITIALIZATION_FAMILY}" == "operational_stochastic" ]]; then
+    sha256sum \
+      "${run_directory}/inputs/grid.dat" \
+      "${run_directory}/inputs/superdroplets.dat"
+  else
+    sha256sum \
+      "${CONTROLLED_BUNDLE}/bundle_manifest.json" \
+      "${CONTROLLED_BUNDLE}/inputs/grid.dat" \
+      "${CONTROLLED_BUNDLE}/inputs/superdroplets.dat"
+  fi
 } >"${run_directory}/manifest.txt"
 rm "${inprogress_manifest}"
 trap - EXIT

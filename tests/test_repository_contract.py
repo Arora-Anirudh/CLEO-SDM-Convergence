@@ -61,6 +61,7 @@ def test_levante_scripts_are_project_owned_and_account_neutral() -> None:
         "analyze_collisions0d.sbatch",
         "build.sbatch",
         "common.sh",
+        "prepare_controlled_bundle.sbatch",
         "run_collisions0d.sbatch",
         "run_golovin_matrix.sbatch",
         "validate_controlled_initialization.sbatch",
@@ -135,7 +136,7 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
     initialization = config["controlled_initialization"]
     assert (
         initialization["status"]
-        == "implemented_local_unit_and_levante_native_readback_validated_frozen_bundle_pending"
+        == "frozen_bundle_software_local_validated_levante_creation_and_reuse_pending"
     )
     assert initialization["maximum_relative_moment0_error"] == 1.0e-10
     assert initialization["maximum_relative_moment3_error"] == 1.0e-10
@@ -166,6 +167,14 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
     assert "collisions0d_solution.zarr" in native_gate_content
     assert "srun" not in native_gate_content
 
+    bundle_tool = ROOT / "scripts" / "controlled_bundle.py"
+    bundle_preparer = ROOT / "scripts" / "levante" / "prepare_controlled_bundle.sbatch"
+    assert bundle_tool.is_file()
+    assert bundle_preparer.is_file()
+    bundle_preparer_content = bundle_preparer.read_text(encoding="utf-8")
+    assert "CONTROLLED_BUNDLE_PREPARATION_PASS=1" in bundle_preparer_content
+    assert "srun" not in bundle_preparer_content
+
 
 def test_collision_seed_is_required_and_recorded() -> None:
     runner = (ROOT / "scripts" / "levante" / "run_collisions0d.sbatch").read_text(encoding="utf-8")
@@ -191,8 +200,14 @@ def test_run_manifest_records_stage0_provenance() -> None:
         "zarr_tree_sha256=",
         "job_wall_seconds=",
         "module_list=",
+        "controlled_bundle=",
+        "bundle_manifest_sha256=",
+        "bundle_superdroplet_sha256=",
     ):
         assert required_record in runner
+    assert "prepare_collisions0d_inputs.py" in runner
+    assert 'if [[ "${INITIALIZATION_FAMILY}" == "operational_stochastic" ]]' in runner
+    assert runner.count("controlled_bundle.py") >= 2
 
 
 def test_collision_box_analyzer_uses_pinned_cleo_tools() -> None:
