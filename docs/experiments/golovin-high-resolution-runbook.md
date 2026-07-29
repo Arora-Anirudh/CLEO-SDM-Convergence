@@ -113,7 +113,15 @@ The test suite checks these properties directly.
 
 The run scripts refuse a dirty checkout and refuse a build whose manifest
 does not contain the exact project commit. After the reviewed commit is
-synchronized to Levante, the build request is:
+synchronized to Levante, use the dedicated build root below. It must not share
+a CMake cache with the `main` checkout because CMake records the absolute
+source directory in `CMakeCache.txt`.
+
+```bash
+export CLEO_SDM_BUILD_ROOT=/home/b/b383673/SDM/cleo_builds/CLEO-SDM-Convergence/golovin_controlled_high_resolution_v1
+```
+
+The build request is:
 
 | field | request |
 | --- | --- |
@@ -221,8 +229,8 @@ add a fifth CPU solely to satisfy memory. Earlier members used at most about
 After compute approval, define the exact roots and submit:
 
 ```bash
-export CLEO_SDM_PROJECT_ROOT=/home/b/b383673/SDM/CLEO-SDM-Convergence
-export CLEO_SDM_BUILD_ROOT=/home/b/b383673/SDM/cleo_builds/CLEO-SDM-Convergence/openmp
+export CLEO_SDM_PROJECT_ROOT=/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol
+export CLEO_SDM_BUILD_ROOT=/home/b/b383673/SDM/cleo_builds/CLEO-SDM-Convergence/golovin_controlled_high_resolution_v1
 export CLEO_SDM_RUN_ROOT=/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_high_resolution_convergence_v1
 export CLEO_SDM_BUNDLE_ROOT=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles
 export MATRIX_FILE="${CLEO_SDM_PROJECT_ROOT}/experiments/golovin_controlled_high_resolution_convergence_v1/cases.tsv"
