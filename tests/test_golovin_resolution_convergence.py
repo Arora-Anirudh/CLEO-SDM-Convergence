@@ -156,3 +156,48 @@ def test_resolution_analysis_does_not_accept_failed_smallest_level() -> None:
     assert decision["status"] == "no_resolution_accepted_in_initial_matrix"
     assert decision["selected_max_superdroplets"] is None
     assert decision["resolution_analytical_and_precision_pass"]["512"] is False
+
+
+def test_resolution_plot_accepts_bootstrap_interval_excluding_estimate(
+    tmp_path: Path,
+) -> None:
+    module = load_module()
+    analytical_rows = []
+    for metric in (
+        "ensemble_mean_l1_bins_500",
+        "golovin_relative_error_radius_moment_0_m3",
+        "golovin_relative_error_radius_moment_6_um6_m3",
+    ):
+        for resolution in (512, 1024, 2048):
+            analytical_rows.append(
+                {
+                    "max_superdroplets": resolution,
+                    "time_s": 3600.0,
+                    "metric": metric,
+                    "estimate": 0.10,
+                    "95ci_low": 0.12,
+                    "95ci_high": 0.20,
+                }
+            )
+    adjacent_rows = [
+        {
+            "time_s": 3600.0,
+            "metric": "ensemble_mean_l1_bins_500",
+            "lower_max_superdroplets": 512,
+            "upper_max_superdroplets": 1024,
+            "estimated_difference_lower_minus_upper": 0.01,
+            "95ci_low": -0.02,
+            "95ci_high": 0.03,
+        }
+    ]
+    output = tmp_path / "resolution_convergence.png"
+
+    module.plot_result(
+        analytical_rows,
+        adjacent_rows,
+        {"status": "no_resolution_accepted_in_initial_matrix"},
+        output,
+    )
+
+    assert output.is_file()
+    assert output.stat().st_size > 0

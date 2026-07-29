@@ -534,6 +534,28 @@ def plot_result(
     decision: dict[str, object],
     output: Path,
 ) -> None:
+    def plot_estimates_and_intervals(
+        axis: plt.Axes,
+        x: np.ndarray,
+        estimate: np.ndarray,
+        low: np.ndarray,
+        high: np.ndarray,
+    ) -> None:
+        if (
+            np.any(~np.isfinite(estimate))
+            or np.any(~np.isfinite(low))
+            or np.any(~np.isfinite(high))
+        ):
+            raise ValueError("plot estimates and interval endpoints must be finite")
+        if np.any(low > high):
+            raise ValueError("plot interval lower endpoints exceed upper endpoints")
+
+        (line,) = axis.plot(x, estimate, marker="o")
+        # A percentile-bootstrap interval need not contain the observed
+        # nonlinear estimate. Draw endpoints independently instead of passing
+        # signed distances to errorbar(), which requires nonnegative values.
+        axis.vlines(x, low, high, color=line.get_color())
+
     final_time = max(float(row["time_s"]) for row in analytical_rows)
     final_rows = [
         row
@@ -559,7 +581,7 @@ def plot_result(
         y = np.asarray([float(row["estimate"]) for row in selected])
         low = np.asarray([float(row["95ci_low"]) for row in selected])
         high = np.asarray([float(row["95ci_high"]) for row in selected])
-        axis.errorbar(x, y, yerr=np.vstack([y - low, high - y]), marker="o")
+        plot_estimates_and_intervals(axis, x, y, low, high)
         axis.set_xscale("log", base=2)
         axis.set_xlabel(r"$N_\mathrm{SD}$")
         axis.set_ylabel(ylabel)
@@ -578,12 +600,7 @@ def plot_result(
     )
     low = np.asarray([float(row["95ci_low"]) for row in final_pairs])
     high = np.asarray([float(row["95ci_high"]) for row in final_pairs])
-    pair_axis.errorbar(
-        x,
-        estimate,
-        yerr=np.vstack([estimate - low, high - estimate]),
-        marker="o",
-    )
+    plot_estimates_and_intervals(pair_axis, x, estimate, low, high)
     pair_axis.axhline(0.0, color="black", linewidth=0.8)
     pair_axis.set_xticks(
         x,
