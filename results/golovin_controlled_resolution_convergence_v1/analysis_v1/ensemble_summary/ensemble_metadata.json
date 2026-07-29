@@ -1,0 +1,983 @@
+{
+  "status": "completed",
+  "run_root": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1",
+  "member_count": 120,
+  "member_time_row_count": 1560,
+  "confidence_level": 0.95,
+  "bootstrap_resamples": 10000,
+  "bootstrap_seed": 20260729,
+  "matrix_file": "/home/b/b383673/SDM/CLEO-SDM-Convergence-records/golovin_controlled_resolution_convergence_v1/cases.tsv",
+  "matrix_sha256": "e867ec0055eefd08627b00b385dcc1680e53643426c691b8f0a61200d6b45dde",
+  "onset_status_counts": {
+    "crossed_between_outputs": 120
+  },
+  "sources": [
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "5d0d70a027a2bf66c85eeef39c9412b8db487d922422b2e213ca0e0a80313d47"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "7164c40b15ca42528ba47cbc3a065d101d10166e267287d11d7a87b2d33c6d36"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "7143fdb26e2e72834eb020970e42ff02b3d336bb0b1b51daadc191eb0e20bc23"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "4f8a9a86177d6f7e6d0f87eef36bdcedee3dbd20051cf8d29cb64af67b8aedb2"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "12aa86dd128e69c843ed658abd02ec33aaacbdd24a4717772256a0d0a34d5fb2"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m005/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "2c22c5a159ad9d9ef0c965f8f936620b5b0b5cd2172de4df1f45517a9adf8861"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m006/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "28ba756acd89e2c04ceccd4d0fd09c67dcf5909e8c71c759bcf7e7d43282d760"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m007/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "035d8973e3b5fa85578ff3345dccf1cfe2be182d7e7b3912167ce7772aac92dd"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m008/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "929849cdb0213118134e41f01c245a05c1555eaefdfaa230d3f00ffc6b82466a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m009/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "701a951a901e2a6842975063abf360b13b03d94a0ff34308bfbab336592bfa96"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m010/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "16fdcd83e00e2774ed63e02a28689ddbee8984c0d861eb616b5bf72bca7d998e"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m011/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "0e8bd1a785be6575f2d4d6f38c96e7e43a1076d86b69f137da7fd3be556fed04"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m012/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b6bf62ac216561dafcbcc16e5b54d3ea93b7dd519e4fc2d339ad9d1fa26c26c2"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m013/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "808ad35bf2d98c94365a0b740db5d514257549d4e4ded23b97469c337a1dc857"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m014/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "0f6e72d4903a7f31a5b827f70953570e97825598be1e5868f09f1612ccf2fa97"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m015/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "47094ee62c749917c7006c20b24651f31722039427361a1c33dc0f946f30d480"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m016/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "dfa8ce89aff2898067bc62a153c11bee438a3905cb9090cc003d8f0674b13faa"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m017/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "7dd869ef52b2ccd1aad1907b4838b5bad99518ef0d6911791899fda866ec1f9b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m018/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "04883807d9e094f1846d0e2c4f256272cb81d274137d4db041d7bf51099bdc61"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m019/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "f7743119f08977f32752e447356be48b19640eb0277f5fe31c8921b9fd2eae3a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "139474635c81eda735bb04d83a29e4c415f2f9d8653140c69616f5ac92d22762"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "849921a1fe583674d3e592df361891b01ac08d053e015e3c3d2d2f2d8c31cf58"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "27c8bbca6ec6e7f99b4a27ebdfa7fef5d783cd254aebd194921edca65a56afa4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "2ed7267388604b23a689700d4aad5163d5ce59b0702bf7e2bc4adf7d11f1b0ec"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "a7f5a44ae2055c2312b87e49bc3fc3a205da12d10b9fbe0a9d9121b58dbfc2de"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m005/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "07755d73d3f33fd55094f869d70dfda37f232c4683b135227a91e03154b336b7"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m006/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "5460b0a4305caacbef1271607f0803a87acc5e76d4931d5bbaa1b77dca379fd1"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m007/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "d2c3f1a0ea6f935b6bef524236312084d09b044812873c32fd73645cef94b773"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m008/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "54b80cec05ec1cd86ffcf0172d0db5b6c3b509ecaa5e1be3b1dc56e7f85c05e1"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m009/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "a04b89898f4273f56ef4aed5e8655c928db22e77962c35a4697da39a9cb78561"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m010/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "ab9f6404cddefdf29dc4781732a02ae620ad8ed95d0646cb8951d33fbd50ca2e"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m011/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "ca846b3e2b526f9b04c540857521eacf9bc28787f6cc8b532fb64c7b3f4535d6"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m012/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "e38a427ca6f6713c62785d4ac5d50a066b57fc636f94d7920efbdee49010f6b9"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m013/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "294995706ea6cd5280c72a34c29304d1e0025cf8aaa7a6711a4a2d489f317aff"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m014/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "e6ce22526ef445f288ac9e6df279c7c64c2fac90c681d53bc24dcf93e21bf22b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m015/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "4f5e34c974f63c608722ae5bb9a6325a471a82fb833bbda025d5894ab57e50ef"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m016/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "f2d5eb2466c2f053bb28e0b675b06a336e232f5995747a24499246d06549c8d6"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m017/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "76bb21b2606163306c0b73140fd2c1c5d674dfb427aeb3bea2002077e6f4c2d9"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m018/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "f18114ef8c060c59fa980c311c19185191a35a2b4816c2355c88a04687156c42"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m019/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "3efca1807c5c2263195cae79b17a1619be166f96a6e452c59a9d0d9a189b383a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "83ec0854628b20d81bff4449ce7b280fa7255dffcb0070df606d8e2676af4e3a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "2fb6bb40f9e8afe48800e5e5d1b7b8c6f0719abf3b85f26423f0fa0558db5134"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "cd93f4a95a0832dd6fdeec0f45f8479509b226c3a8e21be3fbcb28e590b436d9"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "ec2be5ed04cacedc5d8cab0de90174573c87cfc8696ccbf4b3723b84ae89ac84"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "d273497940de0cf62523f94fb00aec20b890277e9e403091360335c7ca6552c5"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m005/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "235e31f470167b7f0fe3b79e5df7e346d8d8de616f659debc2bed15741a19cbf"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m006/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "07fa3c729f68decbbd3940a0e75cc9a1c5a900080dfc46801cea4690fa5582d4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m007/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "15b7a1386098b905068a057522c74380d1a6162e53ce760559741a7a76c17e37"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m008/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "a6628f09411ef46be458645149567971740e03d93dbc570c0721d526f3e9d4c1"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m009/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "faab0ea649676b814b9855dc0677b3dc4e7f07a86772b442c8198c86374c0431"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m010/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "f259208267f01324825391a18bb4c4d643206233aad748ebc7c34190fe7feaf2"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m011/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "2addd9479a5768d09b3038719a1cf262f32e8862b2578f812c729a3b7dc1843d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m012/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "47a7cea0add1a2a44b53e077cd2eb9e48fbe4055b3eb8d7c8e99146e78b44e40"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m013/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b36924e3a7315d16482e689d861a3b5e551ff365374778792d620e109e6f353c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m014/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "209a925ecaa03e57e67748ace28840f006b328fb63f95b3e444e1b32db30c21b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m015/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "202ea3f1f9e8993199439c303b1dc038be0ae358169630177ce59ab204c6c1ec"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m016/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "91eb29fc6f9356c2741e0be660a17aea76577cc6d27dd1dca7927890abacc799"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m017/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "c2f4af0df241c14c8c651644b10f7dc25a775bb089f61ca1459643bc9a5bcb0e"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m018/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "4038441f44b95adcb38540d61b5c8b3d39a2d19b35d695a409fc9ee9dad0334b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m019/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "edd63cc458075c42552ee9096b84ef0a9aa735cd96f308213fa4e5ea5cb4d5e0"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "58eab3f57f50aba5d3e121483ce883e3599192f0ccdaf703815bb4fd17e4f190"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "6a7a957157675a5e9910fe0c0bb1cc33c6ee636e70c9cb66e50e906dcd325a5f"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "7d603c81e6dc698ac674bc3d9e82e70d7ccbcc7771c1d88eb7741afcfa290388"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "a0c49a70bcb6da827e4780d04bb1e03bb4b5819ab00354730ee2b97cadb200f3"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "bdf8faa819bbdaa947fb55f41605d89256dbfd6c37b5e449cf43c4416f02d5ce"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m005/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "e641f54a3981ae8f833e55c0fe267dd2b732d295a79c623761f0afbe6fa5ac53"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m006/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "f5fce98d952e44d9d3ad6afd39beb4a40c7ce009da90df4170d0fa0d66c9efe9"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m007/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "fa7bf77257a6139ded51dec18c905f1d76b4d15c163bddc280e35f0fc1f6f971"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m008/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "813e45e1b70995e5f1d7766a34f6bc4a56594564e5ee534b629a762d5d524ed2"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m009/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "2626e1ca6c5161533945a25930d88e8c6b4976cbf5e19a9277094c9542dc0f26"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m010/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "760c7d3a5cde6bb5d67384bf3f3ea38f02845dc2f654399b3ccfd6235174fc66"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m011/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "0d7a98f514792bd520b24a3f61fe189275d6073fc7d10d489c38cc7f39c669f7"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m012/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "53ad7b575b664ace535f992aaa0b9e9aebb09258eefb6da96c9334683a23e2a1"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m013/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "1a1e9f956f0044f1e8dce172c961b83a38e97a960362d2a0972afcdac23e5106"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m014/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "f478367d4510c802dec458fe8262f790f8f20ec510ba8d0b148c80ac71b259a6"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m015/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "85dc78002fb6b828bfa631434873486082f175261aef52bb6495ba43a691e13a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m016/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "713d0dbd5a6bee6aaec75f3c5c0d83118b035b03d16a5c79e6c02c16f5a2c9bb"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m017/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b5999ae509141858a24504bd9c53e5e1eba0a41921a01ea83e31ec48210d5f48"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m018/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "f12f0c2fae18bb072b20868769801012c45122b58680485775d4add78a57915a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m019/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "718e11ce09656c41eef3367cd54f808f69b951f97856ad545b38f90a8826eec3"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "605659c9a8c822f7c674078922d50dd1e0a2de1994e1f2d14375e3c42e1e66fb"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "555db915e1b700084aebfad49fd6fdd143fab181a935d9a7f6b7a89e21fd6809"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "16d6f0524a79744205ecfe612a1ffabe1b06103a346a98e71f93465c8912dec8"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "750069e5117e6ca3bd7d007142391eb46e9f6f4b44feaad180229ce3d361f7dc"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "e15748adfd69c582d6ddf17f4f5ef5227f5a0dc03fba51946d771d23fbe24f12"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m005/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "4d1eddd28c08fcbc1b001602dcf9b151feaae9ba969144d32ff1cf487f7403ad"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m006/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "636e95e6746212578d2de6cedefd8fe1412c80fb468dfb6c515838d928318d64"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m007/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b002abeca73be8a52144ea9cd81796fc04fb344aae01139956fb516225b64142"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m008/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "9fbd405298cac68e8300e57968fd8b41d34c08e6c76f8cd2e2f7ebd9b20bb80c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m009/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "7b2be775d9ec59b7c2cea1035cacc2f810cabdb920f67ad2e2188df3372dbad8"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m010/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "3ad645b0297a605ec264c23cb6b0a5e0ad08ea8c190bf357f1baa837e81c44d5"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m011/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "5d514ff791df6a875d39bef35c318d8c719ff221a14f3b908320fdaf954d0b86"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m012/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "56aec60c037bcc489db075aab83212e25f8d839cbce601d7e74888300be8ac5e"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m013/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "970bc6a73b324aa1b4a045d34c5edf3cbabe08ac4edb59e2d5a6700706a2241b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m014/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "392b1317fcb4e0977ea1bd21f79667bf8c04425c8e384863be7f5bc1202a3610"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m015/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "63be0d53a8ae632e9eba0c0b35c1ce74e83efab6214c724ca901e0089cc19e3b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m016/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b8b6bbc66b1170389c33204cb5432df820f83a1a5e67524225f86fb42a9e8659"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m017/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "c35f9d9931277449c337e949cab2d560d350aaebd37cc0d19e49388b40415d7c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m018/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "d40fbd8a28c5fa3f2f5dc65265f1adccb1d8abbc196330038fbdabc9ecf55426"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m019/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "cbdff0b31e252d2e8e46bbf90722d746817edc3a1290d85070ba5e445ae82648"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "1803177e6af317b404a73523d3bf54328ce336423cd0009bdfaa8e920d5f8a0c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b9daec43438c48d26b5f3724d432ed2661bc96f788e0de503ddb6ac1abf96bdb"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "09d32690dabbb9844adb101cb17860a6939820b9e7a4e9cbadc20735886ffb9a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "bbb91155936fcfc68b68c7a12913c486aeddbe133e6d543a65bd6c9e309dfafb"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "5d0290846bf878c41dfdfb98010efc169bd3e0c294fb59e54b79d7a14497822e"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m005/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "65815e1defefb65446389c0420e0b1f08ae92d469c7d25d32dd5e784cdd6fa8b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m006/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "89fafb47a365944ce7736de0e3309c8b390a15f45dfd3caccb80ea94dd9b7e79"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m007/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "34033e16e52053f9ddf8d62f9df288b02bc9db01bccf6a87b821f2d5088117e2"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m008/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "1b0a0a8ba48d60027194b3f05a63f0bece2f76db77a9267c944dc86926e5fe23"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m009/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "3b1736d8f3be8169f68dfd109862f877861f5fab4c09f127d3540329649b3a4a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m010/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b0a04960839978a472f52da73184a94f7c464e761910ca5fdddc4464344449d4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m011/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "294fd2d6cbfa7d34713d95a6aadd27f26ae1ccfcead235b399fb3afaff65c50b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m012/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "90edaf6e0f9261d577ba1e19ecff8af53d9f0777d6a40faa401225767751dba8"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m013/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "358040e01f59147dd933573c306eebf44a6017066626ef9707a0155c0685f291"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m014/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "100ca753d39be737d7e741064243c192b30d7317389bc024de21362dad55eaa0"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m015/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "91d391faf49f5a11e662c73ba250ecaee1e2aa6fee15d4eed5448f5deae7113d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m016/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "e52175047a69cf6cfd457549071dec950e2652e2a6736e2973d6e6b5e6647a06"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m017/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "3b480ad0bebf42ff2d0a1c391d8a8c688aafc9f9029eb9fa27002742bbc6633a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m018/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "69b420773493343acf79497cc416f32b23faf8d0b1bfbd108fb4784925bd5db2"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m019/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b76bc188af22036e0e5d51a08e2ba67d49d83d55e4e7bfd6c4f233c15b27f0f7"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "442f303207dbe15f37db5420d5910f25512a4df4a3d4bd25f3a9166811f49ed4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "df7240d521c4f22c9001b35f298521894b49c10b748b9d1cf8d746716b95c830"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "b30b4d6562b2fd6256ee1f0a0a8f2e3786de4a4aeb6086e4a7243dc4ac780313"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "46243377856f772d34235cc188bd3a6b0dedefb2d55dd6375a902df9300ed743"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "2bed3176212d2734a830883046dc17cb0ac8007c38beb64e4e60224a3e8ffdfe"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m005/analysis_stage0_v2/member_summary.csv",
+      "sha256": "33d69d874f459fc337af859a78f6d0d70cee8cfdd9099f2a828890f9acf3e38f"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m006/analysis_stage0_v2/member_summary.csv",
+      "sha256": "479ddeb7d8e6863a182bd9fb3fc8a0b700cff4ef443221a95ab0f230bfeaa30d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m007/analysis_stage0_v2/member_summary.csv",
+      "sha256": "7d80592e425cee85e0f3eab25570c0e52fef6c06ad70c4e5ee25a2414e84099c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m008/analysis_stage0_v2/member_summary.csv",
+      "sha256": "65cd59a1892ff629c843afd91d9e1ee838d807c75128ecb82e1c3a3522b1dbfc"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m009/analysis_stage0_v2/member_summary.csv",
+      "sha256": "5510835e696ae8426c1c277052c3b64ea69eaffbf0ee665766411a66d8d25ebf"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m010/analysis_stage0_v2/member_summary.csv",
+      "sha256": "b3feaa7feec69bfec6d007beebbb65b1740154311f574360c5c05c0c4de7d1b9"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m011/analysis_stage0_v2/member_summary.csv",
+      "sha256": "5530b27ec6482533ab1c46bbb91dcd90c346811a21c8907b32fa72583601a6fd"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m012/analysis_stage0_v2/member_summary.csv",
+      "sha256": "728091e7ccfbcde5b823b1ab8b9d54c88355bc73c83f63a494f662c83f4b5a4b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m013/analysis_stage0_v2/member_summary.csv",
+      "sha256": "c69c5adcd789b8a316a606d379b489948e763edf4e16626d298675997e4cb146"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m014/analysis_stage0_v2/member_summary.csv",
+      "sha256": "57c3029bf591311c730a2c06db292736c9f5d089d4712c00d22c4f95bd3a4533"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m015/analysis_stage0_v2/member_summary.csv",
+      "sha256": "39637bb77cc9e9de04f5cd9769077192fab21ce9f3981b0f6ce1570c6eca0c0c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m016/analysis_stage0_v2/member_summary.csv",
+      "sha256": "245e8ddbc61a60a5b84cfbd0a511ed0b815959e94ef225edf51886917bb0d776"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m017/analysis_stage0_v2/member_summary.csv",
+      "sha256": "f0f887c51afa9a32ed0da33083e661dbb557b4b9fa806cf45512841f8622c943"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m018/analysis_stage0_v2/member_summary.csv",
+      "sha256": "b46c094a7d3a853b594ef30409a8df01d64335372fc35f6e94219523a11cd198"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N000512_dt0p1_m019/analysis_stage0_v2/member_summary.csv",
+      "sha256": "ed2db29049cdccd1f9f6a735600c1e64a5fbc06e156d45569d347487a67c03a1"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "8fd6c86438e2922db5394475217278d488649cd671e3182cd193a2d0b782a732"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "9bedfb557ab79c1a2b01338c1e7308107221cf1774484d759417006fc1fe591c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "b826725d6b4a37507bd3a9ed0de16f875e90a3a65a13988fd5acebeb71574e33"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "c5abb9fbee97ce6d3fbbf68659078a59701fa507357bc31a3cee82dc9c973476"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "881a6604999a22f3df02d838bf7ae28bac3441efbd6ad78ef0b5f435b90b722a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m005/analysis_stage0_v2/member_summary.csv",
+      "sha256": "4090426324ae0510993e7b0adc67e8c8c6cb60765a4d64acfa6517fa816f8092"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m006/analysis_stage0_v2/member_summary.csv",
+      "sha256": "9acb49ccebff5c833deb366826aa7b9c4727e7b0ffe1a0e5bc4cab0a85736706"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m007/analysis_stage0_v2/member_summary.csv",
+      "sha256": "39b083ed2d1221c5d4c82b3b6bdfcfa4ac21f589f2ea4cc8a069b543a8d8cc45"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m008/analysis_stage0_v2/member_summary.csv",
+      "sha256": "4b50d4161bc83a075dedc16c6869381764d6cec7fc562da84d3b2a98d04e7d3a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m009/analysis_stage0_v2/member_summary.csv",
+      "sha256": "9e9f97a6179805f7f5c5c18d3cc575707ce1afbcad4192e5cb47b131291a4812"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m010/analysis_stage0_v2/member_summary.csv",
+      "sha256": "3f1eed618d01f90d2d903950007ac9457e6a8ab3f3374aa48b8c3f579138fb93"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m011/analysis_stage0_v2/member_summary.csv",
+      "sha256": "6a181e31aabffabc5d7ea51b581dc9a0e98e61b76ba3ce978eabc62f9e32dac2"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m012/analysis_stage0_v2/member_summary.csv",
+      "sha256": "d35c987fc18dc7a79ff1b2e4353293b7778953d9b5a60cc229ab683d9d853b5e"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m013/analysis_stage0_v2/member_summary.csv",
+      "sha256": "1b05c810c5c7e1eba166ab99824bc200e7f951e556422a979e1ee4ab8c1987c1"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m014/analysis_stage0_v2/member_summary.csv",
+      "sha256": "77e5c13e7945d24387d2f416dd44adc1d090b9e1157c63b7116b1ce0cc46fa35"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m015/analysis_stage0_v2/member_summary.csv",
+      "sha256": "23f072a7624e1dd350ed7b03f178ba1b5cdb88ed18276b916cec8a3bd9764dfa"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m016/analysis_stage0_v2/member_summary.csv",
+      "sha256": "ecefb296ed200bac0992843eeb52b9f8d3f3805958873918a49765cb1681b824"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m017/analysis_stage0_v2/member_summary.csv",
+      "sha256": "57bd3b5e4e2dc34b07c363a0aeeaef62c4950df2a28be8b0626b954ae9c1b653"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m018/analysis_stage0_v2/member_summary.csv",
+      "sha256": "738b54463992c3d1547334d72fac75eb2b6a25635ba620e972130771d1b0f2b1"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N001024_dt0p1_m019/analysis_stage0_v2/member_summary.csv",
+      "sha256": "5610e59895ff771bb608176bbd27733ed218a278bed63b2c6c69126125c5afb4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "85aa00daeea6ad5c2068e06370f7b6accb48ecddaeb8164e27369ddc587a9ae2"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "3af8238c5ecd90bf09dbdc04605d3e6eb68d42a4926a840e88965fce3358974b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "44f5ad63f46d57969c4cf1fa6df9d11af3a22876428c2c23581075f82e2a6d2d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "8e54c220c55108268fded5090e2e660f96a6d85a0c843ee16a4e28e10a572704"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "2b079c6d6cc1bcbb5f496e9277023a09681f70279aeabebf636e9fd1054eebee"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m005/analysis_stage0_v2/member_summary.csv",
+      "sha256": "db80ba1fec69f0e9377034f974c5f0bf5c8bded3e4a2d740b4a525d1c4e8abfc"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m006/analysis_stage0_v2/member_summary.csv",
+      "sha256": "08e07562a7dda0957af6c126485ec34bbde7bcf7dea4dcd238f2a901e28df2a3"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m007/analysis_stage0_v2/member_summary.csv",
+      "sha256": "0201778319665c7503bdb15f412fc327f21d9800950046702cbf2473188c5e8d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m008/analysis_stage0_v2/member_summary.csv",
+      "sha256": "ab03e106c75db7bc5bdb847d9098f0c9773685f11916f8413cc1ecd7a2ba8855"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m009/analysis_stage0_v2/member_summary.csv",
+      "sha256": "ab0cfb59274b2c7a196e35bddb22d2680d9c77a3b6ea7c66ba283dc655785401"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m010/analysis_stage0_v2/member_summary.csv",
+      "sha256": "bf631bd6523e3d087494b2d96a2472861857ec7932238342ad2d2d72f1d30df6"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m011/analysis_stage0_v2/member_summary.csv",
+      "sha256": "fd1f53a65c3250f18f2d289da2e3c579a647ddbaef6ccda0ae07011cb124ec2c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m012/analysis_stage0_v2/member_summary.csv",
+      "sha256": "4e10e82faf759c13050145c0050ec9bfb0af3edadcccc50648d47bd6bf97a914"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m013/analysis_stage0_v2/member_summary.csv",
+      "sha256": "9ddf8f18404a34dbd411d0a7a0ceba58f5f8e20258d4ba3bf5630619ed0bf0c4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m014/analysis_stage0_v2/member_summary.csv",
+      "sha256": "a8d2c34d90cda4a96ac44082450d0a1aa8a792d7ccd4b072a3975de781eaa1b9"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m015/analysis_stage0_v2/member_summary.csv",
+      "sha256": "06425c700e5083ac8f1c04d672c45b6c3fa2cfe51153665133c02a0cb9828522"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m016/analysis_stage0_v2/member_summary.csv",
+      "sha256": "a3e2d1fcbb1bbd9fcc675ec3e6ee846dd5227285efb50a064df7790417545ff1"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m017/analysis_stage0_v2/member_summary.csv",
+      "sha256": "48950f829c8e9bd82e51df2e237ec64bbc25af452088b209953a71798c43231a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m018/analysis_stage0_v2/member_summary.csv",
+      "sha256": "ee02ed7d32307cfe43773ea68dcdd842d04077f20a6d2a2b7064f6490e5e54ab"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N002048_dt0p1_m019/analysis_stage0_v2/member_summary.csv",
+      "sha256": "268c2536f59f27bdbb86481852a17be4bb3c969a40867e8eacf9c43a61e79550"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "e6fbbb93c8f42f78a86afb5270fdf1fdd90fb139105abf1921870851e881da8f"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "8f731f8b5a9f234d272cd075178b4553e58bb833403de970ba40f7b242e575a0"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "5a853b167cd92fc64f45c93c7d06b043dac1178856f33da17f7f633148f3724d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "55373a3d22d819f91afe87c84575ee9477c60065e67f99d3adb6c171438ca81b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "cd06f07cfeb9d9256ef1ca37f878242822176ff7ac031f86dc807c358d756037"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m005/analysis_stage0_v2/member_summary.csv",
+      "sha256": "6d523ed2e56de12856f8639efddb7ef40e876fe1cb23c74fb11670eec9eae31b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m006/analysis_stage0_v2/member_summary.csv",
+      "sha256": "e215b44dc3aeb047ad74de4d7e43b83325e708448f7daa5990f64f82ffc2e03e"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m007/analysis_stage0_v2/member_summary.csv",
+      "sha256": "8247694bcb2faf8385396aea53fa1a7adaa52c121d1423aaa6c62ebbe492ee13"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m008/analysis_stage0_v2/member_summary.csv",
+      "sha256": "ca13099f38783ca5bc239265ce96564ab42da886837111542b879a262c4be32d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m009/analysis_stage0_v2/member_summary.csv",
+      "sha256": "917b52651d39e215efcf7e0ba3af60d086a566b2f57e8c02d38bb1aabd1a6fb7"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m010/analysis_stage0_v2/member_summary.csv",
+      "sha256": "13ef11bb8b69abbe956e08cdf971daf9b3e1ac80e569dbc3e19173c693a0f2ab"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m011/analysis_stage0_v2/member_summary.csv",
+      "sha256": "83af870f2f276bb4b2982f3b17e92ffdac4b6a1681162488a28e509a9dae2899"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m012/analysis_stage0_v2/member_summary.csv",
+      "sha256": "5c68f231b15c22cd17d8b92da4701b8d6dcd3838ab4f16b4928f5fbff8accc9a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m013/analysis_stage0_v2/member_summary.csv",
+      "sha256": "423a74f54275f5ae788e82655e2be95865e30a5a985475fc1e71b224a143909d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m014/analysis_stage0_v2/member_summary.csv",
+      "sha256": "344a3a9edba2006efad54e450a983735b63cbf93db60d1407fbebf92ab0ed0c4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m015/analysis_stage0_v2/member_summary.csv",
+      "sha256": "89c717c3335680ccb1d2a71dedfc12b2ebebf1989fa57bea06d5bc136978ab5a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m016/analysis_stage0_v2/member_summary.csv",
+      "sha256": "2c38bacb0d373035f53f95efa7e28207a0b3e767ccacae2a38e2e45423c8325d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m017/analysis_stage0_v2/member_summary.csv",
+      "sha256": "563165e13b526925b3a93cebce974e5a16424598aed7fa297f7f8c3923df15fa"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m018/analysis_stage0_v2/member_summary.csv",
+      "sha256": "2d32f3861316ed4af5ac2f4f3d36e09634d67c8b9a51b575daa663f8b5e3b1bc"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N004096_dt0p1_m019/analysis_stage0_v2/member_summary.csv",
+      "sha256": "44fecc11d137149a5bccda712d236397606ae5f006ca47474090fc70844b5b14"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "40da7b6c9284998508ca34d47bf50bcb57a25eea29ce5022b7dcef3679336d19"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "d5db82041f5b71d64bac9107a05c183fe153e2b08e8336881017a56189cf6e3c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "02aea931c3226740aad9754d88c686c43866528e92797778d131120d4a2c07b4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "27db7643da948a6d286697840e5db2c3900e92da326c3d2a21e1dcb18f7cd0cc"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "7502c5271c3ca5bc6846cd4c360278560989b7c0da7fc7eaec3872de7e485199"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m005/analysis_stage0_v2/member_summary.csv",
+      "sha256": "9ff3ea01bde926f1c03f6340f8c586236d4b429df9d7479e7f00428bdeaa75d2"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m006/analysis_stage0_v2/member_summary.csv",
+      "sha256": "c1d5ab5811b8e9de3fe34513fb4a8b4e0ccf07451e148890b393e89e655de00d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m007/analysis_stage0_v2/member_summary.csv",
+      "sha256": "ae16d652e9447ecff7cfdace6d2b035dc451d1e6b8ded3de51fc3f766b7b9587"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m008/analysis_stage0_v2/member_summary.csv",
+      "sha256": "271632aa064d29bc356c2b6b58741b0875a38eae877a4c8621950ea20caa412e"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m009/analysis_stage0_v2/member_summary.csv",
+      "sha256": "0f36bbbe7207452df185981a88ad4eb7aadf62d3aac3313458ae6562bfa395be"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m010/analysis_stage0_v2/member_summary.csv",
+      "sha256": "f06e61e5964c3cf9c311236c2f162d456b45298bf4333d0cd4347d0b20459781"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m011/analysis_stage0_v2/member_summary.csv",
+      "sha256": "89568ee1e9e32ab5b8231a803f81513c28b54e1f0822b17d73c0f5ca66cd3480"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m012/analysis_stage0_v2/member_summary.csv",
+      "sha256": "0df7adad081c38ed10a965af9771f15d830dec5cacc472337154ce7eb23ebc44"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m013/analysis_stage0_v2/member_summary.csv",
+      "sha256": "c7043fc24159350e901c2e989db40f2bdf6bbc55352bcdcb848747025f3e1d6d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m014/analysis_stage0_v2/member_summary.csv",
+      "sha256": "a2ee407a155e281e6334f7c3808be9b1488a24220e6e3b27e1d11d7471658e93"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m015/analysis_stage0_v2/member_summary.csv",
+      "sha256": "e9c421bc47ada6b0e0e13385513d2969b3cd80e651dca6390294f504d98bea7f"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m016/analysis_stage0_v2/member_summary.csv",
+      "sha256": "b0fac338757c7c177d6f9430bf781862b5ced07734618045ce0ebbf1a9946fd1"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m017/analysis_stage0_v2/member_summary.csv",
+      "sha256": "f0dee1b60ed66645748c27db20269a508365f999b3bf1deed174a11bca9bdd77"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m018/analysis_stage0_v2/member_summary.csv",
+      "sha256": "77fcef4bb8d96ec8e3ea242e2377cb480d005ff5e2ec24120cfbcbcfe1e02322"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N008192_dt0p1_m019/analysis_stage0_v2/member_summary.csv",
+      "sha256": "c84f38e6b305f98cab38a0b740759c8a90fc5db931d31209e7f8a3bf48ba5049"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "c7e5f30cc29addb7c415151fb57e228f73cce87f2cfda9aa25071e839d6d2c63"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "07fe1aeb86c9a9d5ef05d5d4e1dd046b730b95d167d1f69996e9706bec30678c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "0c255170a88a37f97c20317f6dbd3aadbf3b2f07135fbd839545bc3f64027a9d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "7d5711aee2d5ee1d2e44982c75b1e07b57304b89eccfee12edc94292b3a55c27"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "4fea859e55f983fc470932ca075fc616e8bc0ec64b36ed9043ed77ae9cf6534d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m005/analysis_stage0_v2/member_summary.csv",
+      "sha256": "7da12c464d30b002408e2f5a5518d0cc04caecbbbe78fb953a766cea7322dc17"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m006/analysis_stage0_v2/member_summary.csv",
+      "sha256": "0457d4d364c4244e2af223768a9900aada87168d0f6dd7c7667674db0dfc6ab3"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m007/analysis_stage0_v2/member_summary.csv",
+      "sha256": "d76ab090a7cbd7e88d952c04f636525b1f594a2e2abe2a6c54f1971ab28c88d3"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m008/analysis_stage0_v2/member_summary.csv",
+      "sha256": "1edc2f0b1ffa3f2e9ccf069fcdc23bb193eac6c1e4a78b796b43b239781a5253"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m009/analysis_stage0_v2/member_summary.csv",
+      "sha256": "328a73dd276637ce8949612b2335f3d60fbe235502803de38d0e71bcc382224b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m010/analysis_stage0_v2/member_summary.csv",
+      "sha256": "36e9f661ba3bea5b0f49494f10cdfa781763434444a51e5057d18c9d2b9a7890"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m011/analysis_stage0_v2/member_summary.csv",
+      "sha256": "ba4440761c5076a560246ff89f09b41d71af6ae05f2fc192e1c3a2f4f62ed2d1"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m012/analysis_stage0_v2/member_summary.csv",
+      "sha256": "445d1d987cd172e600999e9d165bf838ca505d2b55ea6a8fa5b14b3776dcd273"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m013/analysis_stage0_v2/member_summary.csv",
+      "sha256": "5a11c1255a6425aacca04eb3259f27f9bdee2262fdde3c8ad5e45d28d2123cc8"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m014/analysis_stage0_v2/member_summary.csv",
+      "sha256": "4e6fa10e9df886bdf36e57d2caf42c6f8fbf835d5ef6555d68b1bdab3b052173"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m015/analysis_stage0_v2/member_summary.csv",
+      "sha256": "6e1fcfdc50c9c17361756f25a4b6cf0f6bfef619f2d1600071a372b8b23b7740"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m016/analysis_stage0_v2/member_summary.csv",
+      "sha256": "4d28589ec1430cc33b1c72e98aa3b2085c8a279bef30ce6605784746ab7c6a2f"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m017/analysis_stage0_v2/member_summary.csv",
+      "sha256": "47c0ebf8afe37cb4837d5c5e28b8dfad2bbe74934eb96bf267832d88b406feeb"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m018/analysis_stage0_v2/member_summary.csv",
+      "sha256": "c8657ab6a524bef278e53c55b0724dfaa03a758045849bbcb6651f4d7d95f953"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_resolution_convergence_v1/golovin_controlled_resolution_convergence_v1_N016384_dt0p1_m019/analysis_stage0_v2/member_summary.csv",
+      "sha256": "a6a3180da2d95a610517ec97c0409cbb552bcc690c93ad0a0cabfd7feff62260"
+    }
+  ],
+  "notes": [
+    "Student intervals describe the ensemble mean under the usual independent-member assumption.",
+    "Bootstrap intervals are percentile intervals from deterministic resampling.",
+    "Tail-growth timing remains interval-censored by the configured output interval.",
+    "The tail-growth time is not rain onset or surface precipitation.",
+    "This summary does not by itself establish convergence or equivalence."
+  ]
+}

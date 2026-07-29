@@ -1,10 +1,15 @@
 # Controlled Golovin resolution experiment: execution runbook
 
 - Experiment: `golovin_controlled_resolution_convergence_v1`
-- Status: fully prepared; model job not submitted
+- Status: initial 120-member matrix and formal analysis completed
 - Account while permanent allocation is pending: `bb1153`
 - Scientific role: first actual Golovin superdroplet-resolution convergence
   experiment
+
+The completed result is archived under
+[`results/golovin_controlled_resolution_convergence_v1/`](../../results/golovin_controlled_resolution_convergence_v1/).
+No resolution in the initial 512–16,384 matrix passed every registered
+convergence gate; see that result record for the scientific interpretation.
 
 ## 1. What is fixed before the experiment
 
