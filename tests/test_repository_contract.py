@@ -63,6 +63,7 @@ def test_levante_scripts_are_project_owned_and_account_neutral() -> None:
         "common.sh",
         "run_collisions0d.sbatch",
         "run_golovin_matrix.sbatch",
+        "validate_controlled_initialization.sbatch",
         "validate_collision_seed_replay.sbatch",
     }
     assert expected <= {path.name for path in levante_directory.iterdir()}
@@ -81,6 +82,7 @@ def test_slurm_entrypoints_resolve_common_from_explicit_project_root() -> None:
         "run_collisions0d.sbatch",
         "run_golovin_matrix.sbatch",
         "analyze_collisions0d.sbatch",
+        "validate_controlled_initialization.sbatch",
     ):
         content = (levante_directory / script_name).read_text(encoding="utf-8")
         expected = 'SCRIPT_DIR="${CLEO_SDM_PROJECT_ROOT}/scripts/levante"'
@@ -149,9 +151,17 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
     initializer = ROOT / "scripts" / "controlled_initialization.py"
     initializer_tests = ROOT / "tests" / "test_controlled_initialization.py"
     initializer_guide = ROOT / "docs" / "implementation" / "controlled-initialization-guide.md"
+    binary_validator = ROOT / "scripts" / "validate_controlled_initialization_binary.py"
+    native_gate = ROOT / "scripts" / "levante" / "validate_controlled_initialization.sbatch"
     assert initializer.is_file()
     assert initializer_tests.is_file()
     assert initializer_guide.is_file()
+    assert binary_validator.is_file()
+    assert native_gate.is_file()
+    native_gate_content = native_gate.read_text(encoding="utf-8")
+    assert "--max-superdroplets 4096" in native_gate_content
+    assert "collisions0d_solution.zarr" in native_gate_content
+    assert "srun" not in native_gate_content
 
 
 def test_collision_seed_is_required_and_recorded() -> None:

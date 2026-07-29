@@ -19,9 +19,11 @@ verified absolute paths.
    and runs either the Golovin or Long executable.
 4. `validate_collision_seed_replay.sbatch` proves one-thread exact replay for
    one frozen initialization and two controlled collision streams.
-5. `run_golovin_matrix.sbatch` maps one reviewed TSV row to one unique Slurm
+5. `validate_controlled_initialization.sbatch` generates one deterministic
+   4096-SD bundle and checks it through CLEO's own native binary reader.
+6. `run_golovin_matrix.sbatch` maps one reviewed TSV row to one unique Slurm
    array task and skips only explicitly resumed completed cases.
-6. `analyze_collisions0d.sbatch` reads one completed run through CLEO's own
+7. `analyze_collisions0d.sbatch` reads one completed run through CLEO's own
    `cleopy`/`plotcleo` tools and writes non-overwriting fixed-bin, moment,
    onset, tail and conservation diagnostics.
 
@@ -104,6 +106,34 @@ sbatch \
 The same initialization and collision seed must yield byte-identical Zarr
 stores; changing only the collision seed must change the output. See
 [`docs/decisions/0002-explicit-collision-seed.md`](../../docs/decisions/0002-explicit-collision-seed.md).
+
+## Controlled-initialization native gate
+
+This input-only validation requests:
+
+- one node and one task;
+- one CPU core;
+- 940 MiB memory;
+- 10 minutes;
+- `shared` partition;
+- serial Python/CLEO binary writing and reading;
+- no collision executable, no model output, no ensemble and no GPU.
+
+It creates one 4096-SD deterministic bundle, then uses CLEO's own
+`read_initsuperdrops` module to verify the binary checksum, exact represented
+droplet count, one-box membership, coordinate bounds and represented
+\(M_0\), \(M_3\) and \(M_6\):
+
+```bash
+sbatch \
+  --account=bb1153 \
+  --export=ALL,VALIDATION_LABEL=controlled_init_n4096_v1 \
+  scripts/levante/validate_controlled_initialization.sbatch
+```
+
+`VALIDATION_LABEL` is non-overwriting. The raw native inputs and compact JSON
+audit/readback records are written under
+`$CLEO_SDM_RUN_ROOT/controlled_initialization_validation/`.
 
 ## Scientific and machine configuration
 
