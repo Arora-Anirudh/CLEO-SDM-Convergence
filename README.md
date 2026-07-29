@@ -158,11 +158,13 @@ This path does not accept an initialization seed. Local tests and the
 4096-SD CLEO-native write/read gate passed on Levante in job `26534015`; the
 compact result is under
 [`results/controlled_initialization_native_n4096_v1/`](results/controlled_initialization_native_n4096_v1/).
+Persistent frozen-bundle creation and independent verification then passed in
+job `26534596`; its compact record is under
+[`results/controlled_initialization_bundle_n4096_v1/`](results/controlled_initialization_bundle_n4096_v1/).
 The production matrix runner deliberately remains on
-`operational_stochastic`. Frozen-bundle creation, verification and direct
-single-member reuse are implemented and locally tested, but controlled matrix
-execution remains disabled until the creation/reuse contract passes on
-Levante.
+`operational_stochastic`. Controlled matrix execution stays disabled until
+same-stack replay, diagnostic-bin robustness and one compiled controlled
+single-member reuse gate pass.
 
 ## Quality checks
 

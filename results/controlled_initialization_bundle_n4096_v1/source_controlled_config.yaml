@@ -39,7 +39,7 @@ diagnostics:
   bootstrap_seed: 20260728
 
 controlled_initialization:
-  status: frozen_bundle_levante_creation_validated_compiled_reuse_pending
+  status: frozen_bundle_software_local_validated_levante_creation_and_reuse_pending
   method: deterministic_log_volume_bin_quadrature
   radius_support_um: [1.0, 75.0]
   integer_multiplicity_allocation: largest_remainder

@@ -1,0 +1,107 @@
+project_root=/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol
+build_root=/home/b/b383673/SDM/cleo_builds/CLEO-SDM-Convergence/openmp
+run_root=/scratch/b/b383673/SDM/CLEO-SDM-Convergence/runs
+bundle_root=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles
+yacyaxt_root=/home/b/b383673/SDM/cleo_dependencies/yacyaxt/gcc
+pinned_cleo_commit=83318c23223546d10759d202d70f4fa2f7fe4688
+slurm_job_id=26534596
+slurm_cpus_per_task=1
+c_compiler=/sw/spack-levante/openmpi-4.1.2-mnmady/bin/mpicc
+cxx_compiler=/sw/spack-levante/openmpi-4.1.2-mnmady/bin/mpic++
+cmake=/usr/bin/cmake
+git=/sw/spack-levante/git-2.43.7-2ofazl/bin/git
+runtime_config=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/config.yaml
+created boundaries for 1 gridboxes
+Writing gridbox boundaries binary file to:
+ /home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/inputs/grid.dat
+Reading binary file:
+ /home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/inputs/grid.dat
+Metadata: 
+ '4 unsigned ints before this metadata string are [1. position of first byte of data (after all the metadata), 2. no. bytes of (this) global metadata string, 3. no. bytes per variable specific metadata, 4. no. of variables in data]. After this global metadata string comes variable specific metadata. For each variable, this is 3 unsigned ints, 2 chars and then a double; it states: [1. position of first databyte, 2. size (in bytes) of one datapoint, 3. no. of datapoints, 4. char to indicate python struct type, 5. char to indicate the units once multiplied by, 6. the scale factor]. Variables in this file are ndims in (z,x,y), then the 1 gridbox indicies followed by the [zmin, zmax, xmin, xmax, ymin, ymax] coordinates for each gridbox's boundaries. Grid has dimensions 1x1x1'
+zhalf:  [    0. 10000.]
+xhalf:  [    0. 10000.]
+yhalf:  [    0. 10000.]
+
+------ DOMAIN / GRIDBOXES INFO ------
+------------- 0-D MODEL -------------
+domain dimensions: (10000x10000x10000)m^3
+domain no. gridboxes: 1x1x1
+domain z limits: (  0,10000)m
+domain x limits: (  0, 10000)m
+domain y limits: (  0, 10000)m
+mean gridbox z spacing: 10000 m
+mean gridbox x spacing: 10000 m
+mean gridbox y spacing: 10000 m
+mean gridbox volume: 1e+12 m^3
+total domain volume: 1e+12 m^3
+total no. gridboxes: 1
+------------------------------------
+
+Reading binary file:
+ /home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/inputs/grid.dat
+controlled initialization: N_SD=4096, N_real=8388608000000000000
+Writing gridbox boundaries binary file to:
+ /home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/inputs/superdroplets.dat
+Reading binary file:
+ /home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/inputs/grid.dat
+Reading binary file:
+ /home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/inputs/superdroplets.dat
+attribute shapes:  (4096,) (4096,) (4096,) (4096,) (4096,) (4096,) (4096,)
+
+------ DOMAIN SUPERDROPLETS INFO ------
+total droplet number conc: 8.38861 /cm^3
+total droplet mass:        7.0856e-35 g/m^3
+       as if water:        1.00003 g/m^3
+------------------------------------
+
+controlled_audit=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/controlled_initialization_audit.json
+initialization_family=controlled
+initialization_seed=not_applicable
+grid_file=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/inputs/grid.dat
+superdroplet_file=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/inputs/superdroplets.dat
+Reading binary file:
+ /home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/inputs/superdroplets.dat
+attribute shapes:  (4096,) (4096,) (4096,) (4096,) (4096,) (4096,) (4096,)
+CONTROLLED_INITIALIZATION_NATIVE_READBACK_PASS=1
+readback_report=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/native_readback.json
+population_sha256_exact_match=False
+CONTROLLED_BUNDLE_FINALIZE_PASS=1
+bundle_directory=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1
+number_of_superdroplets=4096
+native_superdroplet_sha256=d805fb278ed070396d8bf3bb0d655138f5f1124901d5ea917279f99e270420f2
+bundle_manifest_sha256=daf8c66c86df98fb0bbaf6e69bd7c832ab42e9463305e8faca7ff866ce45bdfe
+CONTROLLED_BUNDLE_PREPARATION_PASS=1
+bundle_directory=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1
+bundle_manifest=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/bundle_manifest.json
+
+********************************************************************************
+*                                                                              *
+*  This is the automated job summary provided by DKRZ.                         *
+*  If you encounter problems, need assistance or have any suggestion, please   *
+*  write an email to                                                           *
+*                                                                              *
+*  --  support@dkrz.de --                                                      *
+*                                                                              *
+*                       We hope you enjoyed the DKRZ supercomputer LEVANTE ... *
+*
+* JobID            : 26534596
+* JobName          : cleo_sdm_bundle0d                                 
+* Account          : bb1153
+* User             : b383673 (202947), bb1153 (1639)                   
+* Partition        : shared
+* QOS              : normal
+* Nodelist         : l40001 (1)                                                
+* Submit date      : 2026-07-29T09:42:48
+* Start time       : 2026-07-29T09:44:05
+* End time         : 2026-07-29T09:44:20
+* Elapsed time     : 00:00:15 (Timelimit=00:10:00)                     
+* Command          : /home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/
+*                    scripts/levante/prepare_controlled_bundle.sbatch
+* WorkDir          : /home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol
+*
+* StepID | JobName      NodeHours    MaxRSS [Byte] (@task)
+* ------------------------------------------------------------------------------
+* batch  | batch          3.3e-05
+* extern | extern         3.3e-05                 856K (0)
+* ------------------------------------------------------------------------------
+

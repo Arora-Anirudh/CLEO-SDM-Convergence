@@ -3,8 +3,8 @@
 - Implementation status: local numerical/unit tests and one Levante native
   CLEO write/read gate passed
 - Native CLEO binary status: 4096-SD pilot validated in job `26534015`
-- Frozen-bundle software status: locally validated; Levante creation/reuse
-  pending
+- Frozen-bundle status: persistent 4096-SD creation/verification validated in
+  job `26534596`; independent replay and compiled direct reuse pending
 - Production status: not authorized
 - Scientific decision: [ADR 0004](../decisions/0004-golovin-production-definitions.md)
 - Main implementation: [`scripts/controlled_initialization.py`](../../scripts/controlled_initialization.py)
@@ -503,28 +503,29 @@ The native superdroplet binary SHA-256 is
 The compact result record is
 [`results/controlled_initialization_native_n4096_v1/`](../../results/controlled_initialization_native_n4096_v1/).
 
-## 12. Proposed frozen-bundle validation
+## 12. Completed persistent frozen-bundle validation
 
-No new Levante job has been submitted for the frozen-bundle implementation.
-The first proposed validation is input-only:
+After explicit approval, job `26534596` used `bb1153/shared`, one requested
+node/task/CPU, 940 MiB and 10 minutes. It ran serially, created/read/finalized
+one 4096-SD bundle, and ran no collision model or ensemble.
 
-| Resource | Request |
-| --- | --- |
-| account / partition | `bb1153` / `shared` |
-| nodes / tasks | 1 / 1 |
-| CPUs per task | 1 |
-| memory | 940 MiB |
-| walltime | 10 minutes |
-| execution | serial CPU, no GPU |
-| scope | create/read/finalize one 4096-SD bundle; no model or ensemble |
+It completed `0:0` in 15 seconds with empty stderr. Slurm allocated two CPUs
+despite the one-CPU request; batch MaxRSS was 3.76 MiB. Independent
+post-completion verification passed. The 11-file, 290,319-byte bundle has no
+writable files and no Zarr output.
 
-After that passes, a separate disclosed action would rebuild the exact project
-commit if necessary and run one short controlled Golovin member. No matrix
-should be submitted at either gate.
+The bundle records project commit `e1935d7`, pinned CLEO `83318c23`, the exact
+`8388608000000000000` represented physical droplets and native superdroplet
+SHA-256
+`d805fb278ed070396d8bf3bb0d655138f5f1124901d5ea917279f99e270420f2`.
+The compact review record is
+[`results/controlled_initialization_bundle_n4096_v1/`](../../results/controlled_initialization_bundle_n4096_v1/).
 
-This is a validation pilot, not a convergence ensemble.
+This validates persistent creation and immutability. Same-stack independent
+regeneration and a compiled controlled member remain separate gates. No
+controlled matrix has been authorized.
 
-## 12. How to explain this to Clara
+## 13. How to explain this to Clara
 
 A concise explanation is:
 

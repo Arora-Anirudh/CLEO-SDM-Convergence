@@ -358,8 +358,10 @@ Implementation update, 2026-07-29:
   failure;
 - one 4096-SD native CLEO write/read gate passed on Levante in job `26534015`;
 - frozen-bundle creation/verification and direct member-reuse software are
-  locally implemented; their Levante creation/reuse gate and the
-  compiled-model pilot remain pending;
+  implemented and locally tested;
+- persistent 4096-SD bundle creation and independent verification passed on
+  Levante in job `26534596`; same-stack independent replay and compiled direct
+  reuse remain pending;
 - exact macOS/Levante source-array hashes differ because tiny
   NumPy/libm-version differences change raw bytes, reinforcing the decision to
   freeze and reuse one Levante-native artifact per resolution;
@@ -367,7 +369,7 @@ Implementation update, 2026-07-29:
 
 Before any production compute:
 
-1. validate one persistent 4096-SD frozen bundle on Levante;
+1. validate same-stack byte replay of the persistent construction;
 2. validate pre/post identity in one compiled member reusing that bundle;
 3. add numerical under/overflow and 250/500/1000-bin sensitivity summaries;
 4. report every proposed `bb1153` Slurm request before submission.

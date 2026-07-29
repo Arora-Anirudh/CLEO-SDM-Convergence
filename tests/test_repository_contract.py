@@ -136,7 +136,7 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
     initialization = config["controlled_initialization"]
     assert (
         initialization["status"]
-        == "frozen_bundle_software_local_validated_levante_creation_and_reuse_pending"
+        == "frozen_bundle_levante_creation_validated_compiled_reuse_pending"
     )
     assert initialization["maximum_relative_moment0_error"] == 1.0e-10
     assert initialization["maximum_relative_moment3_error"] == 1.0e-10

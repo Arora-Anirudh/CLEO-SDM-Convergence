@@ -1,0 +1,55 @@
+# Reference starting configuration for the collision-only box model.
+#
+# The initialization parameters are intentionally inherited from
+# PerformanceTestingCLEO/src/collisions0d, following Clara Bayley's direction.
+# They are a documented starting point, not a convergence result or an
+# immutable final scientific configuration.
+
+python_initconds:
+  grid:
+    zgrid: [0.0, 10000.0]
+    xgrid: [0.0, 10000.0]
+    ygrid: [0.0, 10000.0]
+  supers:
+    dryradius: 1.0e-16
+    rspan: [1.0e-6, 7.5e-5]
+    xi_min: 10
+    volexpr0: 30.531e-6
+    numconc: 8388608
+
+kokkos_settings:
+  num_threads: 1
+  map_device_id_by: mpi_rank
+
+domain:
+  # "0-D" means there is no transport or dynamical evolution. The three
+  # coordinates are retained here to reproduce the collisions0d initializer.
+  nspacedims: 3
+  ngbxs: 1
+  maxnsupers: 4096
+
+timesteps:
+  CONDTSTEP: 1
+  COLLTSTEP: 1
+  MOTIONTSTEP: 5
+  COUPLTSTEP: 3600
+  OBSTSTEP: 300
+  T_END: 3600
+
+inputfiles:
+  constants_filename: 
+    /home/b/b383673/SDM/cleo_builds/CLEO-SDM-Convergence/openmp/_deps/cleo-src/libs/cleoconstants.hpp
+  grid_filename: 
+    /home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/inputs/grid.dat
+
+initsupers:
+  type: frombinary
+  initsupers_filename: 
+    /home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/inputs/superdroplets.dat
+
+outputdata:
+  setup_filename: 
+    /home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/output/collisions0d_setup.txt
+  zarrbasedir: 
+    /home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/output/collisions0d_solution.zarr
+  maxchunk: 2500000

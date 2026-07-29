@@ -559,8 +559,8 @@ Levante account is `bb1153`.
 
 The following still block a production convergence ensemble:
 
-1. Levante validation of the locally implemented frozen-binary creation and
-   direct-member reuse contract;
+1. same-stack replay and compiled direct-member reuse of the now
+   Levante-validated persistent frozen bundle;
 2. implementation of the out-of-range and 250/500/1000-bin robustness gates;
 3. a small runtime/storage pilot using the new controlled path;
 4. the pre-submission compute disclosure;
