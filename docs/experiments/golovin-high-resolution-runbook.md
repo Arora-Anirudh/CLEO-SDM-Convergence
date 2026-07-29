@@ -103,8 +103,9 @@ The checked-in matrix must contain:
 - exactly 100 rows at every registered resolution;
 - 400 distinct 64-bit collision seeds;
 - no seed, run-label or bundle-label overlap with the first matrix;
-- `submission_authorized=false` until the separate compute disclosure is
-  accepted.
+- `submission_authorized=false` remains an immutable metadata safety marker;
+  actual submission additionally requires an explicit, dated compute
+  disclosure and researcher authorization outside the generated matrix.
 
 The test suite checks these properties directly.
 
@@ -121,8 +122,8 @@ synchronized to Levante, the build request is:
 | nodes | 1 |
 | tasks | 1 |
 | CPUs per task | 8 |
-| memory | 8 GiB |
-| walltime | 30 min |
+| memory | 4 GiB |
+| walltime | 10 min |
 | accelerator | none |
 
 Submission is not authorized merely because this command is documented:
@@ -176,17 +177,27 @@ borrowed from the old run.
 
 ## 7. Model request
 
-Planning from the first experiment gives about 6.25 serial CPU-hours:
+The completed first experiment provides a direct measurement at 16,384 SDs:
+20 members averaged 14.7 s/member. Its restartable runner spent another
+531 s around 120 members, or about 4.4 s/case, on launching, validation,
+manifests and filesystem work. Doubling the measured member time at each
+doubled resolution gives about 6.13 serial model CPU-hours:
 
 | \(N_\mathrm{SD}\) | members | estimated seconds/member | estimated CPU-hours |
 | ---: | ---: | ---: | ---: |
-| 16,384 | 100 | 15 | 0.42 |
-| 32,768 | 100 | 30 | 0.83 |
-| 65,536 | 100 | 60 | 1.67 |
-| 131,072 | 100 | 120 | 3.33 |
-| **total** | **400** | — | **6.25** |
+| 16,384 | 100 | 14.7 | 0.41 |
+| 32,768 | 100 | 29.4 | 0.82 |
+| 65,536 | 100 | 58.8 | 1.63 |
+| 131,072 | 100 | 117.6 | 3.27 |
+| **total** | **400** | — | **6.13** |
 
-The conservative allocation is:
+Because the matrix is evenly divisible among four strided workers, each worker
+receives 25 members at every resolution. The expected allocation walltime is
+therefore about 92 minutes of model work plus about 7–8 minutes of measured
+per-case orchestration. The 2 h 15 min limit supplies about 36 minutes of
+additional margin without reserving the earlier four-hour ceiling.
+
+The revised allocation is:
 
 | field | request |
 | --- | --- |
@@ -196,11 +207,16 @@ The conservative allocation is:
 | tasks | 4 |
 | CPUs per task | 1 |
 | simultaneous members | at most 4 |
-| memory | 4 GiB total |
-| walltime | 4 h |
+| memory | 3600 MiB total |
+| walltime | 2 h 15 min |
 | per member | one MPI rank, one CPU thread |
 | GPU | none |
 | expected raw output | about 28.0 GB / 26.1 GiB |
+
+The `shared` partition permits at most 940 MiB per allocated logical CPU.
+Using 3600 MiB stays within the four requested CPUs and avoids asking Slurm to
+add a fifth CPU solely to satisfy memory. Earlier members used at most about
+166 MiB each, so this remains a substantial memory margin.
 
 After compute approval, define the exact roots and submit:
 
@@ -262,10 +278,17 @@ The conservative request is:
 | nodes | 1 |
 | tasks | 1 |
 | CPUs per task | 1 |
-| memory | 4 GiB |
-| walltime | 1 h |
+| memory | 940 MiB |
+| walltime | 45 min |
 | CLEO model | not run |
 | GPU | none |
+
+The first full member-diagnostic pass processed 8.4 GB of raw data in about
+6 minutes before a later plotting failure. Scaling that I/O volume to 28 GB
+suggests roughly 20 minutes. Forty-five minutes leaves more than a factor-two
+walltime margin while 940 MiB remains nearly twice the observed analysis
+maximum RSS of about 491 MB. Requesting more memory on `shared` would
+automatically allocate extra CPUs to this serial job without accelerating it.
 
 After the model succeeds, submit with an `afterok` dependency:
 
@@ -273,13 +296,30 @@ After the model succeeds, submit with an `afterok` dependency:
 sbatch \
   --account=bb1153 \
   --dependency=afterok:<model_job_id> \
-  --mem=4G \
-  --time=01:00:00 \
+  --mem=940M \
+  --time=00:45:00 \
   --export=ALL,CLEO_SDM_PROJECT_ROOT="${CLEO_SDM_PROJECT_ROOT}",CLEO_SDM_BUILD_ROOT="${CLEO_SDM_BUILD_ROOT}",CLEO_SDM_RUN_ROOT="${CLEO_SDM_RUN_ROOT}",CLEO_SDM_BUNDLE_ROOT="${CLEO_SDM_BUNDLE_ROOT}",MATRIX_FILE="${MATRIX_FILE}",RESOLUTION_CONFIG="${CLEO_SDM_PROJECT_ROOT}/config/golovin_controlled_high_resolution_convergence.yaml",RESOLUTION_RECORD_ROOT="${RESOLUTION_RECORD_ROOT}",EXPECTED_CASE_COUNT=400 \
   scripts/levante/analyze_golovin_resolution_convergence.sbatch
 ```
 
-## 10. Interpretation and stopping
+## 10. Live SCRATCH capacity audit
+
+Immediately before submission on 2026-07-29, Levante reported:
+
+```text
+/scratch filesystem: 15 TiB total, 2.2 TiB used, 13 TiB available
+user SCRATCH quota:   2.166 TiB used, no block or inode limit reported
+user SDM subtree:     9.2 GiB
+project run subtree:  2.4 GiB
+new run target:       absent
+```
+
+The expected 26.1-GiB raw experiment would raise the SDM subtree to roughly
+35.3 GiB before compact analysis products. This is well within the live
+filesystem capacity. SCRATCH remains temporary storage; only compact,
+checksummed results are retained in HOME and Git.
+
+## 11. Interpretation and stopping
 
 The analysis asks whether either complete confirmation triple passes:
 

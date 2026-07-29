@@ -52,8 +52,8 @@ The build script requests:
 
 - one node and one task;
 - eight CPU cores;
-- 8 GiB memory;
-- 30 minutes;
+- 4 GiB memory;
+- 10 minutes;
 - `shared` partition;
 - CPU/OpenMP only, with no GPU.
 
@@ -331,8 +331,10 @@ run root and bundle labels; no previous raw member enters the analysis.
 To avoid 400 scheduler jobs,
 `run_golovin_resolution_convergence_parallel.sbatch` requests four task slots
 in one restartable allocation and runs at most four independent one-rank,
-one-thread CLEO members concurrently. Exact data-deletion boundaries,
-resource requests, preparation, submission, audit and interpretation are in
-the
+one-thread CLEO members concurrently. Its measured-runtime-based request is
+four CPUs, 3600 MiB total memory and 2 hours 15 minutes. The serial analysis
+requests one CPU, 940 MiB and 45 minutes. Exact storage evidence, runtime
+extrapolation, data-deletion boundaries, preparation, submission, audit and
+interpretation are in the
 [`fresh high-resolution runbook`](../../docs/experiments/golovin-high-resolution-runbook.md).
 That runbook is documentation, not compute authorization.

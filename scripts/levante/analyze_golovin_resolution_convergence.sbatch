@@ -4,8 +4,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=2G
-#SBATCH --time=00:30:00
+#SBATCH --mem=940M
+#SBATCH --time=00:45:00
 #SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
 #SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%j.err
 

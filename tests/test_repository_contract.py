@@ -225,11 +225,25 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
     assert "EXPECTED_CASE_COUNT" in parallel_runner_content
     assert "GOLOVIN_CONTROLLED_PARALLEL_RESOLUTION_RUN_PASS=1" in parallel_runner_content
     assert "#SBATCH --ntasks=4" in parallel_runner_content
+    assert "#SBATCH --mem=3600M" in parallel_runner_content
+    assert "#SBATCH --time=02:15:00" in parallel_runner_content
 
     collision_runner = (ROOT / "scripts" / "levante" / "run_collisions0d.sbatch").read_text(
         encoding="utf-8"
     )
     assert "srun \\\n  --exclusive" in collision_runner
+
+    build_runner = (ROOT / "scripts" / "levante" / "build.sbatch").read_text(encoding="utf-8")
+    assert "#SBATCH --cpus-per-task=8" in build_runner
+    assert "#SBATCH --mem=4G" in build_runner
+    assert "#SBATCH --time=00:10:00" in build_runner
+
+    resolution_analyzer = (
+        ROOT / "scripts" / "levante" / "analyze_golovin_resolution_convergence.sbatch"
+    ).read_text(encoding="utf-8")
+    assert "#SBATCH --cpus-per-task=1" in resolution_analyzer
+    assert "#SBATCH --mem=940M" in resolution_analyzer
+    assert "#SBATCH --time=00:45:00" in resolution_analyzer
 
 
 def test_collision_seed_is_required_and_recorded() -> None:
