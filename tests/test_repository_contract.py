@@ -259,4 +259,7 @@ def test_timestep_screen_uses_ensemble_distribution_and_current_summary_name() -
     assert "fixed_bin_distributions.npz" in analyzer
     assert "all_member_time_diagnostics.csv" in wrapper
     assert "fixed_bin_distributions.npz" in wrapper
-    assert config["screening"]["maximum_bin_robustness_absolute_difference"] == 0.005
+    assert (
+        config["screening"]["bin_robustness_policy"]
+        == "require_timestep_equivalence_at_all_registered_bin_counts"
+    )

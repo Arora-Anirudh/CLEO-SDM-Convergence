@@ -146,6 +146,14 @@ summary_directory="${staging_directory}/ensemble_summary"
 
 install -m 0440 "${MATRIX_FILE}" "${staging_directory}/cases.tsv"
 install -m 0440 "${SCREEN_CONFIG}" "${staging_directory}/source_config.yaml"
+install -m 0440 \
+  "${CLEO_SDM_PROJECT_ROOT}/scripts/analyze_golovin_timestep_screen.py" \
+  "${staging_directory}/analyze_golovin_timestep_screen.py"
+install -m 0440 \
+  "${CLEO_SDM_PROJECT_ROOT}/scripts/golovin_stage0.py" \
+  "${staging_directory}/golovin_stage0.py"
+git -C "${CLEO_SDM_PROJECT_ROOT}" rev-parse HEAD \
+  >"${staging_directory}/analysis_project_commit.txt"
 (
   cd "${staging_directory}"
   find . -type f ! -name SHA256SUMS -print0 \

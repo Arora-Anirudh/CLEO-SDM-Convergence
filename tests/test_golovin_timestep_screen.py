@@ -83,7 +83,7 @@ def synthetic_inputs(moment6_difference: float = 0.02):
             "maximum_moment0_mean_relative_difference": 0.05,
             "maximum_moment6_mean_relative_difference": 0.10,
             "maximum_relative_liquid_mass_drift": 1.0e-7,
-            "maximum_bin_robustness_absolute_difference": 0.005,
+            "bin_robustness_policy": ("require_timestep_equivalence_at_all_registered_bin_counts"),
             "maximum_out_of_range_mass_fraction": 1.0e-6,
             "bootstrap_resamples": 1000,
             "bootstrap_seed": 12345,
@@ -126,7 +126,7 @@ def test_screen_falls_back_to_reference_when_coarser_m6_difference_fails() -> No
     assert selection["timestep_pass"] == {"0.1": True, "1.0": False}
 
 
-def test_screen_rejects_coarser_timestep_when_bin_robustness_fails() -> None:
+def test_screen_rejects_coarser_timestep_when_alternate_bin_equivalence_fails() -> None:
     module = load_module()
     rows, matrix_rows, config, fixed_bin_archives = synthetic_inputs()
     for row in matrix_rows:
@@ -143,6 +143,24 @@ def test_screen_rejects_coarser_timestep_when_bin_robustness_fails() -> None:
 
     assert selection["selected_collision_timestep_s"] == 0.1
     assert selection["timestep_pass"] == {"0.1": True, "1.0": False}
+
+
+def test_absolute_l1_difference_between_bin_counts_is_descriptive() -> None:
+    module = load_module()
+    rows, matrix_rows, config, fixed_bin_archives = synthetic_inputs()
+    for archive in fixed_bin_archives.values():
+        archive["numerical_gm3_per_ln_radius_250"] += 0.03
+
+    _, robustness, selection = module.analyze(
+        rows=rows,
+        matrix_rows=matrix_rows,
+        config=config,
+        fixed_bin_archives=fixed_bin_archives,
+    )
+
+    assert selection["selected_collision_timestep_s"] == 1.0
+    assert max(float(row["absolute_difference_from_500_bins_250"]) for row in robustness) > 0.005
+    assert selection["absolute_l1_difference_between_bin_counts_is_an_acceptance_gate"] is False
 
 
 def test_screen_rejects_coarser_timestep_when_mass_leaves_registered_bins() -> None:

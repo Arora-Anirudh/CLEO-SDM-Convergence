@@ -142,10 +142,12 @@ The formal convergence calculation must use:
 
 Every member and time must report liquid mass below and above the registered
 range. The combined out-of-range fraction must be at most \(10^{-6}\).
-Repeating the calculation with 250 and 1000 bins may change L1 by at most
-0.005 absolute and may not change a convergence decision. The analytical
-coverage audit and failure policy are in
-[ADR 0004](../decisions/0004-golovin-production-definitions.md).
+Repeating the calculation with 250 and 1000 bins may not change a convergence
+decision. Absolute cross-bin L1 differences are reported as sensitivity
+diagnostics rather than acceptance gates, because finer histograms expose more
+finite-ensemble roughness. The analytical coverage and bin-sensitivity policy
+are in [ADR 0004](../decisions/0004-golovin-production-definitions.md) and
+[ADR 0005](../decisions/0005-ensemble-l1-bin-sensitivity.md).
 
 CLEO's official validation plot uses Gaussian smoothing
 \(\sigma_{\ln r}=0.62N_\mathrm{SD}^{-1/5}\). That plot remains a required

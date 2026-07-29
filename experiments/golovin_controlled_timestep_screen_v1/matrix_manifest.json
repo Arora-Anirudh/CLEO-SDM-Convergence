@@ -4,7 +4,7 @@
   "matrix_file": "cases.tsv",
   "matrix_sha256": "9f3a3094bfbde12ec0a852244c431186abd64905258a6b3521e1e2f87a576666",
   "source_config": "source_config.yaml",
-  "source_config_sha256": "5904bff136c0c35ef4e54ec4aa847df259de5c5585ae328a51d734eb6d487700",
+  "source_config_sha256": "4b5b3e55d834934145b2e08f85ca0587f68663f7859642959701171682834a53",
   "array_index_minimum": 0,
   "array_index_maximum": 24,
   "submission_authorized": false,

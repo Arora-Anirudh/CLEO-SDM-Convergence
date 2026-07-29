@@ -182,9 +182,11 @@ solution.
 1. At every stored time and for every member, the fraction of numerical liquid
    mass below 1 μm or above 5000 μm must be no more than \(10^{-6}\).
 2. The diagnostic must report under-range and over-range mass separately.
-3. The analysis must be repeated with 250 and 1000 bins. Relative to the
-   500-bin result, the L1 value may change by at most 0.005 absolute and the
-   convergence decision may not change.
+3. The analysis must be repeated with 250 and 1000 bins, and the convergence
+   decision may not change. The earlier absolute 0.005 cross-bin condition is
+   superseded by [ADR 0005](0005-ensemble-l1-bin-sensitivity.md), because
+   finite-ensemble histogram roughness makes scalar L1 depend systematically
+   on bin width.
 4. If either gate fails, no range is enlarged or result clipped after seeing
    only the failing member. A wider common range or finer common grid must be
    registered and the complete comparison reanalyzed.

@@ -208,6 +208,11 @@ def analyze(
     bootstrap_seed = int(screening["bootstrap_seed"])
     if screening.get("require_pass_at_every_decision_time") is not True:
         raise ValueError("the registered screen must pass at every decision time")
+    if (
+        screening.get("bin_robustness_policy")
+        != "require_timestep_equivalence_at_all_registered_bin_counts"
+    ):
+        raise ValueError("unsupported bin-robustness policy")
 
     decision_rows = [
         {**row, "_nominal_time_s": nominal_time(float(row["time_s"]), decision_times)}
@@ -299,7 +304,6 @@ def analyze(
             timestep_pass[timestep] and maximum_out_of_range <= out_of_range_limit
         )
 
-    robustness_limit = float(screening["maximum_bin_robustness_absolute_difference"])
     l1_margin = float(screening["maximum_l1_mean_absolute_difference"])
     robustness: list[dict[str, object]] = []
     for timestep in timesteps:
@@ -380,10 +384,7 @@ def analyze(
             primary_l1 = l1_by_count[PRIMARY_BIN_COUNT]
             for count in ROBUSTNESS_COUNTS:
                 absolute_difference = abs(l1_by_count[count] - primary_l1)
-                robust = absolute_difference <= robustness_limit
                 record[f"absolute_difference_from_500_bins_{count}"] = absolute_difference
-                record[f"robustness_pass_bins_{count}"] = robust
-                timestep_pass[timestep] = timestep_pass[timestep] and robust
             robustness.append(record)
 
     passing_timesteps = sorted(
@@ -413,8 +414,8 @@ def analyze(
             str(key): value for key, value in maximum_out_of_range_by_timestep.items()
         },
         "maximum_out_of_range_mass_fraction": out_of_range_limit,
-        "maximum_bin_robustness_absolute_difference": robustness_limit,
-        "bin_robustness_is_an_acceptance_gate": True,
+        "bin_robustness_policy": screening["bin_robustness_policy"],
+        "absolute_l1_difference_between_bin_counts_is_an_acceptance_gate": False,
         "l1_estimand": (
             "relative L1 of the ensemble-mean fixed-bin distribution, "
             "not the mean of per-member L1 values"

@@ -140,19 +140,24 @@ value makes L1 nonlinear, so averaging scalar member errors would answer a
 different question and would not measure the error of the ensemble-mean
 distribution.
 
-The registered robustness gates are:
+The registered robustness policy is:
 
-- the absolute change of the ensemble-mean L1 from the 500-bin value is at
-  most 0.005 for both 250 and 1000 bins;
-- the collision-timestep equivalence decision must also pass at 250 and 1000
+- 500 bins remains the primary diagnostic;
+- collision-timestep equivalence must pass independently at 250, 500 and 1000
   bins;
+- absolute L1 changes from the 500-bin value are reported but are not
+  independent acceptance gates;
 - the combined below-range and above-range mass fraction of every member is at
   most \(10^{-6}\).
 
 This guards against declaring convergence because of one convenient histogram
-grid. CLEO's smoothed validation figure is still produced for human visual
-inspection, but it is not the formal convergence statistic because its
-bandwidth changes with \(N_\mathrm{SD}\).
+grid while acknowledging that finer bins expose more finite-ensemble
+roughness. The empirical reason for replacing the earlier absolute 0.005
+cross-bin condition is documented in
+[ADR 0005](../decisions/0005-ensemble-l1-bin-sensitivity.md). CLEO's smoothed
+validation figure is still produced for human visual inspection, but it is
+not the formal convergence statistic because its bandwidth changes with
+\(N_\mathrm{SD}\).
 
 ## 5. Gate D: exact-commit build and direct frozen-bundle member
 
