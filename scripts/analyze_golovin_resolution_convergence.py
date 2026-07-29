@@ -510,10 +510,10 @@ def analyze(
             str(key): len(value) for key, value in members_by_resolution.items()
         },
         "resolution_analytical_and_precision_pass": {
-            str(key): value for key, value in resolution_pass.items()
+            str(key): bool(value) for key, value in resolution_pass.items()
         },
         "adjacent_pair_equivalence_pass": {
-            f"{lower}-{upper}": value for (lower, upper), value in pair_pass.items()
+            f"{lower}-{upper}": bool(value) for (lower, upper), value in pair_pass.items()
         },
         "confirmation_rule": (
             "N, 2N and 4N pass analytical/precision gates and both adjacent pairs pass equivalence"

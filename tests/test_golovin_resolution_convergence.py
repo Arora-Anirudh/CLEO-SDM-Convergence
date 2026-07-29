@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import sys
 from pathlib import Path
 
@@ -140,6 +141,12 @@ def test_resolution_analysis_selects_smallest_confirmed_level() -> None:
         "512-1024": True,
         "1024-2048": True,
     }
+    assert all(
+        type(value) is bool
+        for value in decision["resolution_analytical_and_precision_pass"].values()
+    )
+    assert all(type(value) is bool for value in decision["adjacent_pair_equivalence_pass"].values())
+    assert json.loads(json.dumps(decision)) == decision
 
 
 def test_resolution_analysis_does_not_accept_failed_smallest_level() -> None:
