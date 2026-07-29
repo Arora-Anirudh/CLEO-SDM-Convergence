@@ -27,10 +27,11 @@ The first application is `collisions0d`:
 - a reproducible Python initializer based on Clara Bayley's
   [`PerformanceTestingCLEO/src/collisions0d`](https://github.com/yoctoyotta1024/PerformanceTestingCLEO/tree/main/src/collisions0d).
 
-The repository does **not** yet contain a superdroplet-resolution convergence
-result or a recommended number of superdroplets. The controlled timestep gate
-is complete and selected 0.1 s; the next model submission is the actual
-six-resolution, 120-member Golovin convergence experiment.
+The repository contains the completed first controlled Golovin
+superdroplet-resolution experiment, but it does **not** yet contain a
+formally accepted resolution or a recommended number of superdroplets. The
+512–16,384 by 20 matrix selected no resolution under the registered all-time
+distribution and adjacent-equivalence rules.
 
 The pre-registered scientific design for the first permanent-repository
 convergence study is the
@@ -39,6 +40,17 @@ It separates analytical mean bias, stochastic spread, ensemble precision,
 initialization sensitivity, timestep adequacy and cost. Its previously
 provisional numerical tolerances are now documented project acceptance
 criteria; the preparatory implementation and pilot gates have passed.
+The literature-grounded high-resolution and ensemble extension is recorded in
+[`ADR 0006`](docs/decisions/0006-extend-golovin-before-long.md) and its
+[`supporting review`](docs/literature/golovin-convergence-extension-review.md).
+No Long convergence experiment begins before this Golovin follow-up is
+resolved.
+
+The registered follow-up configuration is
+[`golovin_controlled_high_resolution_convergence.yaml`](config/golovin_controlled_high_resolution_convergence.yaml):
+16,384, 32,768, 65,536 and 131,072 superdroplets with 100 newly generated
+collision-stream members per level. It reuses no raw member, collision seed,
+run label or controlled-bundle label from the first matrix.
 
 The local Stage-0 measurement, provenance and non-destructive matrix tooling is
 explained from first principles in the

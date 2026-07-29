@@ -213,7 +213,23 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
     bundle_ladder_content = bundle_ladder.read_text(encoding="utf-8")
     assert "CONTROLLED_BUNDLE_LADDER_PASS=1" in bundle_ladder_content
     assert "CANONICAL_N4096_BUNDLE" in bundle_ladder_content
+    assert "REUSE_CANONICAL_N4096" in bundle_ladder_content
+    assert "BUNDLE_LABEL_STEM" in bundle_ladder_content
     assert "srun" not in bundle_ladder_content
+
+    parallel_runner = (
+        ROOT / "scripts" / "levante" / "run_golovin_resolution_convergence_parallel.sbatch"
+    )
+    parallel_runner_content = parallel_runner.read_text(encoding="utf-8")
+    assert "WORKER_COUNT" in parallel_runner_content
+    assert "EXPECTED_CASE_COUNT" in parallel_runner_content
+    assert "GOLOVIN_CONTROLLED_PARALLEL_RESOLUTION_RUN_PASS=1" in parallel_runner_content
+    assert "#SBATCH --ntasks=4" in parallel_runner_content
+
+    collision_runner = (ROOT / "scripts" / "levante" / "run_collisions0d.sbatch").read_text(
+        encoding="utf-8"
+    )
+    assert "srun \\\n  --exclusive" in collision_runner
 
 
 def test_collision_seed_is_required_and_recorded() -> None:
@@ -319,3 +335,36 @@ def test_actual_golovin_matrix_is_reviewed_but_not_compute_authorization() -> No
     assert "analysis_v1" in wrapper_content
     assert "--times 0 600 1200 1800 2400 3000 3600" in wrapper_content
     assert "audit_golovin_matrix.py" in wrapper_content
+
+
+def test_fresh_high_resolution_matrix_is_complete_but_not_compute_authorization() -> None:
+    config_filename = ROOT / "config" / "golovin_controlled_high_resolution_convergence.yaml"
+    experiment_root = ROOT / "experiments" / "golovin_controlled_high_resolution_convergence_v1"
+    config = YAML(typ="safe").load(config_filename.read_text(encoding="utf-8"))
+
+    assert config["experiment"]["status"] == "production_ready_not_submitted"
+    assert config["matrix"]["max_superdroplets"] == [
+        16_384,
+        32_768,
+        65_536,
+        131_072,
+    ]
+    assert config["matrix"]["members_per_cell"] == 100
+    assert config["data_isolation"] == {
+        "previous_raw_members_reused": 0,
+        "previous_collision_seeds_reused": 0,
+        "previous_bundle_labels_reused": 0,
+        "fresh_member_count": 400,
+        "previous_compact_result_used_for_planning_only": True,
+    }
+    assert config["authorization"]["submission_authorized"] is False
+
+    matrix_rows = (experiment_root / "cases.tsv").read_text(encoding="utf-8").splitlines()
+    manifest = YAML(typ="safe").load(
+        (experiment_root / "matrix_manifest.json").read_text(encoding="utf-8")
+    )
+    assert len(matrix_rows) == 401
+    assert manifest["case_count"] == 400
+    assert manifest["case_index_minimum"] == 0
+    assert manifest["case_index_maximum"] == 399
+    assert manifest["submission_authorized"] is False

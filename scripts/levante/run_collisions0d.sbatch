@@ -251,6 +251,7 @@ fi
 echo "--- run CLEO collisions0d (${KERNEL}) ---"
 cd "${run_directory}"
 srun \
+  --exclusive \
   --mpi=pmix_v3 \
   --ntasks=1 \
   --cpus-per-task="${MODEL_THREADS}" \

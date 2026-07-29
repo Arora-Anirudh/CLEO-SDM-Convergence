@@ -1,12 +1,12 @@
 # Golovin convergence protocol
 
-- Status: all pre-convergence gates passed; actual resolution matrix prepared
-  but not submitted
+- Status: first controlled matrix completed; no resolution formally accepted;
+  high-resolution/ensemble extension accepted for preparation under ADR 0006
 - Scope: permanent-repository `collisions0d` Golovin calibration
 - Model: pinned CLEO commit `83318c23223546d10759d202d70f4fa2f7fe4688`
 - Execution mode: one MPI rank and one Kokkos/OpenMP thread per member
-- Compute status: timestep-screen compute completed; no
-  superdroplet-resolution convergence job submitted
+- Compute status: timestep screen, 120-member resolution matrix and final
+  analysis completed; no follow-up extension job submitted
 
 ## 1. Purpose
 
@@ -631,3 +631,16 @@ production submission.
   [10.5194/gmd-17-5167-2024](https://doi.org/10.5194/gmd-17-5167-2024).
 - Bayley et al. (2026), *GMD*, DOI
   [10.5194/gmd-19-6121-2026](https://doi.org/10.5194/gmd-19-6121-2026).
+
+## 12. State after the first resolution experiment
+
+The 120-member 512–16,384 matrix completed, but no resolution passed the
+registered all-time, all-bin analytical and adjacent-equivalence decision.
+The next experiment is therefore a prospectively registered, completely
+fresh 4 × 100 high-resolution matrix at 16,384–131,072 SDs. It reuses no raw
+member, collision seed, run label, output path or controlled-bundle label from
+the first matrix.
+
+The full preparation, resource request, fresh-data boundary, restart contract,
+analysis and stopping rules are in the
+[fresh high-resolution runbook](golovin-high-resolution-runbook.md).

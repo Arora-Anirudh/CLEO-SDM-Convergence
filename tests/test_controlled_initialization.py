@@ -71,6 +71,26 @@ def test_controlled_population_and_hash_are_repeatable() -> None:
     assert module.population_sha256(first) == module.population_sha256(second)
 
 
+@pytest.mark.parametrize(
+    "number_of_superdroplets",
+    (16_384, 32_768, 65_536, 131_072),
+)
+def test_controlled_population_supports_registered_high_resolutions(
+    number_of_superdroplets: int,
+) -> None:
+    module = load_module(f"controlled_initialization_highres_{number_of_superdroplets}")
+    population = build_population(
+        module,
+        number_of_superdroplets=number_of_superdroplets,
+    )
+
+    assert population.radii_m.size == number_of_superdroplets
+    assert sum(int(value) for value in population.multiplicities) == 8_388_608 * 10**12
+    assert abs(population.relative_moment_errors[0]) <= 1.0e-10
+    assert abs(population.relative_moment_errors[3]) <= 1.0e-10
+    assert abs(population.relative_moment_errors[6]) <= 0.01
+
+
 def test_m6_gate_rejects_an_underresolved_population() -> None:
     module = load_module("controlled_initialization_m6_gate")
 

@@ -12,6 +12,8 @@ MATRIX_SCRIPT = ROOT / "scripts" / "prepare_golovin_matrix.py"
 MATERIALIZER_SCRIPT = ROOT / "scripts" / "materialize_collisions0d_config.py"
 DEVELOPMENT_CONFIG = ROOT / "config" / "golovin_stage0_development.yaml"
 TIMESTEP_SCREEN_CONFIG = ROOT / "config" / "golovin_controlled_timestep_screen.yaml"
+INITIAL_RESOLUTION_CONFIG = ROOT / "config" / "golovin_controlled_resolution_convergence.yaml"
+HIGH_RESOLUTION_CONFIG = ROOT / "config" / "golovin_controlled_high_resolution_convergence.yaml"
 
 
 def load_module(filename: Path, name: str):
@@ -80,6 +82,42 @@ def test_controlled_timestep_screen_reuses_bundle_and_seed_labels() -> None:
             int(case["collision_seed"])
         )
     assert all(len(seeds) == 1 for seeds in seeds_by_member.values())
+
+
+def test_high_resolution_matrix_is_fresh_and_disjoint_from_initial_matrix() -> None:
+    matrix = load_module(MATRIX_SCRIPT, "prepare_golovin_high_resolution")
+    initial_cases = matrix.build_cases(load_yaml(INITIAL_RESOLUTION_CONFIG))
+    high_resolution_cases = matrix.build_cases(load_yaml(HIGH_RESOLUTION_CONFIG))
+
+    assert len(high_resolution_cases) == 400
+    assert [case["case_index"] for case in high_resolution_cases] == list(range(400))
+    assert {int(case["max_superdroplets"]) for case in high_resolution_cases} == {
+        16_384,
+        32_768,
+        65_536,
+        131_072,
+    }
+    assert all(
+        sum(int(case["max_superdroplets"]) == resolution for case in high_resolution_cases) == 100
+        for resolution in (16_384, 32_768, 65_536, 131_072)
+    )
+    assert len({case["run_label"] for case in high_resolution_cases}) == 400
+    assert len({case["collision_seed"] for case in high_resolution_cases}) == 400
+    assert {case["controlled_bundle_label"] for case in high_resolution_cases} == {
+        "golovin_controlled_highres_N016384_v1",
+        "golovin_controlled_highres_N032768_v1",
+        "golovin_controlled_highres_N065536_v1",
+        "golovin_controlled_highres_N131072_v1",
+    }
+    assert {case["collision_seed"] for case in high_resolution_cases}.isdisjoint(
+        {case["collision_seed"] for case in initial_cases}
+    )
+    assert {case["run_label"] for case in high_resolution_cases}.isdisjoint(
+        {case["run_label"] for case in initial_cases}
+    )
+    assert {case["controlled_bundle_label"] for case in high_resolution_cases}.isdisjoint(
+        {case["controlled_bundle_label"] for case in initial_cases}
+    )
 
 
 def test_matrix_writer_refuses_existing_directory(tmp_path: Path) -> None:

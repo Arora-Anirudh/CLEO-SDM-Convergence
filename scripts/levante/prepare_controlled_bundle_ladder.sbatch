@@ -9,9 +9,10 @@
 #SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
 #SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%j.err
 
-# Create the missing immutable controlled-initialization bundles required by
-# the registered Golovin resolution ladder. The already validated N=4096
-# canonical bundle is verified and reused; it is never overwritten.
+# Create immutable controlled-initialization bundles required by a registered
+# Golovin resolution ladder. By default the historical N=4096 canonical
+# bundle is verified and reused. Set REUSE_CANONICAL_N4096=0 for a completely
+# fresh ladder that creates every requested resolution under new labels.
 #
 # Required submission form:
 #
@@ -39,8 +40,26 @@ fi
 # shellcheck source=common.sh
 source "${SCRIPT_DIR}/common.sh"
 
-: "${CANONICAL_N4096_BUNDLE:?Set CANONICAL_N4096_BUNDLE at submission.}"
 BUNDLE_RESOLUTIONS="${BUNDLE_RESOLUTIONS:-512 1024 2048 8192 16384}"
+REUSE_CANONICAL_N4096="${REUSE_CANONICAL_N4096:-1}"
+BUNDLE_LABEL_STEM="${BUNDLE_LABEL_STEM:-golovin_controlled}"
+BUNDLE_LABEL_VERSION="${BUNDLE_LABEL_VERSION:-v1}"
+BUNDLE_LADDER_RECORD_LABEL="${BUNDLE_LADDER_RECORD_LABEL:-golovin_controlled_ladder_v1_record}"
+
+if [[ "${REUSE_CANONICAL_N4096}" != "0" \
+  && "${REUSE_CANONICAL_N4096}" != "1" ]]; then
+  echo "ERROR: REUSE_CANONICAL_N4096 must be 0 or 1." >&2
+  exit 2
+fi
+for label_component in \
+  "${BUNDLE_LABEL_STEM}" \
+  "${BUNDLE_LABEL_VERSION}" \
+  "${BUNDLE_LADDER_RECORD_LABEL}"; do
+  if [[ ! "${label_component}" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
+    echo "ERROR: bundle label component contains unsupported characters." >&2
+    exit 2
+  fi
+done
 
 cleo_sdm_load_modules
 cleo_sdm_set_runtime
@@ -51,16 +70,20 @@ umask 027
 
 python="${CLEO_SDM_PROJECT_ROOT}/.venv/bin/python"
 test -x "${python}"
-CANONICAL_N4096_BUNDLE="$(
-  cd "${CANONICAL_N4096_BUNDLE}" && pwd
-)"
-
-"${python}" "${CLEO_SDM_PROJECT_ROOT}/scripts/controlled_bundle.py" verify \
-  --bundle-directory "${CANONICAL_N4096_BUNDLE}" \
-  --expected-superdroplets 4096 \
-  --expected-cleo-commit "${CLEO_SDM_PINNED_CLEO_COMMIT}" \
-  --reference-config "${CLEO_SDM_PROJECT_ROOT}/config/collisions0d_reference.yaml" \
-  --controlled-config "${CLEO_SDM_PROJECT_ROOT}/config/golovin_stage0_development.yaml"
+if [[ "${REUSE_CANONICAL_N4096}" == "1" ]]; then
+  : "${CANONICAL_N4096_BUNDLE:?Set CANONICAL_N4096_BUNDLE at submission.}"
+  CANONICAL_N4096_BUNDLE="$(
+    cd "${CANONICAL_N4096_BUNDLE}" && pwd
+  )"
+  "${python}" "${CLEO_SDM_PROJECT_ROOT}/scripts/controlled_bundle.py" verify \
+    --bundle-directory "${CANONICAL_N4096_BUNDLE}" \
+    --expected-superdroplets 4096 \
+    --expected-cleo-commit "${CLEO_SDM_PINNED_CLEO_COMMIT}" \
+    --reference-config "${CLEO_SDM_PROJECT_ROOT}/config/collisions0d_reference.yaml" \
+    --controlled-config "${CLEO_SDM_PROJECT_ROOT}/config/golovin_stage0_development.yaml"
+else
+  CANONICAL_N4096_BUNDLE="not_used"
+fi
 
 declare -a resolutions=()
 declare -a labels=()
@@ -69,11 +92,16 @@ for resolution in ${BUNDLE_RESOLUTIONS}; do
     echo "ERROR: invalid bundle resolution: ${resolution}" >&2
     exit 2
   fi
-  if ((resolution == 4096)); then
+  if ((resolution == 4096)) && [[ "${REUSE_CANONICAL_N4096}" == "1" ]]; then
     echo "ERROR: omit 4096 from BUNDLE_RESOLUTIONS; the canonical bundle is reused." >&2
     exit 2
   fi
-  label="$(printf 'golovin_controlled_N%06d_v1' "${resolution}")"
+  label="$(
+    printf '%s_N%06d_%s' \
+      "${BUNDLE_LABEL_STEM}" \
+      "${resolution}" \
+      "${BUNDLE_LABEL_VERSION}"
+  )"
   target="${CLEO_SDM_BUNDLE_ROOT}/${label}"
   if [[ -e "${target}" ]]; then
     echo "ERROR: bundle target already exists; refusing partial overwrite: ${target}" >&2
@@ -92,7 +120,7 @@ if ((${#resolutions[@]} != ${#labels[@]})); then
 fi
 
 project_commit="$(git -C "${CLEO_SDM_PROJECT_ROOT}" rev-parse HEAD)"
-record_directory="${CLEO_SDM_BUNDLE_ROOT}/golovin_controlled_ladder_v1_record"
+record_directory="${CLEO_SDM_BUNDLE_ROOT}/${BUNDLE_LADDER_RECORD_LABEL}"
 if [[ -e "${record_directory}" ]]; then
   echo "ERROR: ladder record already exists; refusing overwrite: ${record_directory}" >&2
   exit 1
@@ -120,7 +148,10 @@ trap ladder_failed EXIT
   echo "project_commit=${project_commit}"
   echo "cleo_commit=${CLEO_SDM_PINNED_CLEO_COMMIT}"
   echo "slurm_job_id=${SLURM_JOB_ID}"
+  echo "reuse_canonical_n4096=${REUSE_CANONICAL_N4096}"
   echo "canonical_n4096_bundle=${CANONICAL_N4096_BUNDLE}"
+  echo "bundle_label_stem=${BUNDLE_LABEL_STEM}"
+  echo "bundle_label_version=${BUNDLE_LABEL_VERSION}"
 } >"${record_directory}/ladder_report.txt"
 
 for index in "${!resolutions[@]}"; do

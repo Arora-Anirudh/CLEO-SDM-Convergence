@@ -301,9 +301,9 @@ The runner requests one node, one task, one CPU, 940 MiB and two hours on
 The screen completed and selected 0.1 s. Its compact result is under
 `results/golovin_controlled_timestep_screen_v1/`.
 
-## Actual controlled resolution experiment
+## First controlled resolution experiment
 
-The next model submission is:
+The completed first model experiment was:
 
 ```text
 6 resolutions x 20 independent collision streams = 120 members
@@ -317,8 +317,22 @@ GPU. Separate seeds, configurations, outputs and manifests preserve scientific
 member identity independently of the scheduler layout. The analysis request is
 one CPU, 2 GiB and 30 minutes and launches no CLEO model.
 
-The exact preflight, submission, resume, accounting and analysis commands are
+Its exact preflight, submission, resume, accounting and analysis commands are
 in the
 [`controlled Golovin resolution runbook`](../../docs/experiments/golovin-resolution-runbook.md).
-The resource disclosure there must be repeated immediately before either
-Slurm submission.
+It selected no resolution under the registered rule.
+
+## Fresh high-resolution controlled experiment
+
+The registered follow-up is 16,384, 32,768, 65,536 and 131,072 SDs with 100
+fresh collision streams per level. It uses a new seed namespace, run labels,
+run root and bundle labels; no previous raw member enters the analysis.
+
+To avoid 400 scheduler jobs,
+`run_golovin_resolution_convergence_parallel.sbatch` requests four task slots
+in one restartable allocation and runs at most four independent one-rank,
+one-thread CLEO members concurrently. Exact data-deletion boundaries,
+resource requests, preparation, submission, audit and interpretation are in
+the
+[`fresh high-resolution runbook`](../../docs/experiments/golovin-high-resolution-runbook.md).
+That runbook is documentation, not compute authorization.
