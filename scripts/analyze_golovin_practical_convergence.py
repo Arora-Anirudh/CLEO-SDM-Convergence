@@ -638,7 +638,7 @@ def plot_diminishing_returns(
         }
     )
     colors = plt.get_cmap("viridis")(np.linspace(0.08, 0.92, len(pairs)))
-    fig, axes = plt.subplots(1, 3, figsize=(14.0, 4.5), sharex=True)
+    fig, axes = plt.subplots(1, 3, figsize=(12.5, 4.0), sharex=True)
     for axis, metric in zip(axes, PRIMARY_METRICS, strict=True):
         for color, (lower, upper) in zip(colors, pairs, strict=True):
             rows = sorted(
@@ -658,18 +658,27 @@ def plot_diminishing_returns(
             axis.scatter(times, points, marker="x", color=color, zorder=3)
         axis.axhspan(0.0, margin, color="#58a65c", alpha=0.13)
         axis.axhline(margin, color="#3a9147", linewidth=1.0)
-        axis.set_title(METRIC_LABELS[metric])
-        axis.set_xlabel("time / min")
+        axis.set_title(METRIC_LABELS[metric], fontsize=12)
+        axis.set_xlabel("time / min", fontsize=10)
+        axis.tick_params(labelsize=9)
         axis.grid(alpha=0.2)
-    axes[0].set_ylabel("absolute change / percentage points")
+    axes[0].set_ylabel("absolute change / pp", fontsize=10)
     handles, labels = axes[0].get_legend_handles_labels()
     fig.suptitle(
         "Golovin diminishing returns: point changes (×) and one-sided 95% upper bounds",
-        y=0.99,
+        y=0.98,
+        fontsize=14,
     )
-    fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.5, 0.91), ncol=3)
-    fig.tight_layout(rect=(0, 0, 1, 0.84))
-    fig.savefig(output, dpi=300, bbox_inches="tight", facecolor="white")
+    fig.legend(
+        handles,
+        labels,
+        loc="upper center",
+        bbox_to_anchor=(0.5, 0.89),
+        ncol=3,
+        fontsize=9,
+    )
+    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.15, top=0.72, wspace=0.25)
+    fig.savefig(output, dpi=300, facecolor="white")
     plt.close(fig)
 
 
@@ -690,7 +699,7 @@ def plot_prefix_stability(
     )
     prefixes = sorted({int(row["ensemble_size"]) for row in selected})
     colors = plt.get_cmap("viridis")(np.linspace(0.08, 0.92, len(pairs)))
-    fig, axes = plt.subplots(1, 3, figsize=(14.0, 4.5), sharex=True)
+    fig, axes = plt.subplots(1, 3, figsize=(12.5, 4.0), sharex=True)
     for axis, metric in zip(axes, PRIMARY_METRICS, strict=True):
         for color, (lower, upper) in zip(colors, pairs, strict=True):
             worst_bounds = []
@@ -713,15 +722,27 @@ def plot_prefix_stability(
             )
         axis.axhspan(0.0, margin, color="#58a65c", alpha=0.13)
         axis.axhline(margin, color="#3a9147", linewidth=1.0)
-        axis.set_title(METRIC_LABELS[metric])
-        axis.set_xlabel("ensemble members")
+        axis.set_title(METRIC_LABELS[metric], fontsize=12)
+        axis.set_xlabel("ensemble members", fontsize=10)
+        axis.tick_params(labelsize=9)
         axis.grid(alpha=0.2)
-    axes[0].set_ylabel("worst all-time upper bound / percentage points")
+    axes[0].set_ylabel("worst all-time upper bound / pp", fontsize=10)
     handles, labels = axes[0].get_legend_handles_labels()
-    fig.suptitle("Ensemble-prefix stability of the diminishing-returns decision", y=0.99)
-    fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.5, 0.91), ncol=3)
-    fig.tight_layout(rect=(0, 0, 1, 0.84))
-    fig.savefig(output, dpi=300, bbox_inches="tight", facecolor="white")
+    fig.suptitle(
+        "Ensemble-prefix stability of the diminishing-returns decision",
+        y=0.98,
+        fontsize=14,
+    )
+    fig.legend(
+        handles,
+        labels,
+        loc="upper center",
+        bbox_to_anchor=(0.5, 0.89),
+        ncol=3,
+        fontsize=9,
+    )
+    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.15, top=0.72, wspace=0.25)
+    fig.savefig(output, dpi=300, facecolor="white")
     plt.close(fig)
 
 
