@@ -70,6 +70,7 @@ def test_levante_scripts_are_project_owned_and_account_neutral() -> None:
         "run_golovin_timestep_screen.sbatch",
         "analyze_golovin_timestep_screen.sbatch",
         "analyze_golovin_resolution_convergence.sbatch",
+        "analyze_golovin_practical_convergence.sbatch",
         "validate_controlled_initialization.sbatch",
         "validate_collision_seed_replay.sbatch",
     }
@@ -96,6 +97,7 @@ def test_slurm_entrypoints_resolve_common_from_explicit_project_root() -> None:
         "run_golovin_timestep_screen.sbatch",
         "analyze_golovin_timestep_screen.sbatch",
         "analyze_golovin_resolution_convergence.sbatch",
+        "analyze_golovin_practical_convergence.sbatch",
     ):
         content = (levante_directory / script_name).read_text(encoding="utf-8")
         expected = 'SCRIPT_DIR="${CLEO_SDM_PROJECT_ROOT}/scripts/levante"'
@@ -243,7 +245,15 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
     ).read_text(encoding="utf-8")
     assert "#SBATCH --cpus-per-task=1" in resolution_analyzer
     assert "#SBATCH --mem=940M" in resolution_analyzer
-    assert "#SBATCH --time=00:45:00" in resolution_analyzer
+    assert "#SBATCH --time=01:00:00" in resolution_analyzer
+
+    practical_analyzer = (
+        ROOT / "scripts" / "levante" / "analyze_golovin_practical_convergence.sbatch"
+    ).read_text(encoding="utf-8")
+    assert "#SBATCH --cpus-per-task=1" in practical_analyzer
+    assert "#SBATCH --mem=940M" in practical_analyzer
+    assert "#SBATCH --time=00:20:00" in practical_analyzer
+    assert "srun" not in practical_analyzer
 
 
 def test_collision_seed_is_required_and_recorded() -> None:

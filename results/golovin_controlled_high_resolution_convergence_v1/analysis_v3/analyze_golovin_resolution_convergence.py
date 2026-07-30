@@ -294,10 +294,13 @@ def analyze_ensemble_size_sensitivity(
     }
     resolutions = sorted({int(row["max_superdroplets"]) for row in matrix_rows})
     rows_at_time = [
-        row for row in rows if np.isclose(float(row["time_s"]), time_s, rtol=0.0, atol=1.0e-3)
+        row
+        for row in rows
+        if np.isclose(float(row["time_s"]), time_s, rtol=0.0, atol=1.0e-3)
     ]
     diagnostic_lookup = {
-        (int(row["max_superdroplets"]), int(row["member_index"])): row for row in rows_at_time
+        (int(row["max_superdroplets"]), int(row["member_index"])): row
+        for row in rows_at_time
     }
 
     output_rows: list[dict[str, object]] = []
@@ -703,9 +706,9 @@ def plot_result(
     colors = plt.get_cmap("viridis")(np.linspace(0.08, 0.92, len(times)))
     metric_settings = (
         (
-            "worst_registered_l1",
-            "Distribution: worst bin grid",
-            "L1 upper 95% bound / %",
+            "ensemble_mean_l1_bins_500",
+            "Mean distribution",
+            "L1 error / %",
             float(criteria["analytical_agreement"]["maximum_l1_upper_95ci"]) * 100.0,
             False,
         ),
@@ -732,61 +735,28 @@ def plot_result(
         strict=True,
     ):
         for time_s, color in zip(times, colors, strict=True):
-            if metric == "worst_registered_l1":
-                worst_bounds = []
-                for resolution in resolutions:
-                    candidates = [
-                        row
-                        for row in analytical_rows
-                        if str(row["metric"]).startswith("ensemble_mean_l1_bins_")
-                        and int(row["max_superdroplets"]) == resolution
-                        and np.isclose(
-                            float(row["time_s"]),
-                            time_s,
-                            rtol=0.0,
-                            atol=1.0e-3,
-                        )
-                    ]
-                    if not candidates:
-                        raise RuntimeError(
-                            f"missing registered L1 result for {resolution} at {time_s:g} s"
-                        )
-                    worst_bounds.append(max(float(row["95ci_high"]) for row in candidates))
-                axis.plot(
-                    resolutions,
-                    np.asarray(worst_bounds) * 100.0,
-                    marker="o",
-                    color=color,
-                    label=f"{time_s / 60.0:g} min",
-                )
-            else:
-                selected = sorted(
-                    (
-                        row
-                        for row in analytical_rows
-                        if row["metric"] == metric
-                        and np.isclose(
-                            float(row["time_s"]),
-                            time_s,
-                            rtol=0.0,
-                            atol=1.0e-3,
-                        )
-                    ),
-                    key=lambda row: int(row["max_superdroplets"]),
-                )
-                x = np.asarray([float(row["max_superdroplets"]) for row in selected])
-                estimate = np.asarray([float(row["estimate"]) for row in selected]) * 100.0
-                low = np.asarray([float(row["95ci_low"]) for row in selected]) * 100.0
-                high = np.asarray([float(row["95ci_high"]) for row in selected]) * 100.0
-                plot_estimates_and_intervals(
-                    axis,
-                    x,
-                    estimate,
-                    low,
-                    high,
-                    color=color,
-                    label=f"{time_s / 60.0:g} min",
-                )
+            selected = sorted(
+                (
+                    row
+                    for row in analytical_rows
+                    if row["metric"] == metric
+                    and np.isclose(float(row["time_s"]), time_s, rtol=0.0, atol=1.0e-3)
+                ),
+                key=lambda row: int(row["max_superdroplets"]),
+            )
+            x = np.asarray([float(row["max_superdroplets"]) for row in selected])
+            estimate = np.asarray([float(row["estimate"]) for row in selected]) * 100.0
+            low = np.asarray([float(row["95ci_low"]) for row in selected]) * 100.0
+            high = np.asarray([float(row["95ci_high"]) for row in selected]) * 100.0
+            plot_estimates_and_intervals(
+                axis,
+                x,
+                estimate,
+                low,
+                high,
+                color=color,
+                label=f"{time_s / 60.0:g} min",
+            )
         if signed:
             axis.axhspan(-margin, margin, color="#d8f0dc", zorder=0)
             axis.axhline(0.0, color="black", linewidth=0.8)
@@ -797,7 +767,9 @@ def plot_result(
         axis.set_xticks(
             resolutions,
             [
-                f"{resolution // 1024}k" if resolution % 1024 == 0 else f"{resolution:,}"
+                f"{resolution // 1024}k"
+                if resolution % 1024 == 0
+                else f"{resolution:,}"
                 for resolution in resolutions
             ],
         )
@@ -833,7 +805,11 @@ def plot_estimates_and_intervals(
     label: str | None = None,
 ) -> None:
     """Plot estimates and percentile interval endpoints safely."""
-    if np.any(~np.isfinite(estimate)) or np.any(~np.isfinite(low)) or np.any(~np.isfinite(high)):
+    if (
+        np.any(~np.isfinite(estimate))
+        or np.any(~np.isfinite(low))
+        or np.any(~np.isfinite(high))
+    ):
         raise ValueError("plot estimates and interval endpoints must be finite")
     if np.any(low > high):
         raise ValueError("plot interval lower endpoints exceed upper endpoints")
@@ -854,27 +830,31 @@ def plot_adjacent_equivalence(
     colors = plt.get_cmap("viridis")(np.linspace(0.08, 0.92, len(times)))
     metric_settings = (
         (
-            "worst_registered_l1",
-            "Distribution: worst bin grid",
-            "largest 95% interval edge / pp",
-            float(criteria["adjacent_level_equivalence"]["l1_absolute_difference_margin"]) * 100.0,
-            False,
+            "ensemble_mean_l1_bins_500",
+            "Mean distribution",
+            "L1 change / percentage points",
+            float(
+                criteria["adjacent_level_equivalence"]["l1_absolute_difference_margin"]
+            )
+            * 100.0,
         ),
         (
             "golovin_relative_error_radius_moment_0_m3",
             r"$M_0$: droplet number",
             "relative change / %",
-            float(criteria["adjacent_level_equivalence"]["moment0_relative_difference_margin"])
+            float(
+                criteria["adjacent_level_equivalence"]["moment0_relative_difference_margin"]
+            )
             * 100.0,
-            True,
         ),
         (
             "golovin_relative_error_radius_moment_6_um6_m3",
             r"$M_6$: large-drop tail",
             "relative change / %",
-            float(criteria["adjacent_level_equivalence"]["moment6_relative_difference_margin"])
+            float(
+                criteria["adjacent_level_equivalence"]["moment6_relative_difference_margin"]
+            )
             * 100.0,
-            True,
         ),
     )
     pairs = sorted(
@@ -887,82 +867,44 @@ def plot_adjacent_equivalence(
     pair_labels = [f"{lower // 1024}k→{upper // 1024}k" for lower, upper in pairs]
 
     fig, axes = plt.subplots(1, 3, figsize=(14, 4.5))
-    for axis, (metric, title, ylabel, margin, signed) in zip(
+    for axis, (metric, title, ylabel, margin) in zip(
         axes,
         metric_settings,
         strict=True,
     ):
         for time_s, color in zip(times, colors, strict=True):
-            if metric == "worst_registered_l1":
-                worst_edges = []
-                for lower, upper in pairs:
-                    candidates = [
-                        row
-                        for row in adjacent_rows
-                        if str(row["metric"]).startswith("ensemble_mean_l1_bins_")
-                        and int(row["lower_max_superdroplets"]) == lower
-                        and int(row["upper_max_superdroplets"]) == upper
-                        and np.isclose(
-                            float(row["time_s"]),
-                            time_s,
-                            rtol=0.0,
-                            atol=1.0e-3,
-                        )
-                    ]
-                    if not candidates:
-                        raise RuntimeError(
-                            f"missing registered adjacent L1 result for {lower}-{upper} "
-                            f"at {time_s:g} s"
-                        )
-                    worst_edges.append(
-                        max(
-                            max(abs(float(row["95ci_low"])), abs(float(row["95ci_high"])))
-                            for row in candidates
-                        )
-                    )
-                axis.plot(
-                    pair_x,
-                    np.asarray(worst_edges) * 100.0,
-                    marker="o",
-                    color=color,
-                    label=f"{time_s / 60.0:g} min",
+            selected_lookup = {
+                (
+                    int(row["lower_max_superdroplets"]),
+                    int(row["upper_max_superdroplets"]),
+                ): row
+                for row in adjacent_rows
+                if row["metric"] == metric
+                and np.isclose(float(row["time_s"]), time_s, rtol=0.0, atol=1.0e-3)
+            }
+            selected = [selected_lookup[pair] for pair in pairs]
+            estimate = (
+                np.asarray(
+                    [float(row["estimated_difference_lower_minus_upper"]) for row in selected]
                 )
-            else:
-                selected_lookup = {
-                    (
-                        int(row["lower_max_superdroplets"]),
-                        int(row["upper_max_superdroplets"]),
-                    ): row
-                    for row in adjacent_rows
-                    if row["metric"] == metric
-                    and np.isclose(float(row["time_s"]), time_s, rtol=0.0, atol=1.0e-3)
-                }
-                selected = [selected_lookup[pair] for pair in pairs]
-                estimate = (
-                    np.asarray(
-                        [float(row["estimated_difference_lower_minus_upper"]) for row in selected]
-                    )
-                    * 100.0
-                )
-                low = np.asarray([float(row["95ci_low"]) for row in selected]) * 100.0
-                high = np.asarray([float(row["95ci_high"]) for row in selected]) * 100.0
-                plot_estimates_and_intervals(
-                    axis,
-                    pair_x,
-                    estimate,
-                    low,
-                    high,
-                    color=color,
-                    label=f"{time_s / 60.0:g} min",
-                )
-        if signed:
-            axis.axhspan(-margin, margin, color="#d8f0dc", zorder=0)
-            axis.axhline(0.0, color="black", linewidth=0.8)
-        else:
-            axis.axhspan(0.0, margin, color="#d8f0dc", zorder=0)
-            axis.set_ylim(bottom=0.0)
+                * 100.0
+            )
+            low = np.asarray([float(row["95ci_low"]) for row in selected]) * 100.0
+            high = np.asarray([float(row["95ci_high"]) for row in selected]) * 100.0
+            plot_estimates_and_intervals(
+                axis,
+                pair_x,
+                estimate,
+                low,
+                high,
+                color=color,
+                label=f"{time_s / 60.0:g} min",
+            )
+        axis.axhspan(-margin, margin, color="#d8f0dc", zorder=0)
+        axis.axhline(0.0, color="black", linewidth=0.8)
         axis.set_xticks(pair_x, pair_labels)
         axis.set_title(title)
+        axis.set_xlabel(r"resolution doubling")
         axis.set_ylabel(ylabel)
         axis.grid(alpha=0.22)
 
@@ -977,8 +919,7 @@ def plot_adjacent_equivalence(
         frameon=False,
         title="simulation time",
     )
-    fig.supxlabel("resolution doubling", y=0.03)
-    fig.tight_layout(rect=(0, 0.08, 1, 0.80))
+    fig.tight_layout(rect=(0, 0, 1, 0.80))
     fig.savefig(output, dpi=300, bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
@@ -993,7 +934,7 @@ def plot_ensemble_size_sensitivity(
     metric_settings = (
         (
             "ensemble_mean_l1_bins_500",
-            "500-bin L1 error / %",
+            "L1 error / %",
             float(criteria["analytical_agreement"]["maximum_l1_upper_95ci"]) * 100.0,
             False,
         ),
@@ -1060,7 +1001,9 @@ def plot_ensemble_size_sensitivity(
                 high,
                 color="#8fb9dd",
                 alpha=0.45,
-                label="95% random-subset range" if column == 0 and row_index == 0 else None,
+                label="95% random-subset range"
+                if column == 0 and row_index == 0
+                else None,
             )
             axis.plot(
                 ensemble_size,

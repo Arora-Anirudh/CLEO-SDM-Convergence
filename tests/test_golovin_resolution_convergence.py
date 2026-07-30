@@ -85,17 +85,24 @@ def synthetic_inputs(*, fail_smallest: bool = False):
             "bootstrap_resamples": 100,
             "bootstrap_seed": 123,
             "bin_robustness_policy": ("require_resolution_decision_at_all_registered_bin_counts"),
+            "ensemble_size_sensitivity": {
+                "time_s": 1200.0,
+                "member_counts": [2, 4],
+                "random_subset_draws": 20,
+                "random_subset_seed": 456,
+                "log_radius_bins": 500,
+            },
         },
         "convergence_criteria": {
             "analytical_agreement": {
                 "maximum_l1_upper_95ci": 0.05,
                 "moment0_relative_bias_margin": 0.05,
-                "moment6_relative_bias_margin": 0.10,
+                "moment6_relative_bias_margin": 0.05,
             },
             "adjacent_level_equivalence": {
                 "l1_absolute_difference_margin": 0.01,
                 "moment0_relative_difference_margin": 0.05,
-                "moment6_relative_difference_margin": 0.10,
+                "moment6_relative_difference_margin": 0.05,
             },
             "maximum_95ci_half_width": {
                 "l1_absolute": 0.01,
@@ -199,25 +206,71 @@ def test_resolution_plot_accepts_bootstrap_interval_excluding_estimate(
                     "95ci_high": 0.20,
                 }
             )
-    adjacent_rows = [
-        {
-            "time_s": 3600.0,
-            "metric": "ensemble_mean_l1_bins_500",
-            "lower_max_superdroplets": 512,
-            "upper_max_superdroplets": 1024,
-            "estimated_difference_lower_minus_upper": 0.01,
-            "95ci_low": -0.02,
-            "95ci_high": 0.03,
-        }
-    ]
     output = tmp_path / "resolution_convergence.png"
 
     module.plot_result(
         analytical_rows,
-        adjacent_rows,
-        {"status": "no_resolution_accepted_in_initial_matrix"},
+        synthetic_inputs()[2],
         output,
     )
 
     assert output.is_file()
     assert output.stat().st_size > 0
+
+
+def test_ensemble_size_sensitivity_covers_every_metric_and_resolution() -> None:
+    module = load_module()
+    rows, matrix_rows, config, archives = synthetic_inputs()
+
+    sensitivity = module.analyze_ensemble_size_sensitivity(
+        rows=rows,
+        matrix_rows=matrix_rows,
+        config=config,
+        archives=archives,
+    )
+
+    assert len(sensitivity) == 3 * 2 * 3
+    assert {int(row["max_superdroplets"]) for row in sensitivity} == {512, 1024, 2048}
+    assert {int(row["ensemble_size"]) for row in sensitivity} == {2, 4}
+    assert {row["metric"] for row in sensitivity} == {
+        "ensemble_mean_l1_bins_500",
+        "golovin_relative_error_radius_moment_0_m3",
+        "golovin_relative_error_radius_moment_6_um6_m3",
+    }
+    assert all(
+        float(row["subset_95pct_low"]) <= float(row["subset_95pct_high"]) for row in sensitivity
+    )
+    complete_pool_rows = [row for row in sensitivity if int(row["ensemble_size"]) == 4]
+    assert all(int(row["random_subset_draws"]) == 1 for row in complete_pool_rows)
+    assert all(
+        float(row["subset_median"]) == float(row["full_ensemble_estimate"])
+        for row in complete_pool_rows
+    )
+
+
+def test_new_plots_are_written(tmp_path: Path) -> None:
+    module = load_module()
+    rows, matrix_rows, config, archives = synthetic_inputs()
+    analytical, adjacent, _ = module.analyze(
+        rows=rows,
+        matrix_rows=matrix_rows,
+        config=config,
+        archives=archives,
+    )
+    sensitivity = module.analyze_ensemble_size_sensitivity(
+        rows=rows,
+        matrix_rows=matrix_rows,
+        config=config,
+        archives=archives,
+    )
+
+    analytical_plot = tmp_path / "analytical.png"
+    adjacent_plot = tmp_path / "adjacent.png"
+    sensitivity_plot = tmp_path / "sensitivity.png"
+    module.plot_result(analytical, config, analytical_plot)
+    module.plot_adjacent_equivalence(adjacent, config, adjacent_plot)
+    module.plot_ensemble_size_sensitivity(sensitivity, config, sensitivity_plot)
+
+    for filename in (analytical_plot, adjacent_plot, sensitivity_plot):
+        assert filename.is_file()
+        assert filename.stat().st_size > 0

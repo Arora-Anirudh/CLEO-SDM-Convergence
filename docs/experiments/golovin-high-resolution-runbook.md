@@ -345,3 +345,41 @@ If only confidence-interval width fails, add members toward 200 only at the
 limiting resolutions. If point bias or adjacent differences remain outside
 the margin, add 262,144 SDs. Long remains blocked until Golovin is formally
 accepted or a new prospective decision explicitly changes the protocol.
+
+## Practical diminishing-returns reanalysis
+
+ADR 0007 defines a separate, non-overwriting reanalysis of the completed
+100-member matrix. This calculation requires the member-level
+`fixed_bin_distributions.npz` archives in the completed SCRATCH run tree, but
+it does not execute CLEO and does not create a new model member.
+
+The wrapper requests one serial CPU, 940 MiB and a 20-minute ceiling on the
+`shared` partition. Before submission, synchronize the exact reviewed source
+commit and export the same high-resolution run root used above:
+
+```bash
+export CLEO_SDM_PROJECT_ROOT=/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol
+export CLEO_SDM_BUILD_ROOT=/home/b/b383673/SDM/cleo_builds/CLEO-SDM-Convergence/golovin_controlled_high_resolution_v1
+export CLEO_SDM_RUN_ROOT=/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_high_resolution_convergence_v1
+export MATRIX_FILE="${CLEO_SDM_PROJECT_ROOT}/experiments/golovin_controlled_high_resolution_convergence_v1/cases.tsv"
+export RESOLUTION_CONFIG="${CLEO_SDM_PROJECT_ROOT}/config/golovin_controlled_high_resolution_convergence.yaml"
+export CURRENT_ANALYSIS_ROOT=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/golovin_controlled_high_resolution_convergence_v1/analysis_v4
+export PRACTICAL_RECORD_ROOT=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/golovin_controlled_high_resolution_convergence_v1
+
+sbatch \
+  --account=bb1153 \
+  --export=ALL,CLEO_SDM_PROJECT_ROOT="${CLEO_SDM_PROJECT_ROOT}",CLEO_SDM_BUILD_ROOT="${CLEO_SDM_BUILD_ROOT}",CLEO_SDM_RUN_ROOT="${CLEO_SDM_RUN_ROOT}",MATRIX_FILE="${MATRIX_FILE}",RESOLUTION_CONFIG="${RESOLUTION_CONFIG}",CURRENT_ANALYSIS_ROOT="${CURRENT_ANALYSIS_ROOT}",PRACTICAL_RECORD_ROOT="${PRACTICAL_RECORD_ROOT}",PRACTICAL_LABEL=practical_v1 \
+  scripts/levante/analyze_golovin_practical_convergence.sbatch
+```
+
+The output includes:
+
+- analytical validity for every registered time, resolution and ensemble
+  prefix;
+- point changes and one-sided 95% upper bounds for L1, \(M_0\) and \(M_6\);
+- final 80-to-100-member point-estimate stability;
+- 250/1000-bin diagnostic sensitivity;
+- two explanatory figures and one JSON decision.
+
+The output path is non-overwriting. A failed calculation is moved to a
+job-specific failure directory rather than discarded.

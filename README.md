@@ -43,6 +43,14 @@ criteria; the preparatory implementation and pilot gates have passed.
 The literature-grounded high-resolution and ensemble extension is recorded in
 [`ADR 0006`](docs/decisions/0006-extend-golovin-before-long.md) and its
 [`supporting review`](docs/literature/golovin-convergence-extension-review.md).
+The researcher-approved, non-overwriting reanalysis of the completed matrix
+uses the practical diminishing-returns rule in
+[`ADR 0007`](docs/decisions/0007-proposed-diminishing-returns-convergence.md).
+It retains hard analytical/conservation/provenance gates and asks whether two
+successive doublings have one-sided 95% upper bounds below the configured
+minimum worthwhile improvement. It is prospective for new model data but a
+transparent reanalysis of the already inspected matrix; Clara review remains
+pending.
 No Long convergence experiment begins before this Golovin follow-up is
 resolved.
 

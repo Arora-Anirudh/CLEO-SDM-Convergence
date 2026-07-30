@@ -22,7 +22,6 @@ import matplotlib
 import numpy as np
 from golovin_stage0 import (
     bootstrap_ensemble_mean_l1,
-    fixed_bin_relative_l1,
     independent_bootstrap_l1_difference,
 )
 from ruamel.yaml import YAML
@@ -228,163 +227,6 @@ def distribution_stack(
 def derived_seed(base_seed: int, *parts: object) -> int:
     payload = "|".join([str(base_seed), *(str(part) for part in parts)]).encode()
     return int.from_bytes(hashlib.sha256(payload).digest()[:8], "big")
-
-
-def bootstrap_l1_values(
-    stack: np.ndarray,
-    analytical: np.ndarray,
-    edges: np.ndarray,
-    draw_indices: np.ndarray,
-    *,
-    batch_size: int = 100,
-) -> np.ndarray:
-    """Return L1 values for bootstrap draws without allocating one huge cube."""
-    stack = np.asarray(stack, dtype=float)
-    analytical = np.asarray(analytical, dtype=float)
-    edges = np.asarray(edges, dtype=float)
-    draw_indices = np.asarray(draw_indices, dtype=int)
-    if stack.ndim != 2:
-        raise ValueError("distribution stack must have shape (members, bins)")
-    if draw_indices.ndim != 2 or draw_indices.shape[1] < 1:
-        raise ValueError("draw indices must have shape (resamples, ensemble size)")
-    if np.any(draw_indices < 0) or np.any(draw_indices >= stack.shape[0]):
-        raise ValueError("bootstrap draw index is outside the member stack")
-
-    values = np.empty(draw_indices.shape[0], dtype=float)
-    for start in range(0, draw_indices.shape[0], batch_size):
-        stop = min(start + batch_size, draw_indices.shape[0])
-        ensemble_means = np.mean(stack[draw_indices[start:stop]], axis=1)
-        values[start:stop] = [
-            fixed_bin_relative_l1(distribution, analytical, edges)
-            for distribution in ensemble_means
-        ]
-    return values
-
-
-def analyze_ensemble_size_sensitivity(
-    *,
-    rows: list[dict[str, str]],
-    matrix_rows: list[dict[str, str]],
-    config: dict[str, Any],
-    archives: dict[str, dict[str, np.ndarray]],
-) -> list[dict[str, object]]:
-    """Estimate how each registered property stabilizes with ensemble size.
-
-    Random subsets are drawn without replacement from the complete member
-    pool. The resulting ranges show how estimates from the available members
-    stabilize as more distinct members are included. They are descriptive and
-    do not alter the formal convergence decision.
-    """
-    settings = config["diagnostics"]["ensemble_size_sensitivity"]
-    time_s = float(settings["time_s"])
-    member_counts = [int(value) for value in settings["member_counts"]]
-    subset_draws = int(settings["random_subset_draws"])
-    base_seed = int(settings["random_subset_seed"])
-    bin_count = int(settings["log_radius_bins"])
-    confidence_level = float(config["diagnostics"]["confidence_level"])
-    if member_counts != sorted(set(member_counts)) or member_counts[0] < 2:
-        raise ValueError("ensemble-size member counts must be unique, sorted and at least two")
-    if subset_draws < 2:
-        raise ValueError("ensemble-size sensitivity requires at least two random-subset draws")
-    if bin_count not in BIN_COUNTS:
-        raise ValueError("ensemble-size L1 bin count is not registered")
-
-    matrix_lookup = {
-        (int(row["max_superdroplets"]), int(row["member_index"])): row for row in matrix_rows
-    }
-    resolutions = sorted({int(row["max_superdroplets"]) for row in matrix_rows})
-    rows_at_time = [
-        row for row in rows if np.isclose(float(row["time_s"]), time_s, rtol=0.0, atol=1.0e-3)
-    ]
-    diagnostic_lookup = {
-        (int(row["max_superdroplets"]), int(row["member_index"])): row for row in rows_at_time
-    }
-
-    output_rows: list[dict[str, object]] = []
-    alpha = (1.0 - confidence_level) / 2.0
-    for resolution in resolutions:
-        members = sorted(
-            int(row["member_index"])
-            for row in matrix_rows
-            if int(row["max_superdroplets"]) == resolution
-        )
-        if member_counts[-1] > len(members):
-            raise ValueError(
-                f"ensemble-size sensitivity requests {member_counts[-1]} members "
-                f"but resolution {resolution} has only {len(members)}"
-            )
-        if any((resolution, member) not in diagnostic_lookup for member in members):
-            raise RuntimeError(f"missing {time_s:g}-s member diagnostics for {resolution}")
-
-        stack, analytical, edges = distribution_stack(
-            resolution=resolution,
-            members=members,
-            time_s=time_s,
-            bin_count=bin_count,
-            matrix_lookup=matrix_lookup,
-            archives=archives,
-        )
-        moment_values = {
-            metric: np.asarray(
-                [float(diagnostic_lookup[(resolution, member)][metric]) for member in members]
-            )
-            for metric in MOMENT_METRICS
-        }
-        full_estimates = {
-            f"ensemble_mean_l1_bins_{bin_count}": fixed_bin_relative_l1(
-                np.mean(stack, axis=0),
-                analytical,
-                edges,
-            ),
-            **{metric: float(np.mean(values)) for metric, values in moment_values.items()},
-        }
-
-        for member_count in member_counts:
-            if member_count == len(members):
-                draw_indices = np.arange(len(members), dtype=int)[None, :]
-            else:
-                rng = np.random.default_rng(
-                    derived_seed(base_seed, "ensemble_size", resolution, member_count)
-                )
-                random_keys = rng.random((subset_draws, len(members)))
-                draw_indices = np.argpartition(
-                    random_keys,
-                    member_count - 1,
-                    axis=1,
-                )[:, :member_count]
-            sampled_values = {
-                f"ensemble_mean_l1_bins_{bin_count}": bootstrap_l1_values(
-                    stack,
-                    analytical,
-                    edges,
-                    draw_indices,
-                ),
-                **{
-                    metric: np.mean(values[draw_indices], axis=1)
-                    for metric, values in moment_values.items()
-                },
-            }
-            for metric, values in sampled_values.items():
-                low, median, high = np.quantile(values, [alpha, 0.5, 1.0 - alpha])
-                output_rows.append(
-                    {
-                        "max_superdroplets": resolution,
-                        "time_s": time_s,
-                        "metric": metric,
-                        "ensemble_size": member_count,
-                        "sampling_method": (
-                            "random_subsets_without_replacement_from_complete_pool"
-                        ),
-                        "random_subset_draws": draw_indices.shape[0],
-                        "full_ensemble_size": len(members),
-                        "full_ensemble_estimate": full_estimates[metric],
-                        "subset_median": float(median),
-                        "subset_95pct_low": float(low),
-                        "subset_95pct_high": float(high),
-                        "subset_95pct_half_width": float((high - low) / 2.0),
-                    }
-                )
-    return output_rows
 
 
 def analyze(
@@ -695,413 +537,92 @@ def analyze(
 
 def plot_result(
     analytical_rows: list[dict[str, object]],
-    config: dict[str, Any],
+    adjacent_rows: list[dict[str, object]],
+    decision: dict[str, object],
     output: Path,
 ) -> None:
-    criteria = config["convergence_criteria"]
-    times = sorted({float(row["time_s"]) for row in analytical_rows})
-    colors = plt.get_cmap("viridis")(np.linspace(0.08, 0.92, len(times)))
-    metric_settings = (
+    def plot_estimates_and_intervals(
+        axis: plt.Axes,
+        x: np.ndarray,
+        estimate: np.ndarray,
+        low: np.ndarray,
+        high: np.ndarray,
+    ) -> None:
+        if (
+            np.any(~np.isfinite(estimate))
+            or np.any(~np.isfinite(low))
+            or np.any(~np.isfinite(high))
+        ):
+            raise ValueError("plot estimates and interval endpoints must be finite")
+        if np.any(low > high):
+            raise ValueError("plot interval lower endpoints exceed upper endpoints")
+
+        (line,) = axis.plot(x, estimate, marker="o")
+        # A percentile-bootstrap interval need not contain the observed
+        # nonlinear estimate. Draw endpoints independently instead of passing
+        # signed distances to errorbar(), which requires nonnegative values.
+        axis.vlines(x, low, high, color=line.get_color())
+
+    final_time = max(float(row["time_s"]) for row in analytical_rows)
+    final_rows = [
+        row
+        for row in analytical_rows
+        if np.isclose(float(row["time_s"]), final_time, rtol=0.0, atol=1.0e-3)
+    ]
+    fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+    for axis, metric, ylabel in (
+        (axes[0, 0], "ensemble_mean_l1_bins_500", "ensemble-mean L1"),
         (
-            "worst_registered_l1",
-            "Distribution: worst bin grid",
-            "L1 upper 95% bound / %",
-            float(criteria["analytical_agreement"]["maximum_l1_upper_95ci"]) * 100.0,
-            False,
-        ),
-        (
+            axes[0, 1],
             "golovin_relative_error_radius_moment_0_m3",
-            r"$M_0$: droplet number",
-            "relative bias / %",
-            float(criteria["analytical_agreement"]["moment0_relative_bias_margin"]) * 100.0,
-            True,
+            "relative M0 error",
         ),
         (
+            axes[1, 0],
             "golovin_relative_error_radius_moment_6_um6_m3",
-            r"$M_6$: large-drop tail",
-            "relative bias / %",
-            float(criteria["analytical_agreement"]["moment6_relative_bias_margin"]) * 100.0,
-            True,
+            "relative M6 error",
         ),
-    )
-    resolutions = sorted({int(row["max_superdroplets"]) for row in analytical_rows})
-    fig, axes = plt.subplots(1, 3, figsize=(14, 4.5))
-    for axis, (metric, title, ylabel, margin, signed) in zip(
-        axes,
-        metric_settings,
-        strict=True,
     ):
-        for time_s, color in zip(times, colors, strict=True):
-            if metric == "worst_registered_l1":
-                worst_bounds = []
-                for resolution in resolutions:
-                    candidates = [
-                        row
-                        for row in analytical_rows
-                        if str(row["metric"]).startswith("ensemble_mean_l1_bins_")
-                        and int(row["max_superdroplets"]) == resolution
-                        and np.isclose(
-                            float(row["time_s"]),
-                            time_s,
-                            rtol=0.0,
-                            atol=1.0e-3,
-                        )
-                    ]
-                    if not candidates:
-                        raise RuntimeError(
-                            f"missing registered L1 result for {resolution} at {time_s:g} s"
-                        )
-                    worst_bounds.append(max(float(row["95ci_high"]) for row in candidates))
-                axis.plot(
-                    resolutions,
-                    np.asarray(worst_bounds) * 100.0,
-                    marker="o",
-                    color=color,
-                    label=f"{time_s / 60.0:g} min",
-                )
-            else:
-                selected = sorted(
-                    (
-                        row
-                        for row in analytical_rows
-                        if row["metric"] == metric
-                        and np.isclose(
-                            float(row["time_s"]),
-                            time_s,
-                            rtol=0.0,
-                            atol=1.0e-3,
-                        )
-                    ),
-                    key=lambda row: int(row["max_superdroplets"]),
-                )
-                x = np.asarray([float(row["max_superdroplets"]) for row in selected])
-                estimate = np.asarray([float(row["estimate"]) for row in selected]) * 100.0
-                low = np.asarray([float(row["95ci_low"]) for row in selected]) * 100.0
-                high = np.asarray([float(row["95ci_high"]) for row in selected]) * 100.0
-                plot_estimates_and_intervals(
-                    axis,
-                    x,
-                    estimate,
-                    low,
-                    high,
-                    color=color,
-                    label=f"{time_s / 60.0:g} min",
-                )
-        if signed:
-            axis.axhspan(-margin, margin, color="#d8f0dc", zorder=0)
-            axis.axhline(0.0, color="black", linewidth=0.8)
-        else:
-            axis.axhspan(0.0, margin, color="#d8f0dc", zorder=0)
-            axis.set_ylim(bottom=0.0)
+        selected = [row for row in final_rows if row["metric"] == metric]
+        x = np.asarray([float(row["max_superdroplets"]) for row in selected])
+        y = np.asarray([float(row["estimate"]) for row in selected])
+        low = np.asarray([float(row["95ci_low"]) for row in selected])
+        high = np.asarray([float(row["95ci_high"]) for row in selected])
+        plot_estimates_and_intervals(axis, x, y, low, high)
         axis.set_xscale("log", base=2)
-        axis.set_xticks(
-            resolutions,
-            [
-                f"{resolution // 1024}k" if resolution % 1024 == 0 else f"{resolution:,}"
-                for resolution in resolutions
-            ],
-        )
-        axis.set_title(title)
         axis.set_xlabel(r"$N_\mathrm{SD}$")
         axis.set_ylabel(ylabel)
-        axis.grid(alpha=0.22)
+        axis.grid(alpha=0.25)
 
-    handles, labels = axes[0].get_legend_handles_labels()
-    fig.suptitle("Agreement with the Golovin analytical solution", y=0.98)
-    fig.legend(
-        handles,
-        labels,
-        loc="upper center",
-        bbox_to_anchor=(0.5, 0.91),
-        ncol=len(times),
-        frameon=False,
-        title="simulation time",
+    pair_axis = axes[1, 1]
+    final_pairs = [
+        row
+        for row in adjacent_rows
+        if np.isclose(float(row["time_s"]), final_time, rtol=0.0, atol=1.0e-3)
+        and row["metric"] == "ensemble_mean_l1_bins_500"
+    ]
+    x = np.arange(len(final_pairs))
+    estimate = np.asarray(
+        [float(row["estimated_difference_lower_minus_upper"]) for row in final_pairs]
     )
-    fig.tight_layout(rect=(0, 0, 1, 0.80))
-    fig.savefig(output, dpi=300, bbox_inches="tight", facecolor="white")
-    plt.close(fig)
-
-
-def plot_estimates_and_intervals(
-    axis: plt.Axes,
-    x: np.ndarray,
-    estimate: np.ndarray,
-    low: np.ndarray,
-    high: np.ndarray,
-    *,
-    color: object | None = None,
-    label: str | None = None,
-) -> None:
-    """Plot estimates and percentile interval endpoints safely."""
-    if np.any(~np.isfinite(estimate)) or np.any(~np.isfinite(low)) or np.any(~np.isfinite(high)):
-        raise ValueError("plot estimates and interval endpoints must be finite")
-    if np.any(low > high):
-        raise ValueError("plot interval lower endpoints exceed upper endpoints")
-
-    (line,) = axis.plot(x, estimate, marker="o", color=color, label=label)
-    # A percentile-bootstrap interval need not contain the observed nonlinear
-    # estimate, so draw endpoints rather than signed error-bar distances.
-    axis.vlines(x, low, high, color=line.get_color(), alpha=0.8)
-
-
-def plot_adjacent_equivalence(
-    adjacent_rows: list[dict[str, object]],
-    config: dict[str, Any],
-    output: Path,
-) -> None:
-    criteria = config["convergence_criteria"]
-    times = sorted({float(row["time_s"]) for row in adjacent_rows})
-    colors = plt.get_cmap("viridis")(np.linspace(0.08, 0.92, len(times)))
-    metric_settings = (
-        (
-            "worst_registered_l1",
-            "Distribution: worst bin grid",
-            "largest 95% interval edge / pp",
-            float(criteria["adjacent_level_equivalence"]["l1_absolute_difference_margin"]) * 100.0,
-            False,
-        ),
-        (
-            "golovin_relative_error_radius_moment_0_m3",
-            r"$M_0$: droplet number",
-            "relative change / %",
-            float(criteria["adjacent_level_equivalence"]["moment0_relative_difference_margin"])
-            * 100.0,
-            True,
-        ),
-        (
-            "golovin_relative_error_radius_moment_6_um6_m3",
-            r"$M_6$: large-drop tail",
-            "relative change / %",
-            float(criteria["adjacent_level_equivalence"]["moment6_relative_difference_margin"])
-            * 100.0,
-            True,
-        ),
+    low = np.asarray([float(row["95ci_low"]) for row in final_pairs])
+    high = np.asarray([float(row["95ci_high"]) for row in final_pairs])
+    plot_estimates_and_intervals(pair_axis, x, estimate, low, high)
+    pair_axis.axhline(0.0, color="black", linewidth=0.8)
+    pair_axis.set_xticks(
+        x,
+        [
+            f"{row['lower_max_superdroplets']}-{row['upper_max_superdroplets']}"
+            for row in final_pairs
+        ],
+        rotation=30,
     )
-    pairs = sorted(
-        {
-            (int(row["lower_max_superdroplets"]), int(row["upper_max_superdroplets"]))
-            for row in adjacent_rows
-        }
-    )
-    pair_x = np.arange(len(pairs), dtype=float)
-    pair_labels = [f"{lower // 1024}k→{upper // 1024}k" for lower, upper in pairs]
+    pair_axis.set_ylabel("adjacent L1 difference")
+    pair_axis.set_xlabel(r"adjacent $N_\mathrm{SD}$ pair")
+    pair_axis.grid(alpha=0.25)
 
-    fig, axes = plt.subplots(1, 3, figsize=(14, 4.5))
-    for axis, (metric, title, ylabel, margin, signed) in zip(
-        axes,
-        metric_settings,
-        strict=True,
-    ):
-        for time_s, color in zip(times, colors, strict=True):
-            if metric == "worst_registered_l1":
-                worst_edges = []
-                for lower, upper in pairs:
-                    candidates = [
-                        row
-                        for row in adjacent_rows
-                        if str(row["metric"]).startswith("ensemble_mean_l1_bins_")
-                        and int(row["lower_max_superdroplets"]) == lower
-                        and int(row["upper_max_superdroplets"]) == upper
-                        and np.isclose(
-                            float(row["time_s"]),
-                            time_s,
-                            rtol=0.0,
-                            atol=1.0e-3,
-                        )
-                    ]
-                    if not candidates:
-                        raise RuntimeError(
-                            f"missing registered adjacent L1 result for {lower}-{upper} "
-                            f"at {time_s:g} s"
-                        )
-                    worst_edges.append(
-                        max(
-                            max(abs(float(row["95ci_low"])), abs(float(row["95ci_high"])))
-                            for row in candidates
-                        )
-                    )
-                axis.plot(
-                    pair_x,
-                    np.asarray(worst_edges) * 100.0,
-                    marker="o",
-                    color=color,
-                    label=f"{time_s / 60.0:g} min",
-                )
-            else:
-                selected_lookup = {
-                    (
-                        int(row["lower_max_superdroplets"]),
-                        int(row["upper_max_superdroplets"]),
-                    ): row
-                    for row in adjacent_rows
-                    if row["metric"] == metric
-                    and np.isclose(float(row["time_s"]), time_s, rtol=0.0, atol=1.0e-3)
-                }
-                selected = [selected_lookup[pair] for pair in pairs]
-                estimate = (
-                    np.asarray(
-                        [float(row["estimated_difference_lower_minus_upper"]) for row in selected]
-                    )
-                    * 100.0
-                )
-                low = np.asarray([float(row["95ci_low"]) for row in selected]) * 100.0
-                high = np.asarray([float(row["95ci_high"]) for row in selected]) * 100.0
-                plot_estimates_and_intervals(
-                    axis,
-                    pair_x,
-                    estimate,
-                    low,
-                    high,
-                    color=color,
-                    label=f"{time_s / 60.0:g} min",
-                )
-        if signed:
-            axis.axhspan(-margin, margin, color="#d8f0dc", zorder=0)
-            axis.axhline(0.0, color="black", linewidth=0.8)
-        else:
-            axis.axhspan(0.0, margin, color="#d8f0dc", zorder=0)
-            axis.set_ylim(bottom=0.0)
-        axis.set_xticks(pair_x, pair_labels)
-        axis.set_title(title)
-        axis.set_ylabel(ylabel)
-        axis.grid(alpha=0.22)
-
-    handles, labels = axes[0].get_legend_handles_labels()
-    fig.suptitle("Change when the superdroplet resolution is doubled", y=0.98)
-    fig.legend(
-        handles,
-        labels,
-        loc="upper center",
-        bbox_to_anchor=(0.5, 0.91),
-        ncol=len(times),
-        frameon=False,
-        title="simulation time",
-    )
-    fig.supxlabel("resolution doubling", y=0.03)
-    fig.tight_layout(rect=(0, 0.08, 1, 0.80))
-    fig.savefig(output, dpi=300, bbox_inches="tight", facecolor="white")
-    plt.close(fig)
-
-
-def plot_ensemble_size_sensitivity(
-    sensitivity_rows: list[dict[str, object]],
-    config: dict[str, Any],
-    output: Path,
-) -> None:
-    criteria = config["convergence_criteria"]
-    resolutions = sorted({int(row["max_superdroplets"]) for row in sensitivity_rows})
-    metric_settings = (
-        (
-            "ensemble_mean_l1_bins_500",
-            "500-bin L1 error / %",
-            float(criteria["analytical_agreement"]["maximum_l1_upper_95ci"]) * 100.0,
-            False,
-        ),
-        (
-            "golovin_relative_error_radius_moment_0_m3",
-            r"$M_0$ bias / %",
-            float(criteria["analytical_agreement"]["moment0_relative_bias_margin"]) * 100.0,
-            True,
-        ),
-        (
-            "golovin_relative_error_radius_moment_6_um6_m3",
-            r"$M_6$ bias / %",
-            float(criteria["analytical_agreement"]["moment6_relative_bias_margin"]) * 100.0,
-            True,
-        ),
-    )
-    fig, axes = plt.subplots(
-        len(metric_settings),
-        len(resolutions),
-        figsize=(16, 10),
-        sharex=True,
-        sharey="row",
-    )
-    row_limits: dict[str, float] = {}
-    for metric, _, margin, signed in metric_settings:
-        metric_rows = [row for row in sensitivity_rows if row["metric"] == metric]
-        plotted_values = np.asarray(
-            [
-                float(row[key]) * 100.0
-                for row in metric_rows
-                for key in (
-                    "subset_95pct_low",
-                    "subset_95pct_high",
-                    "full_ensemble_estimate",
-                )
-            ]
-        )
-        if signed:
-            row_limits[metric] = 1.1 * max(margin, float(np.max(np.abs(plotted_values))))
-        else:
-            row_limits[metric] = 1.1 * max(margin, float(np.max(plotted_values)))
-
-    for column, resolution in enumerate(resolutions):
-        axes[0, column].set_title(f"{resolution:,} SDs")
-        for row_index, (metric, ylabel, margin, signed) in enumerate(metric_settings):
-            axis = axes[row_index, column]
-            selected = sorted(
-                (
-                    row
-                    for row in sensitivity_rows
-                    if int(row["max_superdroplets"]) == resolution and row["metric"] == metric
-                ),
-                key=lambda row: int(row["ensemble_size"]),
-            )
-            ensemble_size = np.asarray([int(row["ensemble_size"]) for row in selected])
-            median = np.asarray([float(row["subset_median"]) for row in selected]) * 100.0
-            low = np.asarray([float(row["subset_95pct_low"]) for row in selected]) * 100.0
-            high = np.asarray([float(row["subset_95pct_high"]) for row in selected]) * 100.0
-            full_estimate = float(selected[0]["full_ensemble_estimate"]) * 100.0
-
-            axis.fill_between(
-                ensemble_size,
-                low,
-                high,
-                color="#8fb9dd",
-                alpha=0.45,
-                label="95% random-subset range" if column == 0 and row_index == 0 else None,
-            )
-            axis.plot(
-                ensemble_size,
-                median,
-                marker="o",
-                color="#2468a2",
-                label="subset median" if column == 0 and row_index == 0 else None,
-            )
-            axis.axhline(
-                full_estimate,
-                color="#d95f02",
-                linestyle="--",
-                linewidth=1.2,
-                label="all 100 members" if column == 0 and row_index == 0 else None,
-            )
-            if signed:
-                axis.axhline(0.0, color="black", linewidth=0.7)
-                axis.axhline(margin, color="#3a9147", linewidth=1.0)
-                axis.axhline(-margin, color="#3a9147", linewidth=1.0)
-                axis.set_ylim(-row_limits[metric], row_limits[metric])
-            else:
-                axis.axhline(margin, color="#3a9147", linewidth=1.0)
-                axis.set_ylim(0.0, row_limits[metric])
-            axis.grid(alpha=0.2)
-            if column == 0:
-                axis.set_ylabel(ylabel)
-            if row_index == len(metric_settings) - 1:
-                axis.set_xlabel("ensemble members")
-
-    handles, labels = axes[0, 0].get_legend_handles_labels()
-    time_s = float(sensitivity_rows[0]["time_s"])
-    fig.suptitle(f"Ensemble-size stability at {time_s / 60.0:g} min", y=0.985)
-    fig.legend(
-        handles,
-        labels,
-        loc="upper center",
-        bbox_to_anchor=(0.5, 0.945),
-        ncol=3,
-        frameon=False,
-    )
-    fig.tight_layout(rect=(0, 0, 1, 0.90))
+    fig.suptitle(f"Controlled Golovin resolution convergence\ndecision: {decision['status']}")
+    fig.tight_layout()
     fig.savefig(output, dpi=300, bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
@@ -1121,31 +642,15 @@ def main() -> None:
         config=config,
         archives=archives,
     )
-    sensitivity_rows = analyze_ensemble_size_sensitivity(
-        rows=rows,
-        matrix_rows=matrix_rows,
-        config=config,
-        archives=archives,
-    )
 
     output_directory.mkdir(parents=True)
     write_csv(output_directory / "analytical_agreement.csv", analytical_rows)
     write_csv(output_directory / "adjacent_resolution_equivalence.csv", adjacent_rows)
-    write_csv(output_directory / "ensemble_size_sensitivity.csv", sensitivity_rows)
     plot_result(
         analytical_rows,
-        config,
-        output_directory / "analytical_accuracy.png",
-    )
-    plot_adjacent_equivalence(
         adjacent_rows,
-        config,
-        output_directory / "adjacent_resolution_equivalence.png",
-    )
-    plot_ensemble_size_sensitivity(
-        sensitivity_rows,
-        config,
-        output_directory / "ensemble_size_stability.png",
+        decision,
+        output_directory / "resolution_convergence.png",
     )
     decision.update(
         {

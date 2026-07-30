@@ -42,6 +42,9 @@ verified absolute paths.
     reviewed actual resolution matrix sequentially in one restartable job.
 14. `analyze_golovin_resolution_convergence.sbatch` creates/validates all 120
     member diagnostics and applies the formal resolution decision.
+15. `analyze_golovin_practical_convergence.sbatch` reuses completed
+    member-level fixed-bin archives and applies the non-overwriting
+    diminishing-returns decision. It launches no CLEO model.
 
 The permanent source and build trees are in HOME. Run-specific configuration,
 input binaries and Zarr output are stored under SCRATCH.

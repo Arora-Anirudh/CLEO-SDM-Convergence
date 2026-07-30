@@ -1,0 +1,4 @@
+lower_max_superdroplets,upper_max_superdroplets,all_registered_rows_observed_pass,projected_members_each_resolution_for_all_rows,limiting_time_s,limiting_log_radius_bins,limiting_observed_estimate,limiting_observed_95ci_high,equivalence_margin,projection_method
+16384,32768,False,2028,3000.0,1000,0.008476240999615577,0.01533673815500411,0.01,observed_95ci_scaled_by_sqrt_100_over_n
+32768,65536,False,788,3600.0,1000,0.008158653659233864,0.013325020138139057,0.01,observed_95ci_scaled_by_sqrt_100_over_n
+65536,131072,True,100,600.0,250,0.001433611879387944,0.003527117392158994,0.01,observed_95ci_scaled_by_sqrt_100_over_n

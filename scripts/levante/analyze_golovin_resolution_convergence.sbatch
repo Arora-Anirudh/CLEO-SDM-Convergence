@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=940M
-#SBATCH --time=00:45:00
+#SBATCH --time=01:00:00
 #SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
 #SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%j.err
 
@@ -36,6 +36,11 @@ source "${SCRIPT_DIR}/common.sh"
 : "${RESOLUTION_CONFIG:?Set RESOLUTION_CONFIG to the reviewed resolution YAML.}"
 : "${RESOLUTION_RECORD_ROOT:?Set RESOLUTION_RECORD_ROOT to the persistent HOME record path.}"
 EXPECTED_CASE_COUNT="${EXPECTED_CASE_COUNT:-120}"
+ANALYSIS_LABEL="${ANALYSIS_LABEL:-analysis_v1}"
+if [[ ! "${ANALYSIS_LABEL}" =~ ^analysis_v[0-9]+$ ]]; then
+  echo "ERROR: ANALYSIS_LABEL must match analysis_v<integer>." >&2
+  exit 2
+fi
 
 cleo_sdm_load_modules
 cleo_sdm_set_runtime
@@ -57,9 +62,9 @@ if ((actual_case_count != EXPECTED_CASE_COUNT)); then
   exit 2
 fi
 
-analysis_directory="${RESOLUTION_RECORD_ROOT}/analysis_v1"
-staging_directory="${RESOLUTION_RECORD_ROOT}/.analysis_v1_job${SLURM_JOB_ID}.tmp"
-failed_directory="${RESOLUTION_RECORD_ROOT}/analysis_failed_job${SLURM_JOB_ID}"
+analysis_directory="${RESOLUTION_RECORD_ROOT}/${ANALYSIS_LABEL}"
+staging_directory="${RESOLUTION_RECORD_ROOT}/.${ANALYSIS_LABEL}_job${SLURM_JOB_ID}.tmp"
+failed_directory="${RESOLUTION_RECORD_ROOT}/${ANALYSIS_LABEL}_failed_job${SLURM_JOB_ID}"
 if [[ -e "${analysis_directory}" || -e "${staging_directory}" || -e "${failed_directory}" ]]; then
   echo "ERROR: analysis output/staging path already exists." >&2
   exit 1

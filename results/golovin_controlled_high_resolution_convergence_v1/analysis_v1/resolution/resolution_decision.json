@@ -1,0 +1,39 @@
+{
+  "status": "no_resolution_accepted_in_initial_matrix",
+  "schema": "golovin_controlled_resolution_decision_v1",
+  "selected_max_superdroplets": null,
+  "tested_resolutions": [
+    16384,
+    32768,
+    65536,
+    131072
+  ],
+  "members_per_resolution": {
+    "16384": 100,
+    "32768": 100,
+    "65536": 100,
+    "131072": 100
+  },
+  "resolution_analytical_and_precision_pass": {
+    "16384": true,
+    "32768": true,
+    "65536": true,
+    "131072": true
+  },
+  "adjacent_pair_equivalence_pass": {
+    "16384-32768": false,
+    "32768-65536": false,
+    "65536-131072": true
+  },
+  "confirmation_rule": "N, 2N and 4N pass analytical/precision gates and both adjacent pairs pass equivalence",
+  "bin_robustness_policy": "require_resolution_decision_at_all_registered_bin_counts",
+  "l1_estimand": "relative L1 of the ensemble-mean fixed-bin distribution",
+  "independent_ensemble_warning": "Different resolutions use independent collision ensembles; member indices are not paired histories.",
+  "combined_member_time": "ensemble_summary/all_member_time_diagnostics.csv",
+  "combined_member_time_path_base": "analysis_root",
+  "combined_member_time_sha256": "46b171a3b15e3ae9eab48b03967d4f22b218602f327e9a140ae1f87f99f178bf",
+  "matrix_file": "/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/experiments/golovin_controlled_high_resolution_convergence_v1/cases.tsv",
+  "matrix_sha256": "c94f9f2e0c1939491dd992069c2b3761e34ee026a2f4b759c0972cebb14e4624",
+  "config": "/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/config/golovin_controlled_high_resolution_convergence.yaml",
+  "config_sha256": "4a3cc494c61573aa24b48b87f582423acc7fffd380c9290ee3ca71261a70e9ff"
+}
