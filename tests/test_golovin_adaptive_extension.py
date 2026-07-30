@@ -203,3 +203,4 @@ def test_main_reads_the_reviewed_matrix_as_tsv() -> None:
 
     assert 'read_csv(args.matrix_file, delimiter="\\t")' in source
     assert "archives = load_archives(args.run_root, active_matrix_rows)" in source
+    assert source.count("analysis_root=args.output_directory.parent") == 3

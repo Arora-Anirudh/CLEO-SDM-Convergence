@@ -921,8 +921,9 @@ def main() -> None:
         {
             "combined_member_time": portable_artifact_path(
                 args.combined_member_time,
-                args.output_directory,
+                analysis_root=args.output_directory.parent,
             ),
+            "combined_member_time_path_base": "analysis_root",
             "combined_member_time_sha256": sha256_file(args.combined_member_time),
             "matrix_file": str(args.matrix_file.resolve()),
             "matrix_sha256": sha256_file(args.matrix_file),
@@ -930,13 +931,15 @@ def main() -> None:
             "config_sha256": sha256_file(args.config),
             "model_inventory": portable_artifact_path(
                 args.model_inventory,
-                args.output_directory,
+                analysis_root=args.output_directory.parent,
             ),
+            "model_inventory_path_base": "analysis_root",
             "model_inventory_sha256": sha256_file(args.model_inventory),
             "practical_change_table": portable_artifact_path(
                 args.practical_change_table,
-                args.output_directory,
+                analysis_root=args.output_directory.parent,
             ),
+            "practical_change_table_path_base": "analysis_root",
             "practical_change_table_sha256": sha256_file(args.practical_change_table),
         }
     )
