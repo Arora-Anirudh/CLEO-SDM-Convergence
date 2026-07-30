@@ -1,7 +1,7 @@
 # Fixed-10-member Golovin high-resolution screen
 
-- Status: prepared design; no build, bundle, model, or analysis job submitted
-- Experiment label: `golovin_fixed10_high_resolution_screen_v1`
+- Status: v1 scheduler-layout audit preserved; fresh v2 matrix prepared, not submitted
+- Experiment label: `golovin_fixed10_high_resolution_screen_v2`
 - Purpose: inexpensive, independent resolution-screening and scaling evidence
 - Not a replacement for: the completed 100-member formal uncertainty study
 
@@ -22,6 +22,14 @@ This screen serves two limited purposes:
 It must not be used to replace the 100-member calculation's strict
 uncertainty conclusion. Ten members are deliberately insufficient to certify
 a one-percentage-point equivalence bound for late-time tail diagnostics.
+
+The first v1 attempt was deliberately stopped after Slurm revealed that every
+nested member step inherited the full allocation-memory request and therefore
+ran serially. Its partial outputs are preserved for scheduler audit, not used
+as a scientific screen. Version 2 uses a fresh collision-seed/run namespace
+and the verified `srun --exclusive --mem=0` worker layout. Reusing the frozen
+controlled initialization bundles is intentional: it holds the initial
+population fixed while new collision streams isolate collision variability.
 
 ## 2. Frozen physical and numerical conditions
 
