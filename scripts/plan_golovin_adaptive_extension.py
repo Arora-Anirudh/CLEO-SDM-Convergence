@@ -850,10 +850,8 @@ def main() -> None:
     config = load_yaml(args.config)
     settings = validate_planning_settings(config)
     active = [int(value) for value in settings["active_max_superdroplets"]]
-    active_labels = {
-        row["run_label"] for row in matrix_rows if int(row["max_superdroplets"]) in active
-    }
-    archives = load_archives(args.run_root, active_labels)
+    active_matrix_rows = [row for row in matrix_rows if int(row["max_superdroplets"]) in active]
+    archives = load_archives(args.run_root, active_matrix_rows)
     model_inventory = json.loads(args.model_inventory.read_text(encoding="utf-8"))
     practical_rows = read_csv(args.practical_change_table)
 
