@@ -6,8 +6,6 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=4G
 #SBATCH --time=00:10:00
-#SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
-#SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%j.err
 
 # Configure the project, fetch the pinned CLEO source, and build the two
 # collision-only executables. Supply the active project account at submission:

@@ -66,12 +66,11 @@ The build script requests:
 - `shared` partition;
 - CPU/OpenMP only, with no GPU.
 
-The account is deliberately not committed because `bb1153` is temporary.
-Supply the active account at submission:
+The active SDM allocation is `mh0731`. Use `submit.sh` so the account and the
+user-specific SCRATCH log directory are applied consistently:
 
 ```bash
-mkdir -p /scratch/b/b383673/SDM/logs
-sbatch --account=bb1153 scripts/levante/build.sbatch
+scripts/levante/submit.sh scripts/levante/build.sbatch
 ```
 
 ## Single collision-box request
@@ -89,10 +88,9 @@ The model script requests:
 For the first Golovin smoke run:
 
 ```bash
-sbatch \
-  --account=bb1153 \
-  --export=ALL,KERNEL=golovin,INITIALIZATION_SEED=12345,COLLISION_SEED=67890,RUN_LABEL=first_golovin_seeded,MODEL_THREADS=1 \
-  scripts/levante/run_collisions0d.sbatch
+scripts/levante/submit.sh \
+  scripts/levante/run_collisions0d.sbatch \
+  --export=ALL,KERNEL=golovin,INITIALIZATION_SEED=12345,COLLISION_SEED=67890,RUN_LABEL=first_golovin_seeded,MODEL_THREADS=1
 ```
 
 The job refuses to overwrite an existing `RUN_LABEL`. A Long run uses the same
@@ -122,10 +120,9 @@ The replay gate requests:
 - no GPU.
 
 ```bash
-sbatch \
-  --account=bb1153 \
-  --export=ALL,KERNEL=golovin,INITIALIZATION_SEED=12345,REPLAY_COLLISION_SEED=67890,DIFFERENT_COLLISION_SEED=98765,VALIDATION_LABEL=golovin_seed_replay_v1 \
-  scripts/levante/validate_collision_seed_replay.sbatch
+scripts/levante/submit.sh \
+  scripts/levante/validate_collision_seed_replay.sbatch \
+  --export=ALL,KERNEL=golovin,INITIALIZATION_SEED=12345,REPLAY_COLLISION_SEED=67890,DIFFERENT_COLLISION_SEED=98765,VALIDATION_LABEL=golovin_seed_replay_v1
 ```
 
 The same initialization and collision seed must yield byte-identical Zarr
@@ -150,10 +147,9 @@ droplet count, one-box membership, coordinate bounds and represented
 \(M_0\), \(M_3\) and \(M_6\):
 
 ```bash
-sbatch \
-  --account=bb1153 \
-  --export=ALL,VALIDATION_LABEL=controlled_init_n4096_v1 \
-  scripts/levante/validate_controlled_initialization.sbatch
+scripts/levante/submit.sh \
+  scripts/levante/validate_controlled_initialization.sbatch \
+  --export=ALL,VALIDATION_LABEL=controlled_init_n4096_v1
 ```
 
 `VALIDATION_LABEL` is non-overwriting. The raw native inputs and compact JSON
@@ -182,10 +178,9 @@ Proposed first validation command—do not submit without the researcher's
 explicit compute approval:
 
 ```bash
-sbatch \
-  --account=bb1153 \
-  --export=ALL,MAX_SUPERDROPLETS=4096,BUNDLE_LABEL=golovin_controlled_N004096_v1 \
-  scripts/levante/prepare_controlled_bundle.sbatch
+scripts/levante/submit.sh \
+  scripts/levante/prepare_controlled_bundle.sbatch \
+  --export=ALL,MAX_SUPERDROPLETS=4096,BUNDLE_LABEL=golovin_controlled_N004096_v1
 ```
 
 ### Same-stack replay and resolution ladder
@@ -194,20 +189,18 @@ The replay request is one node, one task, one CPU, 940 MiB and 10 minutes on
 `shared`. It runs input generation/readback only:
 
 ```bash
-sbatch \
-  --account=bb1153 \
-  --export=ALL,MAX_SUPERDROPLETS=4096,REPLAY_LABEL=golovin_controlled_N004096_replay_v1,CANONICAL_BUNDLE=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1 \
-  scripts/levante/validate_controlled_bundle_replay.sbatch
+scripts/levante/submit.sh \
+  scripts/levante/validate_controlled_bundle_replay.sbatch \
+  --export=ALL,MAX_SUPERDROPLETS=4096,REPLAY_LABEL=golovin_controlled_N004096_replay_v1,CANONICAL_BUNDLE="${HOME}/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1"
 ```
 
 The bundle-ladder request has the same resource shape and creates five missing
 native input bundles, not simulations:
 
 ```bash
-sbatch \
-  --account=bb1153 \
-  --export=ALL,CANONICAL_N4096_BUNDLE=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1 \
-  scripts/levante/prepare_controlled_bundle_ladder.sbatch
+scripts/levante/submit.sh \
+  scripts/levante/prepare_controlled_bundle_ladder.sbatch \
+  --export=ALL,CANONICAL_N4096_BUNDLE="${HOME}/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1"
 ```
 
 Both scripts refuse pre-existing output paths and create no Zarr store.
@@ -218,10 +211,9 @@ After one bundle has passed creation validation, a controlled Golovin member
 uses:
 
 ```bash
-sbatch \
-  --account=bb1153 \
-  --export=ALL,KERNEL=golovin,INITIALIZATION_FAMILY=controlled,CONTROLLED_BUNDLE=/absolute/frozen/bundle,COLLISION_SEED=67890,RUN_LABEL=controlled_golovin_reuse_v1,MODEL_THREADS=1,MAX_SUPERDROPLETS=4096 \
-  scripts/levante/run_collisions0d.sbatch
+scripts/levante/submit.sh \
+  scripts/levante/run_collisions0d.sbatch \
+  --export=ALL,KERNEL=golovin,INITIALIZATION_FAMILY=controlled,CONTROLLED_BUNDLE=/absolute/frozen/bundle,COLLISION_SEED=67890,RUN_LABEL=controlled_golovin_reuse_v1,MODEL_THREADS=1,MAX_SUPERDROPLETS=4096
 ```
 
 The controlled path:
@@ -268,10 +260,9 @@ The diagnostic script requests:
 For the audited first Golovin run:
 
 ```bash
-sbatch \
-  --account=bb1153 \
-  --export=ALL,KERNEL=golovin,RUN_LABEL=first_golovin_serial \
-  scripts/levante/analyze_collisions0d.sbatch
+scripts/levante/submit.sh \
+  scripts/levante/analyze_collisions0d.sbatch \
+  --export=ALL,KERNEL=golovin,RUN_LABEL=first_golovin_serial
 ```
 
 The implementation and formulas are documented in

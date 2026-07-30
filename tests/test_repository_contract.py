@@ -85,6 +85,30 @@ def test_levante_scripts_are_project_owned_and_account_neutral() -> None:
         assert "/home/m/m300950" not in content
 
 
+def test_active_levante_scripts_do_not_embed_retired_account_paths() -> None:
+    levante_directory = ROOT / "scripts" / "levante"
+    migration_script = levante_directory / "migrate_b383673_to_m301324.sbatch"
+
+    for path in levante_directory.iterdir():
+        if not path.is_file() or path == migration_script or path.suffix == ".md":
+            continue
+        content = path.read_text(encoding="utf-8")
+        assert "/home/b/b383673" not in content
+        assert "/scratch/b/b383673" not in content
+        assert "bb1153" not in content
+
+    common = (levante_directory / "common.sh").read_text(encoding="utf-8")
+    assert 'CLEO_SDM_HOME_ROOT="${CLEO_SDM_HOME_ROOT:-${HOME}/SDM}"' in common
+    assert (
+        'CLEO_SDM_SCRATCH_ROOT="${CLEO_SDM_SCRATCH_ROOT:-'
+        '/scratch/${CLEO_SDM_USER:0:1}/${CLEO_SDM_USER}/SDM}"'
+    ) in common
+
+    submit = (levante_directory / "submit.sh").read_text(encoding="utf-8")
+    assert 'SLURM_ACCOUNT="${CLEO_SDM_SLURM_ACCOUNT:-mh0731}"' in submit
+    assert 'LOG_ROOT="${CLEO_SDM_LOG_ROOT:-${SCRATCH_ROOT}/logs}"' in submit
+
+
 def test_slurm_entrypoints_resolve_common_from_explicit_project_root() -> None:
     levante_directory = ROOT / "scripts" / "levante"
     for script_name in (

@@ -6,8 +6,6 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=940M
 #SBATCH --time=00:10:00
-#SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%A_%a.out
-#SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%A_%a.err
 
 # Execute exactly one row of a prepared Stage-0 Golovin matrix.
 #

@@ -6,8 +6,6 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=940M
 #SBATCH --time=00:10:00
-#SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
-#SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%j.err
 
 # Generate or reuse one initialization and run one collision-only box.
 #

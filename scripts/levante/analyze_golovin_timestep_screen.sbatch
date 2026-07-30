@@ -6,8 +6,6 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=940M
 #SBATCH --time=00:30:00
-#SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
-#SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%j.err
 
 # Analyze every completed controlled timestep-screen member without per-member
 # figures, then calculate the registered common-stream equivalence screen and

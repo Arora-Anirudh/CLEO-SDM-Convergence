@@ -7,8 +7,6 @@
 #SBATCH --hint=nomultithread
 #SBATCH --mem=3600M
 #SBATCH --time=00:10:00
-#SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
-#SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%j.err
 
 # Verify that four one-rank member-shaped Slurm steps can start concurrently
 # inside one allocation. This intentionally runs no CLEO executable and writes
@@ -24,7 +22,9 @@ set -u
 EXPECTED_WORKERS=4
 PROBE_SLEEP_SECONDS="${PARALLEL_PROBE_SLEEP_SECONDS:-20}"
 START_WINDOW_SECONDS="${PARALLEL_PROBE_START_WINDOW_SECONDS:-10}"
-PROBE_ROOT="${PARALLEL_PROBE_ROOT:-/scratch/b/b383673/SDM/CLEO-SDM-Convergence/probes}"
+ACTIVE_USER="${USER:-$(id -un)}"
+DEFAULT_SCRATCH_ROOT="/scratch/${ACTIVE_USER:0:1}/${ACTIVE_USER}/SDM"
+PROBE_ROOT="${PARALLEL_PROBE_ROOT:-${DEFAULT_SCRATCH_ROOT}/CLEO-SDM-Convergence/probes}"
 
 if ((SLURM_NTASKS != EXPECTED_WORKERS)); then
   echo "ERROR: expected ${EXPECTED_WORKERS} Slurm tasks, got ${SLURM_NTASKS}." >&2

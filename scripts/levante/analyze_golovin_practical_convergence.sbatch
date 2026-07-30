@@ -6,8 +6,6 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=940M
 #SBATCH --time=00:20:00
-#SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
-#SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%j.err
 
 # Apply the non-overwriting practical diminishing-returns analysis to the
 # existing controlled Golovin members. This launches no CLEO model and creates

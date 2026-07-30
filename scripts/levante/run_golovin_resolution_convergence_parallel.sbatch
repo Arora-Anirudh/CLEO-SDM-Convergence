@@ -7,8 +7,6 @@
 #SBATCH --hint=nomultithread
 #SBATCH --mem=3600M
 #SBATCH --time=02:15:00
-#SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
-#SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%j.err
 
 # Run a reviewed Golovin matrix with a bounded number of independent serial
 # CLEO members inside one Slurm allocation. This avoids one scheduler job per

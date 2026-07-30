@@ -6,8 +6,6 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=940M
 #SBATCH --time=00:20:00
-#SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
-#SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%j.err
 
 # Reuse the complete Golovin member diagnostics to check the variance-scaling
 # assumption behind adaptive ensemble planning. No CLEO executable is launched.

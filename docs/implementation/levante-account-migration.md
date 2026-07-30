@@ -51,9 +51,65 @@ levante-login   -> b383673
 levante-m301324 -> m301324
 ```
 
-The existing RSA public key authenticates the old identity but was initially
-rejected for `m301324`. DKRZ requires the public key to be registered for the
-new identity through LUV before SSH and VS Code Remote SSH can connect.
+The existing RSA public key authenticates the old identity but DKRZ reported
+that it had already been registered previously and would not register it for
+`m301324`. A dedicated Ed25519 key was therefore created:
+
+```text
+private key: ~/.ssh/levante_m301324_ed25519
+public key:  ~/.ssh/levante_m301324_ed25519.pub
+fingerprint: SHA256:boO1kf9joAqaw6pELnkcAvKJZ0cXbuhxpqaSD/zg9H8
+```
+
+Only the `levante-m301324` alias uses this key. The private file has mode 600,
+the public file has mode 644, and the old `levante-login` RSA configuration is
+unchanged. The new public key was activated through LUV. Passwordless SSH was
+verified on 2026-07-30:
+
+```text
+alias: levante-m301324
+remote identity: m301324
+remote HOME: /home/m/m301324
+login host observed: levante2.lvt.dkrz.de
+```
+
+Immediately after registration, the key was accepted by login nodes 0 and 2
+but rejected by the other load-balanced gateway addresses. To make VS Code
+reliable while DKRZ synchronizes the registration, only `levante-m301324` is
+temporarily pinned to `levante0.dkrz.de` with
+`HostKeyAlias levante.dkrz.de`. The old-account alias remains load-balanced
+and unchanged. Return the new alias to `levante.dkrz.de` after all gateway
+addresses accept the key.
+
+## New account state
+
+The new identity belongs to both `ka1125` and `mh0731`. Clara confirmed that
+the SDM project must use Slurm account `mh0731`; future SDM jobs must therefore
+request `--account=mh0731`.
+
+The pre-migration storage audit found approximately 1.26 GiB used of the
+60-GiB HOME quota and about 15 TiB available in the new SCRATCH namespace.
+Both `/work/ka1125` and `/work/mh0731` were writable, but neither is needed for
+this migration; the current workflow keeps durable code/compact records in
+HOME and restartable raw model output in SCRATCH.
+
+The following destinations were created:
+
+```text
+/home/m/m301324/SDM
+/scratch/m/m301324/SDM
+```
+
+The canonical Git checkouts were recreated rather than copied:
+
+| checkout | branch | verified commit |
+|---|---|---|
+| `CLEO-SDM-Convergence` | `main` | `dc15471b32e07583b26ce5a83065f14934cd6180` |
+| `CLEO-SDM-Convergence-golovin-protocol` | `agent/golovin-convergence-protocol` | `472e37d214b49e7c7e9b2ee61be067b98b4d9702` |
+
+Temporary ACLs grant `m301324` read/traverse access to the old SDM HOME and
+SCRATCH roots. They do not grant write or delete access and must be removed
+after verification.
 
 ## Staged migration protocol
 
@@ -79,10 +135,73 @@ new identity through LUV before SSH and VS Code Remote SSH can connect.
 10. Revoke temporary ACLs. Retain old data until the researcher separately
     authorizes retirement after the full destination audit.
 
+## Transfer implementation
+
+The restartable script
+`scripts/levante/migrate_b383673_to_m301324.sbatch` copies portable HOME
+records and the complete old SCRATCH SDM tree without `--delete`. It excludes
+old Git checkouts, compiled builds, dependencies and environments from the
+HOME copy. For each copied tree it records regular-file counts, byte totals,
+symlinks and SHA-256 checksums, then requires source and destination
+inventories to match.
+
+## Verified transfer result
+
+Migration job `26573393` ran under `mh0731/shared` and completed with exit
+status `0:0` in 1:11:56. Slurm reported four allocated logical CPUs for the
+one-CPU request and a batch maximum RSS of 158,780 KiB. The destination passed
+all per-tree summary, symlink and SHA-256 comparisons.
+
+The complete SCRATCH result is:
+
+| property | old source | new destination |
+|---|---:|---:|
+| regular files | 18,391 | 18,391 |
+| regular-file bytes | 47,574,445,774 | 47,574,445,774 |
+| directories | 6,402 | 6,402 |
+| symlinks | 0 | 0 |
+
+All eight selected HOME record/source trees also passed exact inventories.
+The authoritative audit is retained at:
+
+```text
+/home/m/m301324/SDM/account_migration/b383673_to_m301324/job_26573393
+```
+
+No source file was deleted or modified.
+
+## Rebuilt software result
+
+`scripts/levante/bootstrap_software.sbatch` recreated account-local software
+instead of copying compiled files containing old absolute paths. The final
+validation job `26575611` completed `0:0` and wrote
+`SOFTWARE_BOOTSTRAP_PASS=1`. The verified stack is:
+
+| component | verified state |
+|---|---|
+| upstream CLEO | detached commit `83318c23223546d10759d202d70f4fa2f7fe4688` |
+| CLEO Python | 3.13.14 |
+| `uv` | 0.12.0 |
+| Doxygen | 1.17.0 |
+| `mpi4py` | 4.1.2, source-built against Levante OpenMPI 4.1.2 |
+| `plotcleo` | import passed |
+| YAXT/YAC | rebuilt under `/home/m/m301324/SDM/cleo_dependencies/yacyaxt/gcc`; link and one-rank PMIx import checks passed |
+| trial `sdm_work` environment | Python 3.12.13; scientific-package import check passed |
+
+Three bounded failed attempts are retained as provenance:
+
+- `26573866` reached the archive stage and encountered HTTP 429;
+- `26575381` exposed that Levante's `curl 7.61.1` lacks
+  `--retry-all-errors`; and
+- `26575547` completed the dependency builds but exposed a validation-order
+  bug because `ldd` ran before the new runtime path was exported.
+
+The final script uses a version-compatible explicit retry loop, reuses
+validated Python components on restart, and exports runtime paths before link
+checks. These failures did not run CLEO model simulations.
+
 ## Pending gates
 
-- Public-key registration for `m301324`.
-- New account/project association and quotas.
-- Cross-account read permission test.
-- Destination inventory and checksum report.
-- Rebuild and smoke-test report.
+- Exact-commit application build and unit-test report.
+- One small seeded collision-box smoke report.
+- Temporary ACL revocation after all verification passes.

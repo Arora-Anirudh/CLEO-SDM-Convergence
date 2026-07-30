@@ -6,8 +6,6 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=940M
 #SBATCH --time=00:20:00
-#SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
-#SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%j.err
 
 # Use the completed 100-member Golovin matrix as a variance-and-cost pilot for
 # a non-overwriting adaptive-extension plan. This runs no CLEO executable and
