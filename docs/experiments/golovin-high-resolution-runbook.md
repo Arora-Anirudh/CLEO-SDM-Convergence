@@ -383,3 +383,43 @@ The output includes:
 
 The output path is non-overwriting. A failed calculation is moved to a
 job-specific failure directory rather than discarded.
+
+## Adaptive extension planning
+
+ADR 0008 defines a second analysis-only calculation. It uses the completed
+100-member matrix, measured member runtimes and the `practical_v2` change
+table to project balanced and cost-aware fixed final allocations. The
+projection is not new convergence evidence and does not authorize model
+compute.
+
+The wrapper requests:
+
+| resource | request |
+|---|---:|
+| account | supplied at submission (`bb1153` while temporary) |
+| partition | `shared` |
+| nodes | 1 |
+| tasks | 1 |
+| CPUs per task | 1 |
+| memory | 940 MiB |
+| walltime ceiling | 20 min |
+| CLEO model / MPI / GPU | none |
+
+Synchronize the exact reviewed commit, retain the exports from the practical
+analysis, and add:
+
+```bash
+export PRACTICAL_ANALYSIS_ROOT=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/golovin_controlled_high_resolution_convergence_v1/practical_v2
+export ADAPTIVE_RECORD_ROOT=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/golovin_controlled_high_resolution_convergence_v1
+
+sbatch \
+  --account=bb1153 \
+  --export=ALL,CLEO_SDM_PROJECT_ROOT="${CLEO_SDM_PROJECT_ROOT}",CLEO_SDM_BUILD_ROOT="${CLEO_SDM_BUILD_ROOT}",CLEO_SDM_RUN_ROOT="${CLEO_SDM_RUN_ROOT}",MATRIX_FILE="${MATRIX_FILE}",RESOLUTION_CONFIG="${RESOLUTION_CONFIG}",CURRENT_ANALYSIS_ROOT="${CURRENT_ANALYSIS_ROOT}",PRACTICAL_ANALYSIS_ROOT="${PRACTICAL_ANALYSIS_ROOT}",ADAPTIVE_RECORD_ROOT="${ADAPTIVE_RECORD_ROOT}",ADAPTIVE_LABEL=adaptive_plan_v1 \
+  scripts/levante/plan_golovin_adaptive_extension.sbatch
+```
+
+The job verifies the complete `analysis_v4` and `practical_v2` SHA-256
+manifests before reading them. Its output contains the fitted variance model,
+normal-versus-bootstrap calibration at 100 members, measured cost and storage,
+the allocation frontier, exact limiting constraints, two planning figures and
+an explicit no-model-authorization JSON record.

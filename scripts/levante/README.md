@@ -45,6 +45,9 @@ verified absolute paths.
 15. `analyze_golovin_practical_convergence.sbatch` reuses completed
     member-level fixed-bin archives and applies the non-overwriting
     diminishing-returns decision. It launches no CLEO model.
+16. `plan_golovin_adaptive_extension.sbatch` treats the completed 100-member
+    matrix as a variance-and-cost pilot and compares fixed final extension
+    allocations. It launches no CLEO model and cannot authorize new members.
 
 The permanent source and build trees are in HOME. Run-specific configuration,
 input binaries and Zarr output are stored under SCRATCH.

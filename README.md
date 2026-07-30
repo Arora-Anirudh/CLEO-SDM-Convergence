@@ -59,6 +59,12 @@ independent members at 32,768--131,072 SDs, not an automatic increase in
 resolution.
 The checksum-published calculation and its two decision figures are in
 [`practical_v2`](results/golovin_controlled_high_resolution_convergence_v1/practical_v2/).
+The prospective next-stage design is documented in
+[`ADR 0008`](docs/decisions/0008-adaptive-golovin-ensemble-extension.md).
+It uses the completed 100-member matrix as a variance-and-cost pilot, compares
+balanced and cost-aware fixed final allocations, and keeps exploratory interim
+monitoring separate from formal stopping. The planning calculation runs no
+CLEO model and explicitly authorizes no new simulation compute.
 No Long convergence experiment begins before this Golovin follow-up is
 resolved.
 
