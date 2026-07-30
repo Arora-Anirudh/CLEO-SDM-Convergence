@@ -4,6 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=4
 #SBATCH --cpus-per-task=1
+#SBATCH --hint=nomultithread
 #SBATCH --mem=3600M
 #SBATCH --time=00:10:00
 #SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
@@ -62,6 +63,7 @@ for ((worker_index = 0; worker_index < EXPECTED_WORKERS; worker_index++)); do
       --nodes=1 \
       --ntasks=1 \
       --cpus-per-task=1 \
+      --hint=nomultithread \
       bash -c '
         printf "worker=%s\\n" "${PARALLEL_PROBE_WORKER}"
         printf "hostname=%s\\n" "$(hostname)"
@@ -98,7 +100,7 @@ starts: list[int] = []
 
 for worker_index in range(expected_workers):
     output = (directory / f"worker_{worker_index}.out").read_text(encoding="utf-8")
-    match = re.search(r"^start_ns=(\\d+)$", output, flags=re.MULTILINE)
+    match = re.search(r"^start_ns=(\d+)$", output, flags=re.MULTILINE)
     if match is None:
         raise SystemExit(f"missing start timestamp for worker {worker_index}")
     starts.append(int(match.group(1)))

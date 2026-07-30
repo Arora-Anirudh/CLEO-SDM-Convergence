@@ -231,6 +231,7 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
     assert "EXPECTED_CASE_COUNT" in parallel_runner_content
     assert "GOLOVIN_CONTROLLED_PARALLEL_RESOLUTION_RUN_PASS=1" in parallel_runner_content
     assert "#SBATCH --ntasks=4" in parallel_runner_content
+    assert "#SBATCH --hint=nomultithread" in parallel_runner_content
     assert "#SBATCH --mem=3600M" in parallel_runner_content
     assert "#SBATCH --time=02:15:00" in parallel_runner_content
 
@@ -238,14 +239,17 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
         ROOT / "scripts" / "levante" / "validate_parallel_member_layout.sbatch"
     ).read_text(encoding="utf-8")
     assert "#SBATCH --ntasks=4" in parallel_probe
+    assert "#SBATCH --hint=nomultithread" in parallel_probe
     assert "#SBATCH --mem=3600M" in parallel_probe
     assert "--exclusive \\\n      --mem=0 \\\n      --mpi=pmix_v3" in parallel_probe
+    assert "--cpus-per-task=1 \\\n      --hint=nomultithread" in parallel_probe
     assert "PARALLEL_MEMBER_LAYOUT_PROBE_PASS=1" in parallel_probe
 
     collision_runner = (ROOT / "scripts" / "levante" / "run_collisions0d.sbatch").read_text(
         encoding="utf-8"
     )
     assert "srun \\\n  --exclusive \\\n  --mem=0 \\\n  --mpi=pmix_v3" in collision_runner
+    assert '--cpus-per-task="${MODEL_THREADS}" \\\n  --hint=nomultithread' in collision_runner
 
     build_runner = (ROOT / "scripts" / "levante" / "build.sbatch").read_text(encoding="utf-8")
     assert "#SBATCH --cpus-per-task=8" in build_runner

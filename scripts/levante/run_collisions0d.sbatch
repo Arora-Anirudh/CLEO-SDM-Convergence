@@ -258,6 +258,7 @@ srun \
   --mpi=pmix_v3 \
   --ntasks=1 \
   --cpus-per-task="${MODEL_THREADS}" \
+  --hint=nomultithread \
   "${executable}" \
   "${runtime_config}" \
   "${COLLISION_SEED}"

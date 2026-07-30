@@ -49,6 +49,14 @@ available to concurrent steps. This behavior and the meanings of
 `--exclusive`/`--mem=0` are documented in the
 [Slurm `srun` manual](https://slurm.schedmd.com/srun.html).
 
+Levante has two simultaneous hardware threads per physical core. The
+four-worker allocation and each nested member step therefore also use
+`--hint=nomultithread`. This prevents Slurm from packing four requested
+logical CPUs onto two physical cores, which allowed only two CPU-exclusive
+steps at once in probe job `26561873`. DKRZ recommends one task per physical
+core for typical applications and documents this exact hint in its
+[Levante batch examples](https://docs.dkrz.de/doc/levante/running-jobs/example-batch-scripts.html).
+
 For a fixed amount of model work, four concurrent one-thread members use
 approximately the same CPU-hours as four sequential members, but reduce
 elapsed time toward one quarter, subject to load imbalance and filesystem

@@ -4,6 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=4
 #SBATCH --cpus-per-task=1
+#SBATCH --hint=nomultithread
 #SBATCH --mem=3600M
 #SBATCH --time=02:15:00
 #SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
