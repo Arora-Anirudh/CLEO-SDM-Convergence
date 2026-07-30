@@ -168,22 +168,43 @@ explicit protocol amendment if accepted.
 
 ## 4. What the current result says under this proposal
 
-The current point estimates suggest \(N=32{,}768\) as the first plausible
-practical candidate:
+The rule has now been applied to the completed 100-member matrix. It selects
+**no practical resolution yet**, but it substantially narrows the unresolved
+question:
 
-- from 32,768 to 65,536 and from 65,536 to 131,072, every primary 500-bin L1
-  point change is below 0.5 percentage points;
-- \(M_0\) point changes are below 0.15 percentage points;
-- \(M_6\) point changes are below 0.48 percentage points;
-- all three resolutions pass the hard analytical-validity gate.
+- every resolution passes the hard analytical, conservation, range and
+  provenance gates;
+- the complete decision and every primary point estimate are stable between
+  80 and 100 members;
+- all 250/500/1000-bin sensitivity checks pass without an ordering reversal
+  or candidate disagreement;
+- \(M_0\) passes the one-percentage-point diminishing-returns rule for every
+  pair and time;
+- primary 500-bin L1 passes for the two upper pairs, while
+  16,384--32,768 fails at 3000 and 3600 s;
+- \(M_6\) is limiting: 32,768--65,536 and 65,536--131,072 have 3600-s point
+  changes of only 0.472 and 0.444 percentage points, but one-sided 95% upper
+  bounds of 1.752 and 1.293 percentage points.
 
-This is **not yet a pass** under the proposed rule because the proposed
-one-sided confidence bounds and all-time ensemble-prefix stability have not
-been calculated. Existing two-sided adjacent \(M_6\) intervals show that
-100 members may be marginal for a one-percentage-point claim. The correct
-next calculation is therefore an analysis-only application of this frozen
-rule to the existing 100-member data. Only its limiting rows should determine
-whether more members are needed.
+The 16,384--32,768 \(M_6\) point change at 3600 s is 1.672 percentage points.
+Because the observed change itself exceeds the one-point margin, additional
+members cannot make 16,384 SDs pass without a material shift in the ensemble
+means. Therefore 16,384 is rejected as a candidate and 32,768 is the first
+scientifically plausible, but not-yet-confirmed, practical resolution.
+
+The remaining upper-pair failures are uncertainty failures rather than point-
+estimate failures. Under a fixed-variance \(n^{-1/2}\) planning approximation,
+the 3600-s \(M_6\) rows imply roughly 590 members per resolution for the
+32,768--65,536 comparison and roughly 230 for the 65,536--131,072 comparison.
+These are planning estimates, not new convergence evidence or an authorized
+compute request; the actual extension must be staged and re-audited.
+
+Canonical compact record:
+`results/golovin_controlled_high_resolution_convergence_v1/practical_v2/`.
+Its numerical CSV products reproduce the first calculation byte for byte.
+The decision JSON differs only in the provenance path used to address the same
+checksum-identical matrix. `practical_v2` replaces clipped figure layout; it
+does not alter the method or decision.
 
 ## 5. Is the current Golovin experiment credible?
 
@@ -224,13 +245,17 @@ sensitivity before publication.
 
 ## 6. Recommended next action
 
-1. Review and freeze this proposed rule with Clara.
-2. Implement it as a new non-overwriting analysis version and apply it to the
-   existing 100-member data; run no CLEO model.
-3. If uncertainty alone blocks the decision, add independent members only at
-   32,768, 65,536 and 131,072 SDs in measured blocks.
-4. Add 262,144 SDs only if the point estimates or their upper confidence
-   bounds show that 65,536--131,072 still delivers a material improvement.
+1. Review the rule and the existing-data result with Clara before new model
+   data are generated.
+2. If accepted, add independent collision-stream members only at 32,768,
+   65,536 and 131,072 SDs in measured, restartable blocks. Recalculate the
+   decision after each block rather than committing immediately to the
+   asymptotic planning counts.
+3. Do not rerun 16,384 SDs: its limiting 3600-s point change already exceeds
+   the practical margin.
+4. Add 262,144 SDs only if the better-powered 65,536--131,072 comparison still
+   indicates a material improvement, or if 65,536 is to be tested as the
+   candidate in a new 65,536/131,072/262,144 ladder.
 5. Report the result as a **Golovin practical calibration for this box,
    initialization, timestep, diagnostics and cost model**, not as a universal
    SD-per-grid-box requirement and not as a Long/cloud-model threshold.

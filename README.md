@@ -50,7 +50,15 @@ It retains hard analytical/conservation/provenance gates and asks whether two
 successive doublings have one-sided 95% upper bounds below the configured
 minimum worthwhile improvement. It is prospective for new model data but a
 transparent reanalysis of the already inspected matrix; Clara review remains
-pending.
+pending. The first application selected no resolution: the hard validity and
+80-to-100-member stability gates pass, but late-time \(M_6\) confidence bounds
+remain above the one-percentage-point diminishing-returns margin. The point
+changes rule out 16,384 SDs and identify 32,768 SDs as the first plausible,
+not-yet-confirmed candidate. The next evidence should therefore be additional
+independent members at 32,768--131,072 SDs, not an automatic increase in
+resolution.
+The checksum-published calculation and its two decision figures are in
+[`practical_v2`](results/golovin_controlled_high_resolution_convergence_v1/practical_v2/).
 No Long convergence experiment begins before this Golovin follow-up is
 resolved.
 

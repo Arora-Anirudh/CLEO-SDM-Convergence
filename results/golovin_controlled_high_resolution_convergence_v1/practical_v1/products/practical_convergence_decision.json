@@ -1,0 +1,60 @@
+{
+  "schema": "golovin_practical_convergence_decision_v1",
+  "status": "no_practical_resolution_selected",
+  "selected_max_superdroplets": null,
+  "full_ensemble_candidate_before_stability_gate": null,
+  "tested_resolutions": [
+    16384,
+    32768,
+    65536,
+    131072
+  ],
+  "primary_log_radius_bins": 500,
+  "sensitivity_log_radius_bins": [
+    250,
+    1000
+  ],
+  "minimum_worthwhile_improvement_absolute": 0.01,
+  "minimum_worthwhile_improvement_percentage_points": 1.0,
+  "diminishing_returns_confidence_bound": "one-sided percentile-bootstrap upper bound on the absolute independent-ensemble change",
+  "requires_two_successive_doublings": true,
+  "ensemble_stability": {
+    "final_prefixes": [
+      80,
+      100
+    ],
+    "analytical_validity_decision_unchanged": true,
+    "diminishing_returns_decision_unchanged": true,
+    "selected_candidate_unchanged": true,
+    "all_primary_point_changes_within_margin": true,
+    "ensemble_sufficiency_pass": true
+  },
+  "full_primary_decision": {
+    "ensemble_size": 100,
+    "log_radius_bins": 500,
+    "selected_candidate": null,
+    "resolution_analytical_validity_pass": {
+      "16384": true,
+      "32768": true,
+      "65536": true,
+      "131072": true
+    },
+    "adjacent_pair_diminishing_returns_pass": {
+      "16384-32768": false,
+      "32768-65536": false,
+      "65536-131072": false
+    }
+  },
+  "bin_sensitivity_requires_investigation": false,
+  "sensitivity_bins_are_diagnostic_only": true,
+  "prospective_scope": "prospective for future model data; transparent reanalysis of an already inspected 100-member matrix",
+  "clara_review_status": "pending",
+  "independent_ensemble_warning": "Different resolutions use independent collision ensembles; member indices are reproducible prefixes, not paired histories.",
+  "combined_member_time": "../analysis_v4/ensemble_summary/all_member_time_diagnostics.csv",
+  "combined_member_time_path_base": "analysis_root",
+  "combined_member_time_sha256": "46b171a3b15e3ae9eab48b03967d4f22b218602f327e9a140ae1f87f99f178bf",
+  "matrix_file": "/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/experiments/golovin_controlled_high_resolution_convergence_v1/cases.tsv",
+  "matrix_sha256": "c94f9f2e0c1939491dd992069c2b3761e34ee026a2f4b759c0972cebb14e4624",
+  "config": "/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/config/golovin_controlled_high_resolution_convergence.yaml",
+  "config_sha256": "793e11a86a0a6d23b3b1e7cf9c7483c79ee9286e7e85ffc48649f8ca3eb91d06"
+}
