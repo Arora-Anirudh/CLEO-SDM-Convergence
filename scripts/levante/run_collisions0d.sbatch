@@ -250,8 +250,11 @@ fi
 
 echo "--- run CLEO collisions0d (${KERNEL}) ---"
 cd "${run_directory}"
+# Keep the one-rank step CPU-exclusive without reserving the full job-memory
+# allocation for every concurrent member step.
 srun \
   --exclusive \
+  --mem=0 \
   --mpi=pmix_v3 \
   --ntasks=1 \
   --cpus-per-task="${MODEL_THREADS}" \

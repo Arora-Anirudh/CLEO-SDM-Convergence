@@ -36,8 +36,18 @@ The resolution screen requires independent collision RNG streams. Those
 members have no data dependency, so they are embarrassingly parallel. The
 project's restartable runner launches up to four workers, each with a
 disjoint subset of the immutable matrix. Each worker calls `srun` for one
-rank/one thread with `--exclusive`; Slurm binds it to a separate allocated
-logical CPU.
+rank/one thread with `--exclusive --mem=0`; Slurm binds it to a separate
+allocated logical CPU without assigning the complete allocation memory to
+each member step.
+
+The `--mem=0` is important on this specific four-worker layout. Without it,
+each nested `srun` inherited the allocation's full 3.6-GiB memory request;
+Slurm therefore allowed only one such step at a time even though four CPUs
+were available. It does not change the model's memory limit: the four steps
+share the job allocation's 3.6 GiB. It only makes that shared allocation
+available to concurrent steps. This behavior and the meanings of
+`--exclusive`/`--mem=0` are documented in the
+[Slurm `srun` manual](https://slurm.schedmd.com/srun.html).
 
 For a fixed amount of model work, four concurrent one-thread members use
 approximately the same CPU-hours as four sequential members, but reduce

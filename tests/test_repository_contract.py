@@ -234,10 +234,18 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
     assert "#SBATCH --mem=3600M" in parallel_runner_content
     assert "#SBATCH --time=02:15:00" in parallel_runner_content
 
+    parallel_probe = (
+        ROOT / "scripts" / "levante" / "validate_parallel_member_layout.sbatch"
+    ).read_text(encoding="utf-8")
+    assert "#SBATCH --ntasks=4" in parallel_probe
+    assert "#SBATCH --mem=3600M" in parallel_probe
+    assert "--exclusive \\\n      --mem=0 \\\n      --mpi=pmix_v3" in parallel_probe
+    assert "PARALLEL_MEMBER_LAYOUT_PROBE_PASS=1" in parallel_probe
+
     collision_runner = (ROOT / "scripts" / "levante" / "run_collisions0d.sbatch").read_text(
         encoding="utf-8"
     )
-    assert "srun \\\n  --exclusive" in collision_runner
+    assert "srun \\\n  --exclusive \\\n  --mem=0 \\\n  --mpi=pmix_v3" in collision_runner
 
     build_runner = (ROOT / "scripts" / "levante" / "build.sbatch").read_text(encoding="utf-8")
     assert "#SBATCH --cpus-per-task=8" in build_runner
