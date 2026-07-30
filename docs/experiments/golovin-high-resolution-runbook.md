@@ -423,3 +423,36 @@ manifests before reading them. Its output contains the fitted variance model,
 normal-versus-bootstrap calibration at 100 members, measured cost and storage,
 the allocation frontier, exact limiting constraints, two planning figures and
 an explicit no-model-authorization JSON record.
+
+## Existing-data variance-scaling validation
+
+Before spending model compute on an adaptive extension, validate the
+planner's \(\operatorname{Var}(\hat q_n)=a/n\) approximation with the existing
+40/60/80/100-member prefixes. This is one serial Python analysis:
+
+| resource | request |
+|---|---:|
+| account | supplied at submission (`bb1153` while temporary) |
+| partition | `shared` |
+| nodes | 1 |
+| tasks | 1 |
+| CPUs per task | 1 |
+| memory | 940 MiB |
+| walltime ceiling | 20 min |
+| CLEO model / MPI / GPU / new Zarr | none |
+
+Retain the high-resolution exports above and add:
+
+```bash
+export VARIANCE_RECORD_ROOT=/home/b/b383673/SDM/CLEO-SDM-Convergence-records/golovin_controlled_high_resolution_convergence_v1
+
+sbatch \
+  --account=bb1153 \
+  --export=ALL,CLEO_SDM_PROJECT_ROOT="${CLEO_SDM_PROJECT_ROOT}",CLEO_SDM_BUILD_ROOT="${CLEO_SDM_BUILD_ROOT}",CLEO_SDM_RUN_ROOT="${CLEO_SDM_RUN_ROOT}",MATRIX_FILE="${MATRIX_FILE}",RESOLUTION_CONFIG="${RESOLUTION_CONFIG}",CURRENT_ANALYSIS_ROOT="${CURRENT_ANALYSIS_ROOT}",VARIANCE_RECORD_ROOT="${VARIANCE_RECORD_ROOT}",VARIANCE_LABEL=variance_scaling_v1 \
+  scripts/levante/analyze_golovin_variance_scaling.sbatch
+```
+
+The non-overwriting output contains prefix-wise bootstrap variances, fitted
+log-variance slopes, variance-coefficient stability, normal-versus-percentile
+calibration, three figures and an explicit no-compute-authorization JSON
+record. It is diagnostic rather than a post-hoc formal pass/fail gate.

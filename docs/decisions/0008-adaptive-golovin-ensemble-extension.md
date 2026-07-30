@@ -224,3 +224,23 @@ nonlinear \(M_6\) and L1 estimators. If it is not stable, the fixed-design
 projection must be revised; if it is stable, the researcher can weigh the
 explicit 80%-assurance cost against a prospectively justified relaxation of
 the minimum-worthwhile-improvement rule.
+
+### Existing-data model check
+
+Before any new member is generated, apply the planner to the nested
+40/60/80/100-member prefixes of the completed pool. At every registered time
+and active resolution, recompute the actual nonlinear L1 estimator and the
+scalar \(M_0\) and \(M_6\) estimators under 10,000 bootstrap resamples. Report:
+
+1. the fitted slope of
+   \(\log\{\operatorname{Var}(\hat q_n)\}\) against \(\log n\);
+2. the stability of \(n\operatorname{Var}(\hat q_n)\);
+3. the difference between the normal projected upper bound and the
+   independently bootstrapped percentile bound.
+
+This is a diagnostic, not a new acceptance gate. A slope near \(-1\), a
+roughly stable variance coefficient and small normal-versus-percentile
+differences would support the fixed-design approximation. The literature does
+not provide a universal numerical pass threshold for these project-specific
+nonlinear estimators, so the output must be interpreted quantitatively and
+published without retrofitting a binary rule after seeing the result.

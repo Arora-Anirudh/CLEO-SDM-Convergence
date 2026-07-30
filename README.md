@@ -69,6 +69,11 @@ CLEO model and explicitly authorizes no new simulation compute. The canonical
 [`adaptive_plan_v5`](results/golovin_controlled_high_resolution_convergence_v1/adaptive_plan_v5/);
 its large projected requirement motivates validating the \(1/n\) variance
 model from existing member prefixes before any new model submission.
+That non-model diagnostic is implemented by
+[`analyze_golovin_variance_scaling.py`](scripts/analyze_golovin_variance_scaling.py).
+It reports fitted variance slopes, \(n\,\mathrm{Var}(\hat q_n)\) stability and
+normal-versus-percentile calibration without imposing an invented universal
+pass threshold.
 No Long convergence experiment begins before this Golovin follow-up is
 resolved.
 

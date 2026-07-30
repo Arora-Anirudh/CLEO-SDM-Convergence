@@ -48,6 +48,9 @@ verified absolute paths.
 16. `plan_golovin_adaptive_extension.sbatch` treats the completed 100-member
     matrix as a variance-and-cost pilot and compares fixed final extension
     allocations. It launches no CLEO model and cannot authorize new members.
+17. `analyze_golovin_variance_scaling.sbatch` checks the planner's \(1/n\)
+    variance approximation across existing 40/60/80/100-member prefixes. It
+    launches no CLEO model and cannot authorize new members.
 
 The permanent source and build trees are in HOME. Run-specific configuration,
 input binaries and Zarr output are stored under SCRATCH.

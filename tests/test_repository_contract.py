@@ -72,6 +72,7 @@ def test_levante_scripts_are_project_owned_and_account_neutral() -> None:
         "analyze_golovin_resolution_convergence.sbatch",
         "analyze_golovin_practical_convergence.sbatch",
         "plan_golovin_adaptive_extension.sbatch",
+        "analyze_golovin_variance_scaling.sbatch",
         "validate_controlled_initialization.sbatch",
         "validate_collision_seed_replay.sbatch",
     }
@@ -100,6 +101,7 @@ def test_slurm_entrypoints_resolve_common_from_explicit_project_root() -> None:
         "analyze_golovin_resolution_convergence.sbatch",
         "analyze_golovin_practical_convergence.sbatch",
         "plan_golovin_adaptive_extension.sbatch",
+        "analyze_golovin_variance_scaling.sbatch",
     ):
         content = (levante_directory / script_name).read_text(encoding="utf-8")
         expected = 'SCRIPT_DIR="${CLEO_SDM_PROJECT_ROOT}/scripts/levante"'
@@ -265,6 +267,15 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
     assert "#SBATCH --time=00:20:00" in adaptive_planner
     assert "srun" not in adaptive_planner
     assert "GOLOVIN_ADAPTIVE_EXTENSION_PLAN_PASS=1" in adaptive_planner
+
+    variance_scaling = (
+        ROOT / "scripts" / "levante" / "analyze_golovin_variance_scaling.sbatch"
+    ).read_text(encoding="utf-8")
+    assert "#SBATCH --cpus-per-task=1" in variance_scaling
+    assert "#SBATCH --mem=940M" in variance_scaling
+    assert "#SBATCH --time=00:20:00" in variance_scaling
+    assert "srun" not in variance_scaling
+    assert "GOLOVIN_VARIANCE_SCALING_ANALYSIS_PASS=1" in variance_scaling
 
 
 def test_collision_seed_is_required_and_recorded() -> None:
