@@ -194,3 +194,33 @@ The non-overwriting planner publishes:
 These are planning artifacts. They neither add independent stochastic evidence
 nor change the current conclusion that no practical Golovin resolution has
 yet been selected.
+
+## 7. Applied result
+
+The first checksum-published calculation (`adaptive_plan_v4`) intentionally
+reported the boundary-touching expected-bound design. It found a
+measured-cost allocation of 675/440/115 total members at
+32,768/65,536/131,072 SDs, requiring 41.65 projected additional CPU-hours.
+Because its two limiting \(M_6\) bounds were almost exactly 0.01, it implied
+only about 50% design assurance and was not used to authorize model compute.
+
+The amended canonical calculation (`adaptive_plan_v5`) targets 80% assurance.
+Analysis-only Levante job `26556019` completed successfully and found:
+
+| design | total members at 32,768 / 65,536 / 131,072 | new members | projected CPU-hours | raw Zarr |
+|---|---:|---:|---:|---:|
+| balanced | 1,325 / 1,325 / 1,325 | 3,675 | 247.71 | 257.26 GB |
+| measured-cost optimized | 1,590 / 960 / 270 | 2,520 | 121.07 | 176.40 GB |
+
+Late-time \(M_6\) remains limiting for both adjacent comparisons. Distribution
+L1 and \(M_0\) are comfortably inside the planning margin at those
+allocations.
+
+The magnitude of the assurance-adjusted result is itself a decision-relevant
+finding. No model job is authorized. Before spending 121 CPU-hours, use the
+existing 40/60/80/100-member prefixes to test whether the fitted
+\(\operatorname{Var}(\hat q_n)=a/n\) approximation is stable for the limiting
+nonlinear \(M_6\) and L1 estimators. If it is not stable, the fixed-design
+projection must be revised; if it is stable, the researcher can weigh the
+explicit 80%-assurance cost against a prospectively justified relaxation of
+the minimum-worthwhile-improvement rule.

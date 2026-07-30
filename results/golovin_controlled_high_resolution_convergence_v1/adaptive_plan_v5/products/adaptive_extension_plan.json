@@ -1,0 +1,52 @@
+{
+  "schema": "golovin_adaptive_extension_plan_v1",
+  "status": "fixed_final_designs_projected",
+  "candidate_max_superdroplets": 32768,
+  "active_max_superdroplets": [
+    32768,
+    65536,
+    131072
+  ],
+  "current_members_per_resolution": 100,
+  "balanced_fixed_final_allocation": {
+    "32768": 1325,
+    "65536": 1325,
+    "131072": 1325
+  },
+  "cost_optimized_fixed_final_allocation": {
+    "32768": 1590,
+    "65536": 960,
+    "131072": 270
+  },
+  "recommended_first_variance_update_target": {
+    "32768": 150,
+    "65536": 150,
+    "131072": 150
+  },
+  "first_update_scientific_role": "variance-model validation only; not a formal unadjusted early-stopping look",
+  "projection_assumptions": [
+    "observed pilot point estimates remain fixed",
+    "per-member variance coefficients remain fixed",
+    "independent ensembles imply additive variance contributions",
+    "normal one-sided approximation replaces the final percentile bootstrap",
+    "the fixed design targets 80% probability of satisfying each projected bound",
+    "measured job wall seconds are used as a model-compute cost proxy"
+  ],
+  "design_assurance_probability": 0.8,
+  "formal_acceptance_warning": "Freeze one final allocation before inspecting new outcomes, or prospectively adopt alpha spending/confidence sequences for formal interim stopping.",
+  "unequal_allocation_warning": "The current practical analyzer uses common member prefixes. A cost-optimized unequal allocation requires a reviewed protocol and analyzer amendment.",
+  "new_model_compute_authorized": false,
+  "combined_member_time": "../analysis_v4/ensemble_summary/all_member_time_diagnostics.csv",
+  "combined_member_time_path_base": "analysis_root",
+  "combined_member_time_sha256": "46b171a3b15e3ae9eab48b03967d4f22b218602f327e9a140ae1f87f99f178bf",
+  "matrix_file": "/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/experiments/golovin_controlled_high_resolution_convergence_v1/cases.tsv",
+  "matrix_sha256": "c94f9f2e0c1939491dd992069c2b3761e34ee026a2f4b759c0972cebb14e4624",
+  "config": "/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/config/golovin_controlled_high_resolution_convergence.yaml",
+  "config_sha256": "7a17aee60d783c65f45c603b8cc200ab3810bbd5e8f2c5bdbaf7a459b4359eab",
+  "model_inventory": "../analysis_v4/model_inventory.json",
+  "model_inventory_path_base": "analysis_root",
+  "model_inventory_sha256": "b1561b7429678ed7aea35f677aad8dfbe8bf8d4ae0edb4794c617333f41480ce",
+  "practical_change_table": "../practical_v2/products/diminishing_returns_by_prefix.csv",
+  "practical_change_table_path_base": "analysis_root",
+  "practical_change_table_sha256": "c9c13aff036797195ca7e50a56a7d17ad1883768531b5193c009534441fb5a43"
+}

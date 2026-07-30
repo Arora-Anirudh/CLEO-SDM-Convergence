@@ -64,7 +64,11 @@ The prospective next-stage design is documented in
 It uses the completed 100-member matrix as a variance-and-cost pilot, compares
 balanced and cost-aware fixed final allocations, and keeps exploratory interim
 monitoring separate from formal stopping. The planning calculation runs no
-CLEO model and explicitly authorizes no new simulation compute.
+CLEO model and explicitly authorizes no new simulation compute. The canonical
+80%-assurance calculation is
+[`adaptive_plan_v5`](results/golovin_controlled_high_resolution_convergence_v1/adaptive_plan_v5/);
+its large projected requirement motivates validating the \(1/n\) variance
+model from existing member prefixes before any new model submission.
 No Long convergence experiment begins before this Golovin follow-up is
 resolved.
 
