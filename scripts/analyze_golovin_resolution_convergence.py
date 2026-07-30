@@ -401,6 +401,13 @@ def analyze(
     validate_inputs(rows, matrix_rows, config)
     diagnostics = config["diagnostics"]
     criteria = config["convergence_criteria"]
+    analysis_protocol = config.get("analysis_protocol", {})
+    formal_claim_permitted = analysis_protocol.get(
+        "formal_convergence_claim_permitted",
+        True,
+    )
+    if type(formal_claim_permitted) is not bool:
+        raise ValueError("formal_convergence_claim_permitted must be boolean")
     confidence_level = float(diagnostics["confidence_level"])
     resamples = int(diagnostics["bootstrap_resamples"])
     base_seed = int(diagnostics["bootstrap_seed"])
@@ -409,10 +416,10 @@ def analyze(
         raise ValueError("convergence must pass at every registered decision time")
     if criteria["require_next_level_confirmation"] is not True:
         raise ValueError("the registered N/2N/4N confirmation rule is required")
-    if (
-        diagnostics["bin_robustness_policy"]
-        != "require_resolution_decision_at_all_registered_bin_counts"
-    ):
+    if diagnostics["bin_robustness_policy"] not in {
+        "require_resolution_decision_at_all_registered_bin_counts",
+        "diagnostic_only",
+    }:
         raise ValueError("unsupported resolution bin-robustness policy")
 
     decision_rows = [
@@ -661,15 +668,22 @@ def analyze(
         ):
             accepted.append(resolution)
 
-    selected = min(accepted) if accepted else None
+    strict_selected = min(accepted) if accepted else None
+    selected = strict_selected if formal_claim_permitted else None
     decision = {
         "status": (
             "selected_controlled_resolution"
-            if selected is not None
-            else "no_resolution_accepted_in_initial_matrix"
+            if strict_selected is not None and formal_claim_permitted
+            else (
+                "exploratory_resolution_screen_no_formal_selection"
+                if not formal_claim_permitted
+                else "no_resolution_accepted_in_initial_matrix"
+            )
         ),
         "schema": "golovin_controlled_resolution_decision_v1",
         "selected_max_superdroplets": selected,
+        "formal_convergence_claim_permitted": formal_claim_permitted,
+        "strict_selected_max_superdroplets_if_formal": strict_selected,
         "tested_resolutions": resolutions,
         "members_per_resolution": {
             str(key): len(value) for key, value in members_by_resolution.items()
@@ -1053,6 +1067,7 @@ def plot_ensemble_size_sensitivity(
             low = np.asarray([float(row["subset_95pct_low"]) for row in selected]) * 100.0
             high = np.asarray([float(row["subset_95pct_high"]) for row in selected]) * 100.0
             full_estimate = float(selected[0]["full_ensemble_estimate"]) * 100.0
+            complete_pool_size = max(int(row["ensemble_size"]) for row in selected)
 
             axis.fill_between(
                 ensemble_size,
@@ -1074,7 +1089,9 @@ def plot_ensemble_size_sensitivity(
                 color="#d95f02",
                 linestyle="--",
                 linewidth=1.2,
-                label="all 100 members" if column == 0 and row_index == 0 else None,
+                label=(
+                    f"all {complete_pool_size} members" if column == 0 and row_index == 0 else None
+                ),
             )
             if signed:
                 axis.axhline(0.0, color="black", linewidth=0.7)

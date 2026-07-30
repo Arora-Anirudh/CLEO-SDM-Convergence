@@ -185,6 +185,28 @@ def test_resolution_analysis_does_not_accept_failed_smallest_level() -> None:
     assert decision["resolution_analytical_and_precision_pass"]["512"] is False
 
 
+def test_exploratory_screen_does_not_make_a_formal_selection() -> None:
+    module = load_module()
+    rows, matrix_rows, config, archives = synthetic_inputs()
+    config["analysis_protocol"] = {
+        "classification": "exploratory_fixed_10_member_screen",
+        "formal_convergence_claim_permitted": False,
+    }
+    config["diagnostics"]["bin_robustness_policy"] = "diagnostic_only"
+
+    _, _, decision = module.analyze(
+        rows=rows,
+        matrix_rows=matrix_rows,
+        config=config,
+        archives=archives,
+    )
+
+    assert decision["status"] == "exploratory_resolution_screen_no_formal_selection"
+    assert decision["selected_max_superdroplets"] is None
+    assert decision["strict_selected_max_superdroplets_if_formal"] == 512
+    assert decision["formal_convergence_claim_permitted"] is False
+
+
 def test_resolution_plot_accepts_bootstrap_interval_excluding_estimate(
     tmp_path: Path,
 ) -> None:

@@ -27,11 +27,11 @@ The first application is `collisions0d`:
 - a reproducible Python initializer based on Clara Bayley's
   [`PerformanceTestingCLEO/src/collisions0d`](https://github.com/yoctoyotta1024/PerformanceTestingCLEO/tree/main/src/collisions0d).
 
-The repository contains the completed first controlled Golovin
-superdroplet-resolution experiment, but it does **not** yet contain a
-formally accepted resolution or a recommended number of superdroplets. The
-512–16,384 by 20 matrix selected no resolution under the registered all-time
-distribution and adjacent-equivalence rules.
+The repository contains completed controlled Golovin resolution experiments,
+but it does **not** yet contain a formally accepted resolution or a
+transferable recommended number of superdroplets. The first 512–16,384 by 20
+matrix and the fresh 16,384–131,072 by 100 matrix both left the strict
+all-time distribution-equivalence rule unresolved.
 
 The pre-registered scientific design for the first permanent-repository
 convergence study is the
@@ -54,9 +54,9 @@ pending. The first application selected no resolution: the hard validity and
 80-to-100-member stability gates pass, but late-time \(M_6\) confidence bounds
 remain above the one-percentage-point diminishing-returns margin. The point
 changes rule out 16,384 SDs and identify 32,768 SDs as the first plausible,
-not-yet-confirmed candidate. The next evidence should therefore be additional
-independent members at 32,768--131,072 SDs, not an automatic increase in
-resolution.
+not-yet-confirmed candidate. The manuscript-ready distinction between a
+practical effect-size plateau and an unresolved strict equivalence result is
+in [`Golovin convergence evidence`](docs/manuscript/golovin-convergence-evidence.md).
 The checksum-published calculation and its two decision figures are in
 [`practical_v2`](results/golovin_controlled_high_resolution_convergence_v1/practical_v2/).
 The prospective next-stage design is documented in
@@ -77,14 +77,19 @@ pass threshold. The checksum-published
 [`variance_scaling_v1`](results/golovin_controlled_high_resolution_convergence_v1/variance_scaling_v1/)
 result supports the \(1/n\) approximation for the limiting late-time \(M_6\)
 rows but finds that a normal approximation is optimistic for nonlinear L1.
-No further Golovin model compute is authorized from this diagnostic.
-No Long convergence experiment begins before this Golovin follow-up is
-resolved.
+No further Golovin member is authorized merely to force the strict rule. No
+Long convergence experiment begins before its distinct physical setup and
+stopping protocol are registered. An explicitly exploratory, fixed-10-member
+Golovin screen is prepared separately to measure broad resolution and
+computational scaling through 524,288 SDs; it cannot alter the formal
+100-member conclusion. See the
+[`fixed-10 screen design`](docs/experiments/golovin-fixed10-high-resolution-screen.md)
+and [`collisions0d parallel-execution note`](docs/implementation/collisions0d-parallelism.md).
 
-The registered follow-up configuration is
+The completed high-resolution configuration is
 [`golovin_controlled_high_resolution_convergence.yaml`](config/golovin_controlled_high_resolution_convergence.yaml):
 16,384, 32,768, 65,536 and 131,072 superdroplets with 100 newly generated
-collision-stream members per level. It reuses no raw member, collision seed,
+collision-stream members per level. It reused no raw member, collision seed,
 run label or controlled-bundle label from the first matrix.
 
 The local Stage-0 measurement, provenance and non-destructive matrix tooling is
