@@ -200,8 +200,43 @@ The final script uses a version-compatible explicit retry loop, reuses
 validated Python components on restart, and exports runtime paths before link
 checks. These failures did not run CLEO model simulations.
 
-## Pending gates
+## Application and smoke validation
 
-- Exact-commit application build and unit-test report.
-- One small seeded collision-box smoke report.
-- Temporary ACL revocation after all verification passes.
+The account-neutral workflow was committed and pushed as
+`12dabc65a9d115ce2668746f95790667fc5089c5`. A clean detached worktree at that
+exact commit was used for all final validation.
+
+Build job `26575663` completed `0:0` in 1:53 with eight requested and allocated
+CPUs, 4 GiB requested memory and 1,397,988 KiB maximum batch RSS. It recorded
+`BUILD_PASS=1` and produced both `collisions0d_golovin` and
+`collisions0d_long`. The build manifest confirms the exact project commit,
+pinned CLEO commit and collision-seed patch checksum.
+
+Migration-gate job `26575749` completed `0:0` in 55 seconds:
+
+- all 99 repository tests passed in 30.10 seconds;
+- one serial, seeded, 1,024-SD Golovin box ran from 0 to 600 seconds;
+- initialization and timestepping both passed;
+- the model duration was 1.3765 seconds;
+- `RUN_PASS=1` and a complete manifest/Zarr checksum were written; and
+- stderr was empty.
+
+The smoke is a software/path/provenance check only. It is not a convergence
+experiment and does not change any Golovin scientific conclusion.
+
+## Completion and old-account boundary
+
+After every transfer, software, build, test and smoke gate passed, the named
+`m301324` ACL was removed recursively from the two old SDM trees and from the
+old HOME/SCRATCH parent directories. Fresh-connection checks return
+`Permission denied` to `m301324` for both old roots. The old trees remain
+present and owned by `b383673`; no old data were deleted.
+
+The migration is complete. Future SDM work uses:
+
+```text
+SSH alias:     levante-m301324
+Slurm account: mh0731
+HOME root:     /home/m/m301324/SDM
+SCRATCH root:  /scratch/m/m301324/SDM
+```
