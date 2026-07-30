@@ -196,3 +196,9 @@ def test_no_feasible_design_still_writes_auditable_outputs(tmp_path: Path) -> No
     assert csv_path.read_text(encoding="utf-8") == "allocation,cost\n"
     assert figure_path.is_file()
     assert figure_path.stat().st_size > 0
+
+
+def test_main_reads_the_reviewed_matrix_as_tsv() -> None:
+    source = PLANNER_SCRIPT.read_text(encoding="utf-8")
+
+    assert 'read_csv(args.matrix_file, delimiter="\\t")' in source

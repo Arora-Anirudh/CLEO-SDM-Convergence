@@ -846,7 +846,7 @@ def main() -> None:
         raise FileExistsError(args.output_directory)
 
     rows = read_csv(args.combined_member_time)
-    matrix_rows = read_csv(args.matrix_file)
+    matrix_rows = read_csv(args.matrix_file, delimiter="\t")
     config = load_yaml(args.config)
     settings = validate_planning_settings(config)
     active = [int(value) for value in settings["active_max_superdroplets"]]
