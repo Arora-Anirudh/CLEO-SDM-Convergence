@@ -244,3 +244,34 @@ differences would support the fixed-design approximation. The literature does
 not provide a universal numerical pass threshold for these project-specific
 nonlinear estimators, so the output must be interpreted quantitatively and
 published without retrofitting a binary rule after seeing the result.
+
+### Applied variance-scaling result
+
+Checksum-published `variance_scaling_v1` reused the existing data in
+analysis-only Levante job `26556375`. At 3600 s:
+
+- \(M_6\) fitted log-variance slopes were -0.84, -1.10 and -0.93 at
+  32,768/65,536/131,072 SDs;
+- the corresponding \(n\operatorname{Var}(\hat q_n)\) maximum-to-minimum
+  ratios over 40/60/80/100 members were 1.20, 1.10 and 1.13;
+- the normal and percentile-bootstrap late-time \(M_6\) upper bounds differed
+  by at most 0.0051 percentage points at 100 members.
+
+These results support the planner's limiting \(M_6\) variance approximation.
+They do not support replacing the bootstrap everywhere: for L1, the normal
+upper bound was lower than the percentile-bootstrap bound by 0.05 to 0.31
+percentage points across the inspected rows.
+
+The evidence therefore does not justify a cheap variance-validation model
+wave, and it does not make the 121-CPU-hour fixed design smaller. Do not launch
+new Golovin members merely to force the one-percentage-point \(M_6\)
+equivalence gate. Report the current result in three layers:
+
+1. analytical validity passes at all tested high resolutions;
+2. point-estimated changes across the final two doublings are below one
+   percentage point;
+3. strict one-sided \(M_6\) equivalence remains statistically unresolved at
+   100 members, with the explicit assurance-adjusted cost published.
+
+This is an evidence synthesis, not a declaration that the strict rule passed.
+No new Golovin or Long model compute is authorized by this ADR.

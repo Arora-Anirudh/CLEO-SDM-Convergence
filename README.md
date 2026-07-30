@@ -73,7 +73,11 @@ That non-model diagnostic is implemented by
 [`analyze_golovin_variance_scaling.py`](scripts/analyze_golovin_variance_scaling.py).
 It reports fitted variance slopes, \(n\,\mathrm{Var}(\hat q_n)\) stability and
 normal-versus-percentile calibration without imposing an invented universal
-pass threshold.
+pass threshold. The checksum-published
+[`variance_scaling_v1`](results/golovin_controlled_high_resolution_convergence_v1/variance_scaling_v1/)
+result supports the \(1/n\) approximation for the limiting late-time \(M_6\)
+rows but finds that a normal approximation is optimistic for nonlinear L1.
+No further Golovin model compute is authorized from this diagnostic.
 No Long convergence experiment begins before this Golovin follow-up is
 resolved.
 
