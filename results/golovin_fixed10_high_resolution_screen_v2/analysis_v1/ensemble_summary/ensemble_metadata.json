@@ -1,0 +1,663 @@
+{
+  "status": "completed",
+  "run_root": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2",
+  "member_count": 80,
+  "member_time_row_count": 1040,
+  "confidence_level": 0.95,
+  "bootstrap_resamples": 10000,
+  "bootstrap_seed": 20260729,
+  "matrix_file": "/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/experiments/golovin_fixed10_high_resolution_screen_v2/cases.tsv",
+  "matrix_sha256": "c423686b64d33f035857e9584550e75dc5efe3bec43f2fbd98ccf3eee5e94a93",
+  "onset_status_counts": {
+    "crossed_between_outputs": 80
+  },
+  "sources": [
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "91e1da183d0286ed3d01a4359ea456a21120fa0f7fa96ecd6709c2f9c0614a19"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "36df6b218daaead03518bec4f6ec671be09cf07678317f2d5ec33f6f2a8ae3a3"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "9699be2a7b6c8b1d2948e0592edbb92b270f28d8014b0f49b5445876d09e818c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "563da6ef3c2e3a72e47d4ec7fcd9e2f764b03818d05d04c4a5b85cc792250d2a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "4bf9b4d7d79b1bbab605ce488cf2435c02add25f556df7478e5ddc002dd6fe54"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m005/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "a1ec62b4f5600ea21d76abb13f44f41221dcfc948fdd98dbdc5f4d74dd65ffd1"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m006/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b09a996c215d23ee808a8c52a0c96eb019becfff9fe25761bb3659e34d84ae97"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m007/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "eac3f76d46d1fc22f4303f478daba233a1b514b832f5fca08ad8919879d966ab"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m008/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "1f6f3132f560db387026011584a64f815735f4d7a4555d4947d74a449619501d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m009/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "635e14af4621498bb68c85702b9d4900b7f6ab4b7d9e997b6edee979ff1dca55"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "078cf465fc181c64d5d2b9cf0cd42359a41dc2e6f233b76833363a71a92ef13b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "63fe6f143f9dc881c596f976fb39ed568157fb6b3fa2602644ce5863ac1285ec"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "3792709c166739f1a282c547f513635fbf6c014012de314e8e05d369f5641fcf"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "0d0f91a8d1de17f8f8951a0de37214b86ef151aa23d8019ae71c513ce4230391"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b134105b8e4ad6ec7e276dda9073b9782010c7c01adb206dbe78a87181e6838a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m005/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "24a7f2756cb4d35e50f848492e44d9c6494d4f794efc89017207438b666d2a4b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m006/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "2dc66b618217ab80aee67c09c91ceca38fed2faa3234b3b68f81473682208339"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m007/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "fd658e38c168d61c63b0a7b2101c1dfcf4c7c733d32ad6bb092869be1f0921cd"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m008/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "1d292e164805f1a73b227add8a754979942f8bb312fbf76067746302223ec4c5"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m009/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "3c19d554192344cb906b021a39274cff52801f8ee1b6718644b55ce0691ff641"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "a0111c34332d80fe7a41d5c0258e25f1b4da060be7b63a53630bad98a05133b1"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "bd0978f9e9f515ee2b4774c7aad9e5fa90e37a45adc76d15b76c53fd907a15fe"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "8b3b19d96e9848519f71966a5ae6926ef731589982d71d6444fdec9af0f21889"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "393b537f60457c798bc7b59742ad6d0240dc657a374a34c331454f0544f176ae"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "04b6dd4c9b406defb4c77dc99ec19f6d8794417c45501a845d37f471911ff722"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m005/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "235d833c9d4aad5e18306f610c7b5b92c9c875c870e61b4d46842134d0d26c31"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m006/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "c4061298a4d13cf498c3baa23ba84bb8ae2ae032c435ff893236e7025a97bce4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m007/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "3072acb56e4e6227802d45fd72ad5ccdf786f315c1a270a89e5d19651da0ea5f"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m008/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "af0db4da021d0722c5746e749a79a35a39afeb7397153f3ce9a1d8d6a0588152"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m009/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "518b90d7cc75889b8ab2e30e462521cf39e5348d81b90f0fe8017c90d7a7dee8"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "4beaaaa78077a3fb4ffad348c8ce5681687d6e69230e6df2b45074e39271aa08"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "c3810f0bc794072b123030b1de6f0fdf49b7ac63a639d5b61b201bbbf59af9b3"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "900110986ecbf8160a956235234e4aea41b1124714d5670785d9d261cf1f2c87"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "3a1ae25effc850e051a433a87990fb59263bb9b44c58314bdd4c58bd91be1d0e"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "86373a9c5ec723f5d2f9a5253acd0e513f379c58c6f8db09367d3ccf84cc8b96"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m005/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "a0a4785b0c22b13358d06e3b64e5cf58e90707ad99995a59d129186e9ba31f8f"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m006/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b352ecae9ee045d34d5faa69933ce528881d63dbc428445349dc980b69e3efa6"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m007/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "9d1830f0e0e989cbcf34d477ae6bdbfdb4723661e12536e67c7047329dc4defb"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m008/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "036ec7ef0666ac40e938df77d258ad637f8893e7b7985f951a7f781025b3d710"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m009/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "386316d9c48afa647a2b8957b0fac475451979dabcbf9572bbb3e610728fb796"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b1b2cbc4edb00692d27c7b4e26965f56e01ad5e34b8809fb8e62a07a5059388a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "606c95da6f1d81b9332653d1cd92ae76ec069506165935381e84e83c2823f46e"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "90abeb6ee4c51d4e3bf4a6acdbc44fc62f0aaab845eeee4deb58eb48f21440f4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "c190e561a5dc31834f15a9d593acf0a0a4bcce9c9e7221aefa8dbfdcdc50f8a6"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "5413cbc8e45996606f6485912c36c8f839d9c20c936ed9e94aa868c1c263459a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m005/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "3e1881532f30cc59459cf030b7f1be376376c014b7ad7f5633ab2b7fb6ba71c5"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m006/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "ba07b42a57f64475b97341886d7906c7108c0389c17928a93fa419314659a68a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m007/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "c133b50397faa0f5a338a0d45edf7c07ef268013a2557b0e78eda29748f2be0d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m008/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "93d7bf3cc1274070bb8239d2aaef407b806f8408c391f34bd931fe4978122a8a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m009/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "bdf88f4c78613ea026b49eaf51c93059fa1b4ace22a334298f4453669472f8db"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "a0fa66f1a21875e51c5c51c8e1464198f29e231b6fe8186876e4734dab2ed65b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "26bf29b9ea10a48690d0554935251ab42a7ea752a793a5bd3751889546cc0849"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "45f4e8e3e8bde54b0a74fc905c1e96a93e6426f4143ad6b79712b8a102342343"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "8dc25574c487f7f810296a7418d07041415270af94ca3852ff155f4201178a5a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "537ad2176b6d518b2258cad7ba0ae90051e265174b6542825e119814a2fb057f"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m005/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "16e247aacc4e3021980502dab72bc0aa16a764c3ca83eea197b6357445f524b9"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m006/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "251f5f58cdb1c957b66ba432c76637f24a5780e14bb50cdd1d846eccc336e3dc"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m007/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "d5bfff394c8a0551cd1d916d0a6378cd6fa2215e17f9d1f91509a15287d9342e"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m008/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "e0bcb7489265559740535cf26d2bfdf7ca38305c636ce2d04a9352f8c8e49383"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m009/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "b26447e79ff33b938890dbd354ae7a36f2f187480cb0283a49fd2c6c378a1312"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "93708b1ed0f2fb430a0a194b49b924cc7b36e1f988f012378a7a0935501a4d98"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "f13a95c4b2c304a218d98fceac7748994c6d691d94bed4b91fc2c5486d573675"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "09b3d4a172ff666e32af382a1bd4c58f4f42e4d4d9ddb21cc5959bd4636d1f86"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "3477642b9b0211883ea1f4f57889539a8bd0d83b61daa4e5e2cd982d03bfb9f7"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "9ebb7da36b964b88ed73d90e22ab5558a89ff67f1490b9488220f165333c0d84"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m005/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "c71ab172999e82e6931e8d0cd70753a3624b851737f5cab9c7df9efdaaafbeb0"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m006/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "74b4e164028d23d90ee766448a9029e6cdc072c340f2cb16bbd016269d99462f"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m007/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "1571bd03c3ec521535ab01b05877b03c0c5575e10b31f0b3eb1c6d3107c3b553"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m008/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "7ed6db74e9c9de82f570e2e129f37968396abf49e6205f234e628e21f466f93c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m009/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "035aa2e471576cacc875611fd9b3105e177698be960df8bb30e7f1fd87df9236"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m000/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "6098112596358eb8ebc23776e4bf20b4a7a2b678bfdc71b4fbf0fa64fe0d6828"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m001/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "d8e2f8e3963118eb29b468e269f3a42f80db2c99a82b376d2f1ec6cb46a47792"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m002/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "9bfe3213950c9678d875366907aa256506392e8b587c4a048c45bb4f1e4fab7c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m003/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "95d87c88102ba5258ca5da4e41b04450a828abd8aace751a0e10f47a94f2a999"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m004/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "eafb0bc4ab036c566010f8c41c4e03f0afa13b25c05d8feb8544e87ef559c1ad"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m005/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "528405ca760d24ba3fe593ad36058c6fc42a62774e30e98893e3ce1b87a481d6"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m006/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "4fc8927e990d0ed54f72876e47eb8ab9869c4713f4da282e72a8423c1e36e74e"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m007/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "bcb36adc25200f337d35ad58b658f4287fcad93b945da2ba6fc6379f08a8a539"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m008/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "18ef72ce8cd0c03bcb8a142349b3f99a382113948d8ce0745f43c6bd7d35d609"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m009/analysis_stage0_v2/member_time_diagnostics.csv",
+      "sha256": "4e09f7a82e7be29df2bb167e83044fa32bcffc44efcb52fa94badf281e4510da"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "f5fdbea5cdcf7c46c9519b99e8209c8145140e0e2bcfc5a5faccad341755196c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "fcb72c29c8778b6532eb06d158aaaff1ebdf888fa15d20088cb8c9916fdc1311"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "95afb546d7b71266a362d428b8f260a1541423bf4c82ce99ac5ee8efd2171061"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "50e3537965677b0856eabe1bfc1300dbe2096ace3504d61d0bcfd941ec85568d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "cdbddf420eada463269148c70c2f9b93c6677b89df9187306650420b9b0c3cee"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m005/analysis_stage0_v2/member_summary.csv",
+      "sha256": "36effae4346064ddc7cd1a59b83d3cabb592b919bf0ab172f640aa0276fe0fc4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m006/analysis_stage0_v2/member_summary.csv",
+      "sha256": "7b3083c8a59844961c6524fa1013002befc4c1ff7f352d9bd1859d970161586b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m007/analysis_stage0_v2/member_summary.csv",
+      "sha256": "b4c549e0ba85d509f08554c07ec71b9ea4848f8a938745e0e270268195e10805"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m008/analysis_stage0_v2/member_summary.csv",
+      "sha256": "de031dd69b8bdab24223aab6a4e7c06fbea395f3ff2ab06bfd74eb895b50f029"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N004096_dt0p1_m009/analysis_stage0_v2/member_summary.csv",
+      "sha256": "906aca9bbce7b4c3919532adac157989cabb24a0735989b7d7200c27f96cf520"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "58b578ddb94a5bd9db911cbccde08f2908f6a590a519ce1dd21b36831a47187c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "9ae2120e28f33f8996b1aba9f6e001c7876fd5e07dfa88210b01d9682cda84f5"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "959ab2ed44bf5bfd8ac0994e3671273d69c1db0bb05924bd119dd8fe57545b25"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "808d459de5349e4d41b4090c84e8251b66e63e4238c6d3d18f01c32bbefd64c0"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "1d05e8026edd88250937a0827f0082dcc294dcd0ddd8882d054149f139b10891"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m005/analysis_stage0_v2/member_summary.csv",
+      "sha256": "ed651cabdb51126fe40065c437a6b3eb6ee9e84203ac1002a984fadfbd363cfa"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m006/analysis_stage0_v2/member_summary.csv",
+      "sha256": "44ca074df5d0e2860845d1e2cc73cd418eaf0ecff370fc09167e420245250918"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m007/analysis_stage0_v2/member_summary.csv",
+      "sha256": "bfaca1a1e78e1648d68872f91f55640ad5dc4b8c184f0cef1fd3595893955709"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m008/analysis_stage0_v2/member_summary.csv",
+      "sha256": "45f258990321635616290f65ac66d41a3322d1ea891b99fe835331198a4d6fd4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N008192_dt0p1_m009/analysis_stage0_v2/member_summary.csv",
+      "sha256": "cf4516991bd76f591b2c4ed4f0667e5594aea6cfbe6a0178012328ca5de97fc1"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "e388a35fe2d74d495f4d3789e697a830923863e8c805bfc0f8bca98fef744ae0"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "5a385b28e110d343f2b3a7ab9acbb3b90b8d269fb62ed3a6e698861a744e1375"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "f9d92b4c11be103f190bfaff8a9476cc5c3677d859fa696299d4dd35ddf0809e"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "64aaf7f86fb0318052dffe2150cb0ea75dde7f42ebc51ed5d212adeeff0799ad"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "a832f54fc387c6dd4803b5acf8d7ab7aa26d761a42616d776861ca4c2bd1db40"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m005/analysis_stage0_v2/member_summary.csv",
+      "sha256": "ea3ae1ecc31b75a1a594033393345f421700efa9de592f6e5b1c6763ec50cf72"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m006/analysis_stage0_v2/member_summary.csv",
+      "sha256": "1b27914d1743dc1545a1b2c64892bf126ad90839fe63f0ebc0b08be7e3550b43"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m007/analysis_stage0_v2/member_summary.csv",
+      "sha256": "33cfb4e9ecd6eb2660d1bdf9db0c4784bae10cbe8625b1235d585329746b46be"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m008/analysis_stage0_v2/member_summary.csv",
+      "sha256": "ece0b2615073a32a578ffb6c79c20bd2443f64e689a78efd12405c4e881c3c26"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N016384_dt0p1_m009/analysis_stage0_v2/member_summary.csv",
+      "sha256": "6874934da76c97eef62c76efd1818aae49738b58c1e94fb86c52702b38db508c"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "27584794aad1cb076fe5d5f0c31a2e6a8c73bbf4ce2a87b2a1b368ad2680d43b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "769126d00db9824fd4d0ac1d3d1688b9dd0a6c2e648ec5c5df0e1307e1c9e258"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "1e5c1224bf814ce9d4257199c0aa1734b184808acd26407b5733e6173a0016ad"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "3c4f473cfba8f5b7a8a6dfbf26f2467bfb8463ec575714039d4647c86febdcb8"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "be24a800ea2c927c3fe0306181c10af12be22d0aac69705f6f2377eeeece5e1d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m005/analysis_stage0_v2/member_summary.csv",
+      "sha256": "ba54f7892a2d87ffe066a67e93518c6ba2c71135a8df91eb479f6b1f9c310185"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m006/analysis_stage0_v2/member_summary.csv",
+      "sha256": "aa14092c5901bd8e6f28f79352862b1b24086aa32fe0b9980e224c9dd9b5ed30"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m007/analysis_stage0_v2/member_summary.csv",
+      "sha256": "d68f070180af3b63568cdb17a73ed0e8ebf07280bb26b85ba6f6a6072b4ec0c5"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m008/analysis_stage0_v2/member_summary.csv",
+      "sha256": "75c0c68dae72ba0a1ffc07a10710578fcfc1e409ce68bd557c403bdae1db76ff"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N032768_dt0p1_m009/analysis_stage0_v2/member_summary.csv",
+      "sha256": "e829092f700ee5a9092c9bfc7a3d6810ebec1d63aed7dcf5be8ff1a6140c5c4d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "979c6e989fd62d8909e19723080047840a3e678b2d75597489614cf89930a210"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "fab7194766495f8294a75c9f5d1c52767ea458ea467066f9e066fb2b8e74c23a"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "59252281c5db0e5763ca9665bea8f9728d8217273941f417c7290dda97d7b4a4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "32e69ee4f2bc36e221d9a3b27a55f464517bcb79d8bec3befcd85c478f64ade3"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "628683c9c4d0d233d51d49cb77be453d2626bfdd72eedf8bcf80e385cd87d915"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m005/analysis_stage0_v2/member_summary.csv",
+      "sha256": "923f7ea33aeab9a61b8b4c8c3f760fdaed844cdd8edacb957f7d74864f355baf"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m006/analysis_stage0_v2/member_summary.csv",
+      "sha256": "9787c95a27d676f47507bc9474367cc689a02d545680858e722f9063740bd953"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m007/analysis_stage0_v2/member_summary.csv",
+      "sha256": "e6f63316e2cc3a5a45d26c679f269c0056ce8fe24d735159309f1feba2342114"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m008/analysis_stage0_v2/member_summary.csv",
+      "sha256": "0838662bd575729b019fcde628803e9db50c2887bbf0223ec2945bc6c41c2ba2"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N065536_dt0p1_m009/analysis_stage0_v2/member_summary.csv",
+      "sha256": "5a20c17576292145f9cd689e16c56d54d5f35b9915762f42579d39a9c0a6cfd4"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "673516f8f31f4ba72b09c652a4caa48104d02c7fbb69f2d3eb23b0fb207c0959"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "3d5a3b55a0dc3c4fe475c0af851f64a7543b95e608ac7078c3dd85ba02fcaaba"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "4245a3a3fb1fe97b740129f8f5b3460b400ad10f3bc6741f1c03df7e33d4341b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "ee5eea0340989a478fdec3bfed2bca4bd8f982b11b1759fe7193f1636d4cf3ad"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "08d09539c35d9b1ae6c4b61da7cb7ac1e64a4e2169c59d60061087f0f9eeeb05"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m005/analysis_stage0_v2/member_summary.csv",
+      "sha256": "582d7de398197d6370772cdae65dcd738a6b0a9aa3cbeffbd7394141d452e933"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m006/analysis_stage0_v2/member_summary.csv",
+      "sha256": "0beffe6dcc95bd55e8b9ce998143dd64c20fd7eefede6766fef069d251669991"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m007/analysis_stage0_v2/member_summary.csv",
+      "sha256": "7be54f1a6e018a2d0be19f163b73fdf7a20e0ee0f260c5041553d5889d94c20b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m008/analysis_stage0_v2/member_summary.csv",
+      "sha256": "dec0926108e757ebf82d30c754b668c95e6182a4d3442deec46fb65fb18616d9"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N131072_dt0p1_m009/analysis_stage0_v2/member_summary.csv",
+      "sha256": "af7fbacb34bad6e4d1633bfc280032b03f2397576a07960c94dc5721bbe93f08"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "1014ccb208189a394b0d00de3c8ffddea02def82d9371e53811b9c2456212573"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "42b99bf001da1764c80a79c448934a8f237a7f3d8c59ba5ae4b91485a37f9334"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "79e3e0da5c49834932937b324fcd1ced35d300b5fd0076f1afabbd81f70127db"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "f09ab139b5bd070135a1872c710429207d4e770423ac2150acea223822142b1b"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "c83814e56665d13e28cadebcd94582efc9a0c2f958ef03b9904625784880f7fc"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m005/analysis_stage0_v2/member_summary.csv",
+      "sha256": "6bdf3de3cf020645510de9a137018a8e00fb02f3f2f44716d79db088e9b8b1fc"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m006/analysis_stage0_v2/member_summary.csv",
+      "sha256": "6af0b91b441e684b0b1702246b60f765ae8746b3beaadaa4ab149e83634c5087"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m007/analysis_stage0_v2/member_summary.csv",
+      "sha256": "a80807cc27ec8a99e9f15b5d86217cdd3a806fd2574dec9747792653e827d8b1"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m008/analysis_stage0_v2/member_summary.csv",
+      "sha256": "1f30024f978fafeac7c92b674c1b4993879f0ccb1b71248295edd8475c01cefb"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N262144_dt0p1_m009/analysis_stage0_v2/member_summary.csv",
+      "sha256": "c94ee4b3eb879c7a019f5da58557e989a87819cb8d1e83a4fce37a1cefeae839"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m000/analysis_stage0_v2/member_summary.csv",
+      "sha256": "f93877defa501fa988abb0e2b2f057f5d59e3348e9bcf1cf02f61e85ee585270"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m001/analysis_stage0_v2/member_summary.csv",
+      "sha256": "9063488e4e576990d9f0a8d7aeb489a2ad051c80a1bc93f1e21dd003e0c75efb"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m002/analysis_stage0_v2/member_summary.csv",
+      "sha256": "f7ba83c808037fb88c637005e210b2238d9bf380b2cf89e9afa46ddaf87727a6"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m003/analysis_stage0_v2/member_summary.csv",
+      "sha256": "6f5278532cfb9bff09eefca1721ff7a817a2eb1ac9bdbdf5914827c5df8a5b9d"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m004/analysis_stage0_v2/member_summary.csv",
+      "sha256": "e0392827b5013e05b0f7c1be07408bc2020ae0c359ae7ec3873dc314621135aa"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m005/analysis_stage0_v2/member_summary.csv",
+      "sha256": "2b00d791f0d4729d8a1538185b3bf390ff41919712bee9b14cbe3eac2ba86499"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m006/analysis_stage0_v2/member_summary.csv",
+      "sha256": "b95d800a888a03cff14945f401ef25cedb0852cd8ac685bef9e41ec969acdd05"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m007/analysis_stage0_v2/member_summary.csv",
+      "sha256": "89bc5ccfc69a0fc1d972f3e27a8aaed3016a14f559e458cf75a0eed343fded17"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m008/analysis_stage0_v2/member_summary.csv",
+      "sha256": "9ff554a361224c41489f328d1b038aa8ed42d3319751e6db0a108787e9e0bfc9"
+    },
+    {
+      "path": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_fixed10_high_resolution_screen_v2/golovin_fixed10_high_resolution_screen_v2_N524288_dt0p1_m009/analysis_stage0_v2/member_summary.csv",
+      "sha256": "b20879bfa2f75f9715bbb871d5b1fc3a934b32fb29e9aec5373698c8ad9846f0"
+    }
+  ],
+  "notes": [
+    "Student intervals describe the ensemble mean under the usual independent-member assumption.",
+    "Bootstrap intervals are percentile intervals from deterministic resampling.",
+    "Tail-growth timing remains interval-censored by the configured output interval.",
+    "The tail-growth time is not rain onset or surface precipitation.",
+    "This summary does not by itself establish convergence or equivalence."
+  ]
+}
