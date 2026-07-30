@@ -1,0 +1,13 @@
+design,lower_max_superdroplets,upper_max_superdroplets,metric,lower_members,upper_members,limiting_time_s,limiting_point_change,worst_projected_one_sided_upper_bound,minimum_worthwhile_improvement,projected_pass
+balanced_fixed_final,32768,65536,ensemble_mean_l1,580,580,3000.0,0.004709922826139041,0.005745151731948667,0.01,True
+balanced_fixed_final,32768,65536,golovin_relative_error_radius_moment_0_m3,580,580,3600.0,0.0014226975248670015,0.002349710844589883,0.01,True
+balanced_fixed_final,32768,65536,golovin_relative_error_radius_moment_6_um6_m3,580,580,3600.0,0.004719256041923263,0.009999211646008171,0.01,True
+balanced_fixed_final,65536,131072,ensemble_mean_l1,580,580,3600.0,0.002785992565845034,0.003575142671636376,0.01,True
+balanced_fixed_final,65536,131072,golovin_relative_error_radius_moment_0_m3,580,580,3600.0,0.0003548410606246233,0.0010132235481132997,0.01,True
+balanced_fixed_final,65536,131072,golovin_relative_error_radius_moment_6_um6_m3,580,580,3600.0,0.004440243293286947,0.007956286104389386,0.01,True
+cost_optimized_fixed_final,32768,65536,ensemble_mean_l1,675,440,3000.0,0.004709922826139041,0.005751432002084944,0.01,True
+cost_optimized_fixed_final,32768,65536,golovin_relative_error_radius_moment_0_m3,675,440,3600.0,0.0014226975248670015,0.002351614870256284,0.01,True
+cost_optimized_fixed_final,32768,65536,golovin_relative_error_radius_moment_6_um6_m3,675,440,3600.0,0.004719256041923263,0.009994523024257383,0.01,True
+cost_optimized_fixed_final,65536,131072,ensemble_mean_l1,440,115,3600.0,0.002785992565845034,0.004086003425083303,0.01,True
+cost_optimized_fixed_final,65536,131072,golovin_relative_error_radius_moment_0_m3,440,115,3600.0,0.0003548410606246233,0.0014391477642042533,0.01,True
+cost_optimized_fixed_final,65536,131072,golovin_relative_error_radius_moment_6_um6_m3,440,115,3600.0,0.004440243293286947,0.009999251942792619,0.01,True

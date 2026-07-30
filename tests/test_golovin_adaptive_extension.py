@@ -40,6 +40,7 @@ def planning_config() -> dict:
             "current_members_per_resolution": 100,
             "primary_log_radius_bins": 500,
             "confidence_level": 0.95,
+            "design_assurance_probability": 0.80,
             "bootstrap_resamples": 100,
             "bootstrap_seed": 1,
             "minimum_worthwhile_improvement_absolute": 0.01,
@@ -74,7 +75,7 @@ def constraint(
         "minimum_worthwhile_improvement": 0.01,
         "lower_variance_coefficient": lower_coefficient,
         "upper_variance_coefficient": upper_coefficient,
-        "normal_quantile": 1.6448536269514722,
+        "design_quantile": 2.4864748605243863,
     }
 
 

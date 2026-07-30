@@ -29,6 +29,14 @@ to explain and audit in a methods section. A smaller first update to 150
 members per active resolution may be used only to validate the variance model;
 it is not an unadjusted formal early-stopping look.
 
+The fixed-design projection targets **80% design assurance**: under the pilot
+point estimates, variance coefficients, independence and normal approximation,
+the planned final experiment should have 80% probability of placing the
+one-sided 95% bound inside the one-percentage-point margin. Eighty percent is a
+project planning choice, not an SDM standard. It is the lower commonly
+illustrated assurance level in precision-based sample-size literature and is
+reported explicitly so that a later paper can assess the trade-off.
+
 ## 2. Why an adaptive allocation is scientifically preferable
 
 The unresolved practical decision is not symmetric:
@@ -81,6 +89,13 @@ Adam (1983, <https://doi.org/10.1287/mnsc.29.7.856>) frames simulation run
 length as the sample size required to achieve a preassigned confidence
 interval. That is the role of the current 100-member pilot: estimate variance,
 then size the next fixed calculation against a predeclared precision target.
+O'Neill (2022, <https://doi.org/10.1371/journal.pone.0262804>) shows why
+treating a pilot variance estimate as known can understate the required sample
+size. Dong et al. (2023, <https://pubmed.ncbi.nlm.nih.gov/36727203/>) define
+assurance as the probability of achieving the prespecified confidence-interval
+precision and demonstrate precision-plus-assurance planning. Their application
+is different, but the distinction between expected precision and probability
+of attaining it applies directly here.
 
 Cost-constrained allocation methods assign more samples where variance
 reduction per cost is greatest. Wright (2019,
@@ -113,7 +128,7 @@ The planning approximation is
 \]
 
 For independent ensembles at adjacent resolutions \(N_1,N_2\), project the
-one-sided bound
+one-sided 95% bound
 
 \[
 U(n_1,n_2)
@@ -132,6 +147,22 @@ means themselves will move.
 The script records the difference between this normal approximation and the
 current percentile-bootstrap bound. A poor current fit is a reason to distrust
 the projection and validate it with another variance-only member block.
+
+Sizing only until the **expected** bound touches the margin would give roughly
+50% probability that a fresh realized bound passes. To target assurance
+\(\gamma=0.80\), the fixed design instead requires
+
+\[
+\left|\hat q_{N_1}-\hat q_{N_2}\right|
++\left(z_{0.95}+z_{0.80}\right)
+\sqrt{\frac{a_{N_1}}{n_1}+\frac{a_{N_2}}{n_2}}
+\leq 0.01.
+\]
+
+This approximation accounts for the future point estimate moving as well as
+the reported confidence allowance. It still conditions on the pilot estimates
+and does not account fully for uncertainty in the bootstrap variance
+coefficient; that limitation remains explicit.
 
 ## 5. Compared designs
 

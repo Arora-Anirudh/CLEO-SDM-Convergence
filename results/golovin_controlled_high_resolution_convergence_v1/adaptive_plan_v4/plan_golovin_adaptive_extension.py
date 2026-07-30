@@ -103,8 +103,6 @@ def validate_planning_settings(config: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("planning requires at least 100 bootstrap resamples")
     if not 0.0 < float(settings["confidence_level"]) < 1.0:
         raise ValueError("planning confidence level must be between zero and one")
-    if not 0.5 < float(settings["design_assurance_probability"]) < 1.0:
-        raise ValueError("design assurance probability must be between 0.5 and one")
     return settings
 
 
@@ -279,11 +277,8 @@ def build_constraints(
     current = int(settings["current_members_per_resolution"])
     bin_count = int(settings["primary_log_radius_bins"])
     confidence_level = float(settings["confidence_level"])
-    assurance_probability = float(settings["design_assurance_probability"])
     margin = float(settings["minimum_worthwhile_improvement_absolute"])
-    confidence_quantile = float(norm.ppf(confidence_level))
-    assurance_quantile = float(norm.ppf(assurance_probability))
-    design_quantile = confidence_quantile + assurance_quantile
+    z_value = float(norm.ppf(confidence_level))
     variance_lookup = {
         (int(row["max_superdroplets"]), float(row["time_s"]), str(row["metric"])): row
         for row in variance_rows
@@ -325,7 +320,7 @@ def build_constraints(
                 upper_variance_coefficient=upper_coefficient,
                 lower_members=current,
                 upper_members=current,
-                z_value=confidence_quantile,
+                z_value=z_value,
             )
             output.append(
                 {
@@ -346,11 +341,8 @@ def build_constraints(
                     "normal_projection_minus_bootstrap": (
                         normal_current - float(practical["one_sided_95_upper_bound"])
                     ),
-                    "confidence_quantile": confidence_quantile,
+                    "normal_quantile": z_value,
                     "confidence_level": confidence_level,
-                    "design_assurance_probability": assurance_probability,
-                    "design_assurance_quantile": assurance_quantile,
-                    "design_quantile": design_quantile,
                 }
             )
     return output
@@ -385,7 +377,7 @@ def allocation_passes(
             upper_variance_coefficient=float(row["upper_variance_coefficient"]),
             lower_members=allocation[lower],
             upper_members=allocation[upper],
-            z_value=float(row["design_quantile"]),
+            z_value=float(row["normal_quantile"]),
         )
         if bound > float(row["minimum_worthwhile_improvement"]):
             return False
@@ -415,7 +407,7 @@ def worst_projected_rows(
                     upper_variance_coefficient=float(row["upper_variance_coefficient"]),
                     lower_members=allocation[lower],
                     upper_members=allocation[upper],
-                    z_value=float(row["design_quantile"]),
+                    z_value=float(row["normal_quantile"]),
                 ),
                 row,
             )
@@ -653,10 +645,10 @@ def plot_balanced_projection(
         axis.set_xlabel("balanced members per resolution", fontsize=10)
         axis.tick_params(labelsize=9)
         axis.grid(alpha=0.2)
-    axes[0].set_ylabel("assurance-adjusted worst bound / pp", fontsize=10)
+    axes[0].set_ylabel("projected worst upper bound / pp", fontsize=10)
     handles, labels = axes[0].get_legend_handles_labels()
     fig.suptitle(
-        "Pilot-based balanced-ensemble projection with design assurance",
+        "Pilot-based balanced-ensemble precision projection",
         y=0.98,
         fontsize=14,
     )
@@ -813,14 +805,8 @@ def analyze(
             "per-member variance coefficients remain fixed",
             "independent ensembles imply additive variance contributions",
             "normal one-sided approximation replaces the final percentile bootstrap",
-            (
-                "the fixed design targets "
-                f"{float(settings['design_assurance_probability']):.0%} probability "
-                "of satisfying each projected bound"
-            ),
             "measured job wall seconds are used as a model-compute cost proxy",
         ],
-        "design_assurance_probability": float(settings["design_assurance_probability"]),
         "formal_acceptance_warning": (
             "Freeze one final allocation before inspecting new outcomes, or prospectively "
             "adopt alpha spending/confidence sequences for formal interim stopping."
