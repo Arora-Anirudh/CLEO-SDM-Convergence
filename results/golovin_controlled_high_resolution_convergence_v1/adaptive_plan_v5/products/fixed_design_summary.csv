@@ -1,0 +1,3 @@
+design,feasible_within_planning_grid,members_32768,members_65536,members_131072,additional_members,projected_additional_cpu_hours,projected_additional_zarr_gb,maximum_projected_upper_bound
+balanced_fixed_final,True,1325,1325,1325,3675,247.70520833333333,257.2564141,0.00999997608903404
+cost_optimized_fixed_final,True,1590,960,270,2520,121.07291666666667,176.40439556,0.00999916508390911

@@ -1,0 +1,35 @@
+{
+  "status": "completed",
+  "kernel": "golovin",
+  "run_directory": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_stage0_runs/golovin_stage0_development_N001024_dt1_m000",
+  "cleo_source": "/home/b/b383673/SDM/cleo_builds/CLEO-SDM-Convergence/golovin_stage0/_deps/cleo-src",
+  "dataset": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_stage0_runs/golovin_stage0_development_N001024_dt1_m000/output/collisions0d_solution.zarr",
+  "stage0_config": "/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/config/golovin_stage0_development.yaml",
+  "stage0_config_sha256": "afe210ab4f3780004c45b1c34b32da0d6a7b8db816aaabb2cb5e017b90f00db0",
+  "stage0_experiment_status": "development_only",
+  "fixed_bin_radius_minimum_um": 1.0,
+  "fixed_bin_radius_maximum_um": 5000.0,
+  "fixed_bin_count": 500,
+  "fixed_bin_smoothing": null,
+  "large_drop_threshold_um": 1000.0,
+  "t10_definition": "first stored time with mass_fraction_r_ge_40um >= 0.1; interval-censored",
+  "setup_filename": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_stage0_runs/golovin_stage0_development_N001024_dt1_m000/output/collisions0d_setup.txt",
+  "grid_filename": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_stage0_runs/golovin_stage0_development_N001024_dt1_m000/inputs/grid.dat",
+  "requested_distribution_times_s": [
+    0.0,
+    1200.0,
+    2400.0,
+    3600.0
+  ],
+  "domain_volume_m3": 1000000000000.0,
+  "number_concentration_m3": 8388608.0,
+  "volume_exponential_scale_m": 3.0531e-05,
+  "max_superdroplets": 1024,
+  "smoothing_sigma_ln_radius": 0.15499999999999997,
+  "maximum_absolute_relative_mass_drift": 1.511117586616706e-08,
+  "outputs": {
+    "bulk_csv": "member_time_diagnostics.csv",
+    "distribution_figure": "golovin_mass_distribution.png",
+    "bulk_figure": "golovin_bulk_diagnostics.png"
+  }
+}

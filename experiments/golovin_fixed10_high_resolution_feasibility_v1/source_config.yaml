@@ -1,0 +1,27 @@
+# One-member feasibility gate for the fixed-10 Golovin screen. It creates a
+# distinct output and collision seed and never enters the 80-member analysis.
+
+experiment:
+  name: golovin_fixed10_high_resolution_feasibility_v1
+  status: preproduction_gate
+  kernel: golovin
+  initialization_family: controlled
+  seed_namespace: cleo-sdm-convergence/golovin-fixed10-high-resolution-feasibility/v1
+
+matrix:
+  max_superdroplets: [524288]
+  collision_timesteps_s: [0.1]
+  members_per_cell: 1
+  observation_timestep_s: 300.0
+  end_time_s: 3600.0
+  model_threads: 1
+  collision_seed_design: unique_per_case
+  controlled_bundle_labels:
+    524288: golovin_fixed10_screen_N524288_v1
+
+authorization:
+  matrix_reviewed: true
+  submission_authorized: false
+  role: >-
+    Verify that the upper fixed-10 screen resolution is feasible under the
+    one-rank, one-thread resource cap before the 80-member matrix is submitted.

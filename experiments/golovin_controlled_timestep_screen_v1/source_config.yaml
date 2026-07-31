@@ -1,0 +1,46 @@
+# Pre-convergence collision-timestep screen.
+#
+# This is a controlled numerical gate at one fixed resolution, not the
+# Golovin resolution-convergence ensemble. Every timestep reuses the same
+# immutable initialization and the same five collision-seed labels. Different
+# timesteps do not create paired event histories because they invoke different
+# numbers of collision updates.
+
+experiment:
+  name: golovin_controlled_timestep_screen_v1
+  status: preproduction_gate
+  kernel: golovin
+  initialization_family: controlled
+  seed_namespace: cleo-sdm-convergence/golovin-controlled-timestep-screen/v1
+
+matrix:
+  max_superdroplets: [16384]
+  collision_timesteps_s: [2.0, 1.0, 0.5, 0.25, 0.1]
+  members_per_cell: 5
+  observation_timestep_s: 300.0
+  end_time_s: 3600.0
+  model_threads: 1
+  collision_seed_design: reused_across_timesteps
+  controlled_bundle_labels:
+    16384: golovin_controlled_N016384_v1
+
+screening:
+  reference_collision_timestep_s: 0.1
+  decision_times_s: [600.0, 1200.0, 1800.0, 2400.0, 3000.0, 3600.0]
+  maximum_l1_mean_absolute_difference: 0.01
+  maximum_moment0_mean_relative_difference: 0.05
+  maximum_moment6_mean_relative_difference: 0.10
+  maximum_relative_liquid_mass_drift: 1.0e-7
+  bin_robustness_policy: require_timestep_equivalence_at_all_registered_bin_counts
+  maximum_out_of_range_mass_fraction: 1.0e-6
+  bootstrap_resamples: 10000
+  bootstrap_seed: 20260729
+  require_pass_at_every_decision_time: true
+  selection_rule: largest_timestep_passing_all_registered_gates
+
+authorization:
+  researcher_authorized_preconvergence_gates: true
+  approved_for_resolution_convergence: false
+  reason: >-
+    The researcher authorized completion of all validation steps required so
+    that the next action can be the actual Golovin convergence experiment.

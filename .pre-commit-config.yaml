@@ -6,8 +6,9 @@ repos:
       - id: check-merge-conflict
       - id: check-yaml
       - id: end-of-file-fixer
+        exclude: ^results/
       - id: trailing-whitespace
-        exclude: ^patches/.*\.patch$
+        exclude: ^(patches/.*\.patch|results/)
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.7
     hooks:

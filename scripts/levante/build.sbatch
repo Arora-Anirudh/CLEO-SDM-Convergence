@@ -4,10 +4,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=8G
-#SBATCH --time=00:30:00
-#SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
-#SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%j.err
+#SBATCH --mem=4G
+#SBATCH --time=00:10:00
 
 # Configure the project, fetch the pinned CLEO source, and build the two
 # collision-only executables. Supply the active project account at submission:
@@ -20,7 +18,10 @@ set -eo pipefail
 source /etc/profile
 set -u
 
-if [[ -n "${SLURM_SUBMIT_DIR:-}" ]]; then
+if [[ -n "${CLEO_SDM_PROJECT_ROOT:-}" ]]; then
+  SCRIPT_DIR="${CLEO_SDM_PROJECT_ROOT}/scripts/levante"
+elif [[ -n "${SLURM_SUBMIT_DIR:-}" ]] \
+  && [[ -f "${SLURM_SUBMIT_DIR}/scripts/levante/common.sh" ]]; then
   SCRIPT_DIR="${SLURM_SUBMIT_DIR}/scripts/levante"
 else
   SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -35,6 +36,13 @@ cleo_sdm_print_environment
 
 mkdir -p "${CLEO_SDM_BUILD_ROOT}"
 cd "${CLEO_SDM_PROJECT_ROOT}"
+
+tracked_status="$(git status --porcelain --untracked-files=no)"
+if [[ -n "${tracked_status}" ]]; then
+  echo "ERROR: tracked project files are dirty; commit or restore them before building:" >&2
+  echo "${tracked_status}" >&2
+  exit 1
+fi
 
 echo "--- synchronize the locked Python environment ---"
 "${CLEO_SDM_UV}" sync \

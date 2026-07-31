@@ -1,0 +1,4 @@
+max_superdroplets,measured_members,mean_job_wall_seconds_per_member,median_job_wall_seconds_per_member,mean_zarr_bytes_per_member
+32768,100,129.55,99.0,70001744.0
+65536,100,204.5,201.0,70001744.0
+131072,100,393.9,421.0,70001748.0

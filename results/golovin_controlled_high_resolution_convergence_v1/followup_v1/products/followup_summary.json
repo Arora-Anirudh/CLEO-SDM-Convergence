@@ -1,0 +1,44 @@
+{
+  "status": "planning_projection_complete",
+  "projection_is_new_convergence_evidence": false,
+  "projection_assumption": "Observed 100-member point estimates remain fixed and each side of the 95% interval contracts in proportion to 1/sqrt(n).",
+  "earlier_experiment_warning": "The 20-member and 100-member experiments are independent and are plotted as separate series; they are not pooled.",
+  "pair_summaries": [
+    {
+      "lower_max_superdroplets": 16384,
+      "upper_max_superdroplets": 32768,
+      "all_registered_rows_observed_pass": false,
+      "projected_members_each_resolution_for_all_rows": 2028,
+      "limiting_time_s": 3000.0,
+      "limiting_log_radius_bins": 1000,
+      "limiting_observed_estimate": 0.008476240999615577,
+      "limiting_observed_95ci_high": 0.01533673815500411,
+      "equivalence_margin": 0.01,
+      "projection_method": "observed_95ci_scaled_by_sqrt_100_over_n"
+    },
+    {
+      "lower_max_superdroplets": 32768,
+      "upper_max_superdroplets": 65536,
+      "all_registered_rows_observed_pass": false,
+      "projected_members_each_resolution_for_all_rows": 788,
+      "limiting_time_s": 3600.0,
+      "limiting_log_radius_bins": 1000,
+      "limiting_observed_estimate": 0.008158653659233864,
+      "limiting_observed_95ci_high": 0.013325020138139057,
+      "equivalence_margin": 0.01,
+      "projection_method": "observed_95ci_scaled_by_sqrt_100_over_n"
+    },
+    {
+      "lower_max_superdroplets": 65536,
+      "upper_max_superdroplets": 131072,
+      "all_registered_rows_observed_pass": true,
+      "projected_members_each_resolution_for_all_rows": 100,
+      "limiting_time_s": 600.0,
+      "limiting_log_radius_bins": 250,
+      "limiting_observed_estimate": 0.001433611879387944,
+      "limiting_observed_95ci_high": 0.003527117392158994,
+      "equivalence_margin": 0.01,
+      "projection_method": "observed_95ci_scaled_by_sqrt_100_over_n"
+    }
+  ]
+}

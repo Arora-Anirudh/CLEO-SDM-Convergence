@@ -11,13 +11,18 @@ if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
   exit 2
 fi
 
-export CLEO_SDM_PROJECT_ROOT="${CLEO_SDM_PROJECT_ROOT:-/home/b/b383673/SDM/CLEO-SDM-Convergence}"
-export CLEO_SDM_BUILD_ROOT="${CLEO_SDM_BUILD_ROOT:-/home/b/b383673/SDM/cleo_builds/CLEO-SDM-Convergence/openmp}"
-export CLEO_SDM_RUN_ROOT="${CLEO_SDM_RUN_ROOT:-/scratch/b/b383673/SDM/CLEO-SDM-Convergence/runs}"
+export CLEO_SDM_USER="${CLEO_SDM_USER:-${USER:-$(id -un)}}"
+export CLEO_SDM_HOME_ROOT="${CLEO_SDM_HOME_ROOT:-${HOME}/SDM}"
+export CLEO_SDM_SCRATCH_ROOT="${CLEO_SDM_SCRATCH_ROOT:-/scratch/${CLEO_SDM_USER:0:1}/${CLEO_SDM_USER}/SDM}"
 
-export CLEO_SDM_YACYAXT_ROOT="${CLEO_SDM_YACYAXT_ROOT:-/home/b/b383673/SDM/cleo_dependencies/yacyaxt/gcc}"
-export CLEO_SDM_UV="${CLEO_SDM_UV:-/home/b/b383673/.conda/envs/cleo_tools/bin/uv}"
-export CLEO_SDM_BOOTSTRAP_PYTHON="${CLEO_SDM_BOOTSTRAP_PYTHON:-/home/b/b383673/SDM/CLEO/.venv/bin/python3}"
+export CLEO_SDM_PROJECT_ROOT="${CLEO_SDM_PROJECT_ROOT:-${CLEO_SDM_HOME_ROOT}/CLEO-SDM-Convergence}"
+export CLEO_SDM_BUILD_ROOT="${CLEO_SDM_BUILD_ROOT:-${CLEO_SDM_HOME_ROOT}/cleo_builds/CLEO-SDM-Convergence/openmp}"
+export CLEO_SDM_RUN_ROOT="${CLEO_SDM_RUN_ROOT:-${CLEO_SDM_SCRATCH_ROOT}/CLEO-SDM-Convergence/runs}"
+export CLEO_SDM_BUNDLE_ROOT="${CLEO_SDM_BUNDLE_ROOT:-${CLEO_SDM_HOME_ROOT}/CLEO-SDM-Convergence-records/controlled_bundles}"
+
+export CLEO_SDM_YACYAXT_ROOT="${CLEO_SDM_YACYAXT_ROOT:-${CLEO_SDM_HOME_ROOT}/cleo_dependencies/yacyaxt/gcc}"
+export CLEO_SDM_UV="${CLEO_SDM_UV:-${HOME}/.conda/envs/cleo_tools/bin/uv}"
+export CLEO_SDM_BOOTSTRAP_PYTHON="${CLEO_SDM_BOOTSTRAP_PYTHON:-${CLEO_SDM_HOME_ROOT}/CLEO/.venv/bin/python3}"
 
 export CLEO_SDM_GCC_MODULE="${CLEO_SDM_GCC_MODULE:-gcc/11.2.0-gcc-11.2.0}"
 export CLEO_SDM_OPENMPI_MODULE="${CLEO_SDM_OPENMPI_MODULE:-openmpi/4.1.2-gcc-11.2.0}"
@@ -85,9 +90,13 @@ cleo_sdm_validate_paths() {
 }
 
 cleo_sdm_print_environment() {
+  echo "user=${CLEO_SDM_USER}"
+  echo "home_root=${CLEO_SDM_HOME_ROOT}"
+  echo "scratch_root=${CLEO_SDM_SCRATCH_ROOT}"
   echo "project_root=${CLEO_SDM_PROJECT_ROOT}"
   echo "build_root=${CLEO_SDM_BUILD_ROOT}"
   echo "run_root=${CLEO_SDM_RUN_ROOT}"
+  echo "bundle_root=${CLEO_SDM_BUNDLE_ROOT}"
   echo "yacyaxt_root=${CLEO_SDM_YACYAXT_ROOT}"
   echo "pinned_cleo_commit=${CLEO_SDM_PINNED_CLEO_COMMIT}"
   echo "slurm_job_id=${SLURM_JOB_ID:-none}"

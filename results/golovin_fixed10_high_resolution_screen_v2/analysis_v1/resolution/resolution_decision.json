@@ -1,0 +1,57 @@
+{
+  "status": "exploratory_resolution_screen_no_formal_selection",
+  "schema": "golovin_controlled_resolution_decision_v1",
+  "selected_max_superdroplets": null,
+  "formal_convergence_claim_permitted": false,
+  "strict_selected_max_superdroplets_if_formal": null,
+  "tested_resolutions": [
+    4096,
+    8192,
+    16384,
+    32768,
+    65536,
+    131072,
+    262144,
+    524288
+  ],
+  "members_per_resolution": {
+    "4096": 10,
+    "8192": 10,
+    "16384": 10,
+    "32768": 10,
+    "65536": 10,
+    "131072": 10,
+    "262144": 10,
+    "524288": 10
+  },
+  "resolution_analytical_and_precision_pass": {
+    "4096": false,
+    "8192": false,
+    "16384": false,
+    "32768": false,
+    "65536": false,
+    "131072": false,
+    "262144": true,
+    "524288": true
+  },
+  "adjacent_pair_equivalence_pass": {
+    "4096-8192": false,
+    "8192-16384": false,
+    "16384-32768": false,
+    "32768-65536": false,
+    "65536-131072": false,
+    "131072-262144": false,
+    "262144-524288": false
+  },
+  "confirmation_rule": "N, 2N and 4N pass analytical/precision gates and both adjacent pairs pass equivalence",
+  "bin_robustness_policy": "diagnostic_only",
+  "l1_estimand": "relative L1 of the ensemble-mean fixed-bin distribution",
+  "independent_ensemble_warning": "Different resolutions use independent collision ensembles; member indices are not paired histories.",
+  "combined_member_time": "ensemble_summary/all_member_time_diagnostics.csv",
+  "combined_member_time_path_base": "analysis_root",
+  "combined_member_time_sha256": "9336579fa92321655ac1dd551d222538aa0db21863354b1286b6ead7a7aa2475",
+  "matrix_file": "/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/experiments/golovin_fixed10_high_resolution_screen_v2/cases.tsv",
+  "matrix_sha256": "c423686b64d33f035857e9584550e75dc5efe3bec43f2fbd98ccf3eee5e94a93",
+  "config": "/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/config/golovin_fixed10_high_resolution_screen_v2.yaml",
+  "config_sha256": "f7d2d88629f928a0b2a1eaa2a354a60eaee36e8aa553997b5c54c99c776a41fb"
+}

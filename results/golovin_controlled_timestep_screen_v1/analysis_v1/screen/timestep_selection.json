@@ -1,0 +1,53 @@
+{
+  "status": "selected_preconvergence_timestep",
+  "schema": "golovin_controlled_timestep_selection_v2",
+  "selected_collision_timestep_s": 0.1,
+  "reference_collision_timestep_s": 0.1,
+  "selection_rule": "largest_timestep_passing_all_registered_gates",
+  "confidence_level": 0.95,
+  "bootstrap_resamples": 10000,
+  "bootstrap_seed": 20260729,
+  "decision_times_s": [
+    600.0,
+    1200.0,
+    1800.0,
+    2400.0,
+    3000.0,
+    3600.0
+  ],
+  "member_count_per_timestep": 5,
+  "timestep_pass": {
+    "0.1": true,
+    "0.25": false,
+    "0.5": false,
+    "1.0": false,
+    "2.0": false
+  },
+  "maximum_absolute_mass_drift_by_timestep": {
+    "0.1": 4.362745276154101e-09,
+    "0.25": 3.811047699642245e-09,
+    "0.5": 3.6175250572867412e-09,
+    "1.0": 4.280238830034477e-09,
+    "2.0": 3.3551574851742316e-09
+  },
+  "maximum_relative_liquid_mass_drift": 1e-07,
+  "maximum_out_of_range_mass_fraction_by_timestep": {
+    "0.1": 0.0,
+    "0.25": 0.0,
+    "0.5": 0.0,
+    "1.0": 0.0,
+    "2.0": 0.0
+  },
+  "maximum_out_of_range_mass_fraction": 1e-06,
+  "bin_robustness_policy": "require_timestep_equivalence_at_all_registered_bin_counts",
+  "absolute_l1_difference_between_bin_counts_is_an_acceptance_gate": false,
+  "l1_estimand": "relative L1 of the ensemble-mean fixed-bin distribution, not the mean of per-member L1 values",
+  "common_stream_warning": "The same collision-seed labels are reused, but different timesteps do not produce paired event histories.",
+  "combined_member_time": "/home/b/b383673/SDM/CLEO-SDM-Convergence-records/golovin_controlled_timestep_screen_v1/.analysis_v1_job26536377.tmp/ensemble_summary/all_member_time_diagnostics.csv",
+  "combined_member_time_sha256": "333d56e8ade6bbdbf4756923a5fe8415e0b4c807d9469dc8f0cba375daa674e9",
+  "run_root": "/scratch/b/b383673/SDM/CLEO-SDM-Convergence/golovin_controlled_timestep_screen_v1",
+  "matrix_file": "/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/experiments/golovin_controlled_timestep_screen_v1/cases.tsv",
+  "matrix_sha256": "9f3a3094bfbde12ec0a852244c431186abd64905258a6b3521e1e2f87a576666",
+  "config": "/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/config/golovin_controlled_timestep_screen.yaml",
+  "config_sha256": "4b5b3e55d834934145b2e08f85ca0587f68663f7859642959701171682834a53"
+}

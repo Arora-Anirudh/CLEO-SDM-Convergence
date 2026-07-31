@@ -1,0 +1,12 @@
+status=passed
+project_commit=bfd3bdfb21ebcad01a6d3c8524d3fc8eb1c708ef
+cleo_commit=83318c23223546d10759d202d70f4fa2f7fe4688
+kernel=golovin
+initialization_seed=2647907423
+replay_collision_seed=16394419086637823225
+different_collision_seed=13686403842123650899
+frozen_input_sha256=20b9bbcbf39b06bb989bd311a0267dbbacaab9ea24fd8defe18e64adec5735b0
+slurm_job_id=26521184
+slurm_account=bb1153
+slurm_partition=interactive
+slurm_cpus_per_task=1

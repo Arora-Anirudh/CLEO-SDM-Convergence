@@ -1,0 +1,72 @@
+# Reviewed initial matrix for the actual controlled Golovin convergence
+# experiment. Preparing this file and its matrix does not submit compute.
+
+experiment:
+  name: golovin_controlled_resolution_convergence_v1
+  status: production_ready_not_submitted
+  kernel: golovin
+  initialization_family: controlled
+  seed_namespace: cleo-sdm-convergence/golovin-controlled-resolution/v1
+
+matrix:
+  max_superdroplets: [512, 1024, 2048, 4096, 8192, 16384]
+  collision_timesteps_s: [0.1]
+  members_per_cell: 20
+  observation_timestep_s: 300.0
+  end_time_s: 3600.0
+  model_threads: 1
+  collision_seed_design: unique_per_case
+  controlled_bundle_labels:
+    512: golovin_controlled_N000512_v1
+    1024: golovin_controlled_N001024_v1
+    2048: golovin_controlled_N002048_v1
+    4096: golovin_controlled_N004096_v1
+    8192: golovin_controlled_N008192_v1
+    16384: golovin_controlled_N016384_v1
+
+diagnostics:
+  radius_minimum_um: 1.0
+  radius_maximum_um: 5000.0
+  primary_log_radius_bins: 500
+  sensitivity_log_radius_bins: [250, 1000]
+  decision_times_s: [600.0, 1200.0, 1800.0, 2400.0, 3000.0, 3600.0]
+  confidence_level: 0.95
+  bootstrap_resamples: 10000
+  bootstrap_seed: 20260729
+  bin_robustness_policy: require_resolution_decision_at_all_registered_bin_counts
+
+convergence_criteria:
+  analytical_agreement:
+    maximum_l1_upper_95ci: 0.05
+    moment0_relative_bias_margin: 0.05
+    moment6_relative_bias_margin: 0.10
+  adjacent_level_equivalence:
+    l1_absolute_difference_margin: 0.01
+    moment0_relative_difference_margin: 0.05
+    moment6_relative_difference_margin: 0.10
+  maximum_95ci_half_width:
+    l1_absolute: 0.01
+    moment0_relative: 0.025
+    moment6_relative: 0.05
+  maximum_relative_liquid_mass_drift: 1.0e-7
+  maximum_out_of_range_mass_fraction: 1.0e-6
+  require_pass_at_every_decision_time: true
+  require_next_level_confirmation: true
+
+timestep_selection_provenance:
+  selected_collision_timestep_s: 0.1
+  reference_collision_timestep_s: 0.1
+  model_project_commit: 1e335823f132439e61bc8d1f0ad21ea934e65772
+  analysis_project_commit: baf4cd33155ba4af9391efcf47471c6c016edf9f
+  levante_model_job: 26535953
+  levante_analysis_job: 26536377
+  persistent_record: >-
+    /home/b/b383673/SDM/CLEO-SDM-Convergence-records/
+    golovin_controlled_timestep_screen_v1/analysis_v1
+
+authorization:
+  matrix_reviewed: true
+  submission_authorized: false
+  reason: >-
+    All pre-convergence gates have passed and the actual matrix is ready for a
+    separate compute disclosure. Matrix creation itself never submits Slurm.

@@ -1,0 +1,4 @@
+ensemble_size,log_radius_bins,role,selected_candidate,l1_analytical_failure,l1_resolution_ordering_reversal,range_coverage_failure,candidate_none_disagreement_with_primary,candidate_shift_more_than_one_doubling,requires_investigation,automatic_veto
+100,250,sensitivity,,False,False,False,False,False,False,False
+100,500,primary,,False,False,False,False,False,False,False
+100,1000,sensitivity,,False,False,False,False,False,False,False

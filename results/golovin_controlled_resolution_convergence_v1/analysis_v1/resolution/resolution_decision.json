@@ -1,0 +1,47 @@
+{
+  "status": "no_resolution_accepted_in_initial_matrix",
+  "schema": "golovin_controlled_resolution_decision_v1",
+  "selected_max_superdroplets": null,
+  "tested_resolutions": [
+    512,
+    1024,
+    2048,
+    4096,
+    8192,
+    16384
+  ],
+  "members_per_resolution": {
+    "512": 20,
+    "1024": 20,
+    "2048": 20,
+    "4096": 20,
+    "8192": 20,
+    "16384": 20
+  },
+  "resolution_analytical_and_precision_pass": {
+    "512": false,
+    "1024": false,
+    "2048": false,
+    "4096": false,
+    "8192": false,
+    "16384": false
+  },
+  "adjacent_pair_equivalence_pass": {
+    "512-1024": false,
+    "1024-2048": false,
+    "2048-4096": false,
+    "4096-8192": false,
+    "8192-16384": false
+  },
+  "confirmation_rule": "N, 2N and 4N pass analytical/precision gates and both adjacent pairs pass equivalence",
+  "bin_robustness_policy": "require_resolution_decision_at_all_registered_bin_counts",
+  "l1_estimand": "relative L1 of the ensemble-mean fixed-bin distribution",
+  "independent_ensemble_warning": "Different resolutions use independent collision ensembles; member indices are not paired histories.",
+  "combined_member_time": "ensemble_summary/all_member_time_diagnostics.csv",
+  "combined_member_time_path_base": "analysis_root",
+  "combined_member_time_sha256": "ff97eae53780eb1d38cf94a6db953f7d042bab0e62fdade56ce691bf2dfa2198",
+  "matrix_file": "/home/b/b383673/SDM/CLEO-SDM-Convergence-records/golovin_controlled_resolution_convergence_v1/cases.tsv",
+  "matrix_sha256": "e867ec0055eefd08627b00b385dcc1680e53643426c691b8f0a61200d6b45dde",
+  "config": "/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/config/golovin_controlled_resolution_convergence.yaml",
+  "config_sha256": "a34e5a1ba9a34b87dd9a055a75b11db4d74b14a0de34c6e9525e8882719fa099"
+}

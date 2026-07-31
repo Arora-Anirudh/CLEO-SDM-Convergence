@@ -1,0 +1,124 @@
+{
+  "artifacts": {
+    "controlled_initialization_source": {
+      "bytes": 20937,
+      "path": "provenance/controlled_initialization.py",
+      "sha256": "2823ebfcdaff0800720c4ea399a01e437278c80faf00a5099495a4e12401455f"
+    },
+    "creation_audit": {
+      "bytes": 2650,
+      "path": "controlled_initialization_audit.json",
+      "sha256": "b38dde47fe62eadc4040de5bfd5c5d89ad75ae1cf4c1ad15d5e073df7b5677db"
+    },
+    "grid_binary": {
+      "bytes": 936,
+      "path": "inputs/grid.dat",
+      "sha256": "90835b0f88c77e768281bcba9d4cf5d546810895c8a7c4902096679491279ea7"
+    },
+    "input_preparer_source": {
+      "bytes": 11990,
+      "path": "provenance/prepare_collisions0d_inputs.py",
+      "sha256": "2f19629225f8f9407b54ee3ebfb3e79fa266565ec133c3d9f2d3d0a96596e18c"
+    },
+    "native_readback": {
+      "bytes": 2707,
+      "path": "native_readback.json",
+      "sha256": "a3b42a03159b1f893f81044ab7993cc7078c781b78d4fa9ab8e58b9c78f6920b"
+    },
+    "native_validator_source": {
+      "bytes": 10811,
+      "path": "provenance/validate_controlled_initialization_binary.py",
+      "sha256": "028eb9fa1bcf2c93a4397c91f92716cbcbb853fabfe827b2581cbde46497792b"
+    },
+    "runtime_config": {
+      "bytes": 1725,
+      "path": "config.yaml",
+      "sha256": "92499843f150c8c1e705b1a39436f2437298f3418b7a20e1b74d2980bc1608e9"
+    },
+    "source_controlled_config": {
+      "bytes": 2940,
+      "path": "source_controlled_config.yaml",
+      "sha256": "4c55c6333c3d6987bb8452a57959ba7a5581829d7776a6b6f2d310f49c7cd171"
+    },
+    "source_reference_config": {
+      "bytes": 1299,
+      "path": "source_reference_config.yaml",
+      "sha256": "a8fd187e164c3d80f83cd39cad86d9d497c7e749ddb0c1d3a5a4d9e8c789ef4b"
+    },
+    "superdroplet_binary": {
+      "bytes": 213852,
+      "path": "inputs/superdroplets.dat",
+      "sha256": "d805fb278ed070396d8bf3bb0d655138f5f1124901d5ea917279f99e270420f2"
+    }
+  },
+  "cleo_commit": "83318c23223546d10759d202d70f4fa2f7fe4688",
+  "environment": {
+    "hostname": "l40001.lvt.dkrz.de",
+    "numpy_version": "2.5.1",
+    "platform": "Linux-4.18.0-553.141.1.el8.x86_64-x86_64-with-glibc2.28",
+    "python_version": "3.13.14",
+    "slurm_account": "bb1153",
+    "slurm_job_id": "26534596",
+    "slurm_partition": "shared"
+  },
+  "initialization_family": "controlled",
+  "kernel_context": "golovin_calibration",
+  "number_of_superdroplets": 4096,
+  "population": {
+    "native_superdroplet_sha256": "d805fb278ed070396d8bf3bb0d655138f5f1124901d5ea917279f99e270420f2",
+    "readback_population_sha256": "c1290761c9626e01494f53684cd1920ecc934f008ccb552ad37ec48995c67490",
+    "represented_real_droplets": 8388608000000000000,
+    "source_population_sha256": "11d4871d5dc3e09a3156780fd0e391f6899439299360883608ca2f3cd59c5d08"
+  },
+  "project_commit": "e1935d7381535b793fda8b5905145ae7a9a9e8fb",
+  "schema": "controlled_initialization_bundle_v1",
+  "scientific_definition": {
+    "controlled_initialization": {
+      "freeze_binary_within_resolution": true,
+      "integer_multiplicity_allocation": "largest_remainder",
+      "maximum_relative_moment0_error": 1e-10,
+      "maximum_relative_moment3_error": 1e-10,
+      "maximum_relative_moment6_error": 0.01,
+      "method": "deterministic_log_volume_bin_quadrature",
+      "radius_support_um": [
+        1.0,
+        75.0
+      ],
+      "require_representative_inside_source_bin": true
+    },
+    "domain": {
+      "maxnsupers": 4096,
+      "ngbxs": 1,
+      "nspacedims": 3
+    },
+    "kernel_context": "golovin_calibration",
+    "python_initconds": {
+      "grid": {
+        "xgrid": [
+          0.0,
+          10000.0
+        ],
+        "ygrid": [
+          0.0,
+          10000.0
+        ],
+        "zgrid": [
+          0.0,
+          10000.0
+        ]
+      },
+      "supers": {
+        "dryradius": 1e-16,
+        "numconc": 8388608,
+        "rspan": [
+          1e-06,
+          7.5e-05
+        ],
+        "volexpr0": 3.0531e-05,
+        "xi_min": 10
+      }
+    }
+  },
+  "scientific_definition_sha256": "59d4d68ed70fc14916976e55112d7fb3af0b29bd5d210eb6adc9bafea40a46db",
+  "status": "frozen"
+}

@@ -1,0 +1,10 @@
+project_commit=bfd3bdfb21ebcad01a6d3c8524d3fc8eb1c708ef
+cleo_commit=83318c23223546d10759d202d70f4fa2f7fe4688
+build_job_id=26520981
+build_cpus=8
+mpicc=/sw/spack-levante/openmpi-4.1.2-mnmady/bin/mpicc
+mpicxx=/sw/spack-levante/openmpi-4.1.2-mnmady/bin/mpic++
+build_local_cleo_patch=libs/superdrops/collisions/collisions.hpp
+9992759099b234d47ce9e60e28a0948417e8260e20b44feeb86ef39f3606fadb  /home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/patches/cleo/0001-add-explicit-collision-rng-seed.patch
+4807b7c63e820661f37ad573e845841b734bdc8f81ce5b26eebb064bd5a70ca6  /home/b/b383673/SDM/cleo_builds/CLEO-SDM-Convergence/golovin_stage0/src/collisions0d/collisions0d_golovin
+03a71918f58f5bed143947b49961609073e2b44c688e7a1af9918517665e945c  /home/b/b383673/SDM/cleo_builds/CLEO-SDM-Convergence/golovin_stage0/src/collisions0d/collisions0d_long

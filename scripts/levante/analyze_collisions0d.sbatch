@@ -6,8 +6,6 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=940M
 #SBATCH --time=00:10:00
-#SBATCH --output=/scratch/b/b383673/SDM/logs/%x_%j.out
-#SBATCH --error=/scratch/b/b383673/SDM/logs/%x_%j.err
 
 # Analyze one completed collision-only box-model run.
 #
@@ -23,7 +21,10 @@ set -eo pipefail
 source /etc/profile
 set -u
 
-if [[ -n "${SLURM_SUBMIT_DIR:-}" ]]; then
+if [[ -n "${CLEO_SDM_PROJECT_ROOT:-}" ]]; then
+  SCRIPT_DIR="${CLEO_SDM_PROJECT_ROOT}/scripts/levante"
+elif [[ -n "${SLURM_SUBMIT_DIR:-}" ]] \
+  && [[ -f "${SLURM_SUBMIT_DIR}/scripts/levante/common.sh" ]]; then
   SCRIPT_DIR="${SLURM_SUBMIT_DIR}/scripts/levante"
 else
   SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -33,6 +34,7 @@ source "${SCRIPT_DIR}/common.sh"
 
 : "${KERNEL:?Set KERNEL to golovin or long at submission.}"
 : "${RUN_LABEL:?Set the completed RUN_LABEL at submission.}"
+ANALYSIS_LABEL="${ANALYSIS_LABEL:-analysis_stage0_v2}"
 
 if [[ "${KERNEL}" != "golovin" && "${KERNEL}" != "long" ]]; then
   echo "ERROR: KERNEL must be golovin or long, got ${KERNEL}" >&2
@@ -40,6 +42,10 @@ if [[ "${KERNEL}" != "golovin" && "${KERNEL}" != "long" ]]; then
 fi
 if [[ ! "${RUN_LABEL}" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
   echo "ERROR: RUN_LABEL contains unsupported characters: ${RUN_LABEL}" >&2
+  exit 2
+fi
+if [[ ! "${ANALYSIS_LABEL}" =~ ^analysis_stage0_v[0-9]+$ ]]; then
+  echo "ERROR: ANALYSIS_LABEL must match analysis_stage0_v<number>: ${ANALYSIS_LABEL}" >&2
   exit 2
 fi
 
@@ -50,8 +56,8 @@ cleo_sdm_print_environment
 
 run_directory="${CLEO_SDM_RUN_ROOT}/${RUN_LABEL}"
 cleo_source="${CLEO_SDM_BUILD_ROOT}/_deps/cleo-src"
-output_directory="${run_directory}/analysis_v1"
-staging_directory="${run_directory}/.analysis_v1_job${SLURM_JOB_ID}.tmp"
+output_directory="${run_directory}/${ANALYSIS_LABEL}"
+staging_directory="${run_directory}/.${ANALYSIS_LABEL}_job${SLURM_JOB_ID}.tmp"
 failed_directory="${run_directory}/analysis_failed_job${SLURM_JOB_ID}"
 python="${CLEO_SDM_PROJECT_ROOT}/.venv/bin/python"
 
@@ -84,19 +90,28 @@ trap preserve_failed_analysis EXIT
   --output-directory "${staging_directory}" \
   --times 0 1200 2400 3600
 
-test -f "${staging_directory}/bulk_diagnostics.csv"
+test -f "${staging_directory}/member_time_diagnostics.csv"
+test -f "${staging_directory}/member_summary.csv"
+if [[ "${KERNEL}" == "golovin" ]]; then
+  test -f "${staging_directory}/fixed_bin_distributions.npz"
+fi
 test -f "${staging_directory}/${KERNEL}_mass_distribution.png"
 test -f "${staging_directory}/${KERNEL}_bulk_diagnostics.png"
 test -f "${staging_directory}/diagnostic_metadata.json"
 
 (
   cd "${staging_directory}"
-  sha256sum \
-    bulk_diagnostics.csv \
-    "${KERNEL}_mass_distribution.png" \
-    "${KERNEL}_bulk_diagnostics.png" \
-    diagnostic_metadata.json \
-    >SHA256SUMS
+  checksum_files=(
+    member_time_diagnostics.csv
+    member_summary.csv
+    "${KERNEL}_mass_distribution.png"
+    "${KERNEL}_bulk_diagnostics.png"
+    diagnostic_metadata.json
+  )
+  if [[ "${KERNEL}" == "golovin" ]]; then
+    checksum_files+=(fixed_bin_distributions.npz)
+  fi
+  sha256sum "${checksum_files[@]}" >SHA256SUMS
   sha256sum -c SHA256SUMS
 )
 

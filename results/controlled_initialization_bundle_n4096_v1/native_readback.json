@@ -1,0 +1,74 @@
+{
+  "artifacts": {
+    "audit": {
+      "path": "/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/controlled_initialization_audit.json",
+      "sha256": "b38dde47fe62eadc4040de5bfd5c5d89ad75ae1cf4c1ad15d5e073df7b5677db"
+    },
+    "config": {
+      "path": "/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/config.yaml",
+      "sha256": "92499843f150c8c1e705b1a39436f2437298f3418b7a20e1b74d2980bc1608e9"
+    },
+    "grid_binary": {
+      "path": "/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/inputs/grid.dat",
+      "sha256": "90835b0f88c77e768281bcba9d4cf5d546810895c8a7c4902096679491279ea7"
+    },
+    "superdroplet_binary": {
+      "path": "/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/inputs/superdroplets.dat",
+      "sha256": "d805fb278ed070396d8bf3bb0d655138f5f1124901d5ea917279f99e270420f2"
+    }
+  },
+  "checks": {
+    "attribute_lengths_equal": true,
+    "binary_sha256_matches_audit": true,
+    "coordinates_inside_configured_bounds": true,
+    "exact_integer_physical_droplet_total": true,
+    "finite_dimensional_attributes": true,
+    "one_grid_box_only": true,
+    "represented_moments_match_audit": true
+  },
+  "coordinates": {
+    "coord1_m": {
+      "maximum_m": 9997.55859375,
+      "minimum_m": 0.0
+    },
+    "coord2_m": {
+      "maximum_m": 9997.55859375,
+      "minimum_m": 0.0
+    },
+    "coord3_m": {
+      "maximum_m": 9997.55859375,
+      "minimum_m": 0.0
+    }
+  },
+  "moments": {
+    "M0": {
+      "audit_represented": 8388608.0,
+      "readback": 8388608.0,
+      "relative_difference": 0.0
+    },
+    "M3": {
+      "audit_represented": 238740390128.70804,
+      "readback": 238740390128.70804,
+      "relative_difference": 0.0
+    },
+    "M6": {
+      "audit_represented": 1.358817751738688e+16,
+      "readback": 1.358817751738688e+16,
+      "relative_difference": 0.0
+    }
+  },
+  "population": {
+    "maximum_multiplicity": 9758949507368174,
+    "maximum_radius_um": 74.96020570377262,
+    "minimum_multiplicity": 146643540107,
+    "minimum_radius_um": 1.0005275928938142,
+    "number_of_superdroplets": 4096,
+    "population_sha256_exact_match": false,
+    "readback_population_sha256": "c1290761c9626e01494f53684cd1920ecc934f008ccb552ad37ec48995c67490",
+    "represented_real_droplets": 8388608000000000000,
+    "source_population_sha256": "11d4871d5dc3e09a3156780fd0e391f6899439299360883608ca2f3cd59c5d08"
+  },
+  "reader": "CLEO cleopy.initsuperdropsbinary_src.read_initsuperdrops",
+  "schema": "controlled_initialization_native_readback_v1",
+  "status": "passed"
+}

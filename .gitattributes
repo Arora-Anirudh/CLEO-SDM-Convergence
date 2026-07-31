@@ -1,3 +1,8 @@
 # Unified diffs require a one-character prefix on otherwise blank context
 # lines. Preserve that syntax and do not treat it as ordinary trailing space.
 *.patch whitespace=-blank-at-eol
+
+# Python's standard CSV dialect uses CRLF records. Treat the carriage return
+# as part of the line ending so copied, checksum-preserved result tables are
+# not reported as trailing whitespace.
+*.csv whitespace=cr-at-eol

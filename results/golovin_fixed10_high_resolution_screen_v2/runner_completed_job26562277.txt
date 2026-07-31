@@ -1,0 +1,15 @@
+status=completed
+completed_utc=2026-07-30T14:59:26Z
+slurm_job_id=26562277
+slurm_account=bb1153
+slurm_partition=shared
+slurm_ntasks=4
+slurm_cpus_per_task=1
+slurm_mem_per_node=3600
+slurm_time_limit=unknown
+worker_count=4
+runner_wall_seconds=5020
+project_commit=a7111ece5a9dcf9915f6b7c37e3791c1d65072aa
+matrix_sha256=c423686b64d33f035857e9584550e75dc5efe3bec43f2fbd98ccf3eee5e94a93
+completed_cases=80
+model_inventory_sha256=91fd954f519e32c09a5b4ddaf6537c9e87c0815e4e2c2d84be8f3a071be965e8

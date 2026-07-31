@@ -1,0 +1,64 @@
+{
+  "artifacts": {
+    "controlled_config": {
+      "path": "/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/source_controlled_config.yaml",
+      "sha256": "4c55c6333c3d6987bb8452a57959ba7a5581829d7776a6b6f2d310f49c7cd171"
+    },
+    "grid_file": {
+      "path": "/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/inputs/grid.dat",
+      "sha256": "90835b0f88c77e768281bcba9d4cf5d546810895c8a7c4902096679491279ea7"
+    },
+    "initializer_source": {
+      "path": "/home/b/b383673/SDM/CLEO-SDM-Convergence-golovin-protocol/scripts/controlled_initialization.py",
+      "sha256": "2823ebfcdaff0800720c4ea399a01e437278c80faf00a5099495a4e12401455f"
+    },
+    "source_config": {
+      "path": "/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/config.yaml",
+      "sha256": "92499843f150c8c1e705b1a39436f2437298f3418b7a20e1b74d2980bc1608e9"
+    },
+    "superdroplet_file": {
+      "path": "/home/b/b383673/SDM/CLEO-SDM-Convergence-records/controlled_bundles/golovin_controlled_N004096_v1/inputs/superdroplets.dat",
+      "sha256": "d805fb278ed070396d8bf3bb0d655138f5f1124901d5ea917279f99e270420f2"
+    }
+  },
+  "constraints": {
+    "moment0_and_moment3_controlled": true,
+    "moment6_forced": false,
+    "representatives_inside_source_bins": true
+  },
+  "distribution": {
+    "family": "volume_exponential_conditioned_on_finite_support",
+    "number_concentration_m3": 8388608.0,
+    "radius_support_um": [
+      1.0,
+      75.0
+    ],
+    "sample_volume_m3": 1000000000000.0,
+    "scale_radius_um": 30.531000000000002
+  },
+  "liquid_water_content_gm3": 0.9982363476244527,
+  "method": "deterministic_log_volume_bin_quadrature",
+  "moments": {
+    "M0_relative_error": 0.0,
+    "M0_represented": 8388608.0,
+    "M0_target": 8388608.0,
+    "M3_relative_error": -3.834823857230136e-16,
+    "M3_represented": 238740390128.70804,
+    "M3_target": 238740390128.70813,
+    "M6_relative_error": -8.33301475638709e-07,
+    "M6_represented": 1.358817751738688e+16,
+    "M6_target": 1.3588188840444692e+16
+  },
+  "population": {
+    "maximum_multiplicity": 9758949507368174,
+    "maximum_radius_um": 74.96020570377263,
+    "minimum_multiplicity": 146643540107,
+    "minimum_radius_um": 1.0005275928938144,
+    "number_of_superdroplets": 4096,
+    "population_sha256": "11d4871d5dc3e09a3156780fd0e391f6899439299360883608ca2f3cd59c5d08",
+    "represented_real_droplets": 8388608000000000000,
+    "target_real_droplets": 8388608000000000000
+  },
+  "schema": "controlled_initialization_audit_v1",
+  "status": "passed"
+}
