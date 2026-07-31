@@ -8,9 +8,11 @@
 #SBATCH --mem=3600M
 #SBATCH --time=00:10:00
 
-# Verify that four one-rank member-shaped Slurm steps can start concurrently
-# inside one allocation. This intentionally runs no CLEO executable and writes
-# no model data; it is a scheduler-layout gate for the production runner.
+# Verify that a reviewed number of one-rank member-shaped Slurm steps can start
+# concurrently inside one allocation. This intentionally runs no CLEO
+# executable and writes no model data; it is a scheduler-layout gate for the
+# production runner. Four workers remain the default for backwards
+# compatibility; larger probes must opt in explicitly.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
@@ -19,13 +21,17 @@ unset LC_ALL
 source /etc/profile
 set -u
 
-EXPECTED_WORKERS=4
+EXPECTED_WORKERS="${PARALLEL_PROBE_EXPECTED_WORKERS:-4}"
 PROBE_SLEEP_SECONDS="${PARALLEL_PROBE_SLEEP_SECONDS:-20}"
 START_WINDOW_SECONDS="${PARALLEL_PROBE_START_WINDOW_SECONDS:-10}"
 ACTIVE_USER="${USER:-$(id -un)}"
 DEFAULT_SCRATCH_ROOT="/scratch/${ACTIVE_USER:0:1}/${ACTIVE_USER}/SDM"
 PROBE_ROOT="${PARALLEL_PROBE_ROOT:-${DEFAULT_SCRATCH_ROOT}/CLEO-SDM-Convergence/probes}"
 
+if [[ ! "${EXPECTED_WORKERS}" =~ ^[1-9][0-9]*$ ]]; then
+  echo "ERROR: PARALLEL_PROBE_EXPECTED_WORKERS must be a positive integer." >&2
+  exit 2
+fi
 if ((SLURM_NTASKS != EXPECTED_WORKERS)); then
   echo "ERROR: expected ${EXPECTED_WORKERS} Slurm tasks, got ${SLURM_NTASKS}." >&2
   exit 2
