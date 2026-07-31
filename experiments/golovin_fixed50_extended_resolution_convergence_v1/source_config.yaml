@@ -1,0 +1,150 @@
+# Prospective balanced Golovin convergence experiment.
+#
+# This is a fresh collision ensemble and a fresh output namespace.  It does
+# not reuse any earlier model member or collision seed.  The controlled
+# initializations are regenerated under experiment-specific immutable bundle
+# labels so that every resolution has a single frozen initial population.
+
+experiment:
+  name: golovin_fixed50_extended_resolution_convergence_v1
+  status: production_ready_not_submitted
+  kernel: golovin
+  initialization_family: controlled
+  seed_namespace: cleo-sdm-convergence/golovin-fixed50-extended-resolution/v1
+
+analysis_protocol:
+  version: 3
+  classification: prospective_fixed_50_member_resolution_convergence
+  formal_convergence_claim_permitted: true
+  rationale: >-
+    Fifty independent collision streams at every resolution provide a
+    balanced fixed design for estimating analytical error, adjacent-resolution
+    improvement and convergence-rate behavior.  The design is prospectively
+    frozen before its model output is inspected.  Fifty members improve
+    precision relative to the exploratory ten-member screen but do not
+    guarantee that every uncertainty gate will pass.
+
+matrix:
+  max_superdroplets:
+    [4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576]
+  collision_timesteps_s: [0.1]
+  members_per_cell: 50
+  observation_timestep_s: 300.0
+  end_time_s: 3600.0
+  model_threads: 1
+  collision_seed_design: unique_per_case
+  controlled_bundle_labels:
+    4096: golovin_fixed50_extended_N004096_v1
+    8192: golovin_fixed50_extended_N008192_v1
+    16384: golovin_fixed50_extended_N016384_v1
+    32768: golovin_fixed50_extended_N032768_v1
+    65536: golovin_fixed50_extended_N065536_v1
+    131072: golovin_fixed50_extended_N131072_v1
+    262144: golovin_fixed50_extended_N262144_v1
+    524288: golovin_fixed50_extended_N524288_v1
+    1048576: golovin_fixed50_extended_N1048576_v1
+
+diagnostics:
+  radius_minimum_um: 1.0
+  radius_maximum_um: 5000.0
+  primary_log_radius_bins: 500
+  sensitivity_log_radius_bins: [250, 1000]
+  decision_times_s: [600.0, 1200.0, 1800.0, 2400.0, 3000.0, 3600.0]
+  confidence_level: 0.95
+  bootstrap_resamples: 10000
+  bootstrap_seed: 2026073101
+  bin_robustness_policy: diagnostic_only
+  ensemble_size_sensitivity:
+    time_s: 3600.0
+    member_counts: [10, 20, 30, 40, 50]
+    random_subset_draws: 2000
+    random_subset_seed: 2026073102
+    log_radius_bins: 500
+
+practical_convergence:
+  status: researcher_approved_prospective_fixed_design
+  protocol_version: 2
+  primary_log_radius_bins: 500
+  sensitivity_log_radius_bins: [250, 1000]
+  confidence_level: 0.95
+  bootstrap_resamples: 10000
+  bootstrap_seed: 2026073103
+  ensemble_prefixes: [10, 20, 30, 40, 50]
+  final_prefixes_for_stability: [40, 50]
+  minimum_worthwhile_improvement_absolute: 0.01
+  maximum_point_change_between_final_prefixes: 0.01
+  require_two_successive_doublings: true
+  sensitivity_bins_are_diagnostic_only: true
+  explicitly_excluded_diagnostic: successive_improvement_ratio
+  exclusion_reason: >-
+    Ratios of successive error reductions are unstable under ensemble noise
+    and approach a non-zero constant for ordinary power-law convergence.
+
+convergence_law:
+  status: researcher_approved_prospective_supporting_diagnostic
+  protocol_version: 1
+  selection_gate: false
+  primary_log_radius_bins: 500
+  metric_error_transform:
+    ensemble_mean_l1: identity
+    golovin_relative_error_radius_moment_0_m3: absolute_value
+    golovin_relative_error_radius_moment_6_um6_m3: absolute_value
+  highest_resolution_window_sizes: [4, 5, 6]
+  minimum_levels_per_fit: 4
+  model: error_floor_plus_power_law
+  formula: E(N) = E_inf + a * (N / N_min)^(-p)
+  exponent_grid:
+    minimum: 0.05
+    maximum: 2.0
+    spacing: 0.005
+  bootstrap_resamples: 2000
+  bootstrap_seed: 2026073104
+  interpretation: >-
+    Report the observed exponent, residual floor and their bootstrap
+    uncertainty across several high-resolution windows.  This supports
+    interpretation of whether the tested range remains power-law-like or
+    resolves a floor; it cannot by itself select a practical resolution.
+
+convergence_criteria:
+  analytical_agreement:
+    maximum_l1_upper_95ci: 0.05
+    moment0_relative_bias_margin: 0.05
+    moment6_relative_bias_margin: 0.05
+  adjacent_level_equivalence:
+    l1_absolute_difference_margin: 0.01
+    moment0_relative_difference_margin: 0.05
+    moment6_relative_difference_margin: 0.05
+  maximum_95ci_half_width:
+    l1_absolute: 0.01
+    moment0_relative: 0.025
+    moment6_relative: 0.05
+  maximum_relative_liquid_mass_drift: 1.0e-7
+  maximum_out_of_range_mass_fraction: 1.0e-6
+  require_pass_at_every_decision_time: true
+  require_next_level_confirmation: true
+
+timestep_selection_provenance:
+  selected_collision_timestep_s: 0.1
+  reference_collision_timestep_s: 0.1
+  source_experiment: golovin_controlled_timestep_screen_v1
+  source_result_status: selected_0p1_second
+
+data_isolation:
+  previous_raw_members_reused: 0
+  previous_collision_seeds_reused: 0
+  previous_run_labels_reused: 0
+  previous_run_directories_reused: 0
+  previous_controlled_bundle_labels_reused: 0
+  fresh_member_count: 450
+  fresh_controlled_bundle_count: 9
+  earlier_results_used_for_planning_only: true
+
+authorization:
+  matrix_reviewed: true
+  submission_authorized: false
+  required_before_submission:
+    - exact-revision build verification
+    - fresh nine-bundle ladder verification
+    - absent run and record paths
+    - live scratch-capacity check
+    - explicit compute and storage disclosure

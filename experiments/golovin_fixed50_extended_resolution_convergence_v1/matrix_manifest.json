@@ -1,0 +1,16 @@
+{
+  "status": "prepared_not_run",
+  "case_count": 450,
+  "matrix_file": "cases.tsv",
+  "matrix_sha256": "c1a8dfbce667aa6ceb0bd6982f9d6e958c696ba64485d90b2be268719ea7f65b",
+  "source_config": "source_config.yaml",
+  "source_config_sha256": "9caa82f56e8a34f8522f199faa95d582c988c7b8730b8affd998f8141d9e757d",
+  "case_index_minimum": 0,
+  "case_index_maximum": 449,
+  "submission_authorized": false,
+  "notes": [
+    "Preparing this matrix does not submit compute.",
+    "This manifest does not authorize production convergence compute.",
+    "Each case index owns one unique run label and output path."
+  ]
+}

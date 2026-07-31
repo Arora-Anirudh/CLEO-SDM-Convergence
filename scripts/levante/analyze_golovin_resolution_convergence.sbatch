@@ -155,11 +155,41 @@ summary_directory="${staging_directory}/ensemble_summary"
   --config "${RESOLUTION_CONFIG}" \
   --output-directory "${staging_directory}/resolution"
 
+if "${python}" -c \
+  'import sys; from ruamel.yaml import YAML; raise SystemExit("practical_convergence" not in YAML(typ="safe").load(open(sys.argv[1])))' \
+  "${RESOLUTION_CONFIG}"; then
+  "${python}" \
+    "${CLEO_SDM_PROJECT_ROOT}/scripts/analyze_golovin_practical_convergence.py" \
+    --combined-member-time "${summary_directory}/all_member_time_diagnostics.csv" \
+    --run-root "${CLEO_SDM_RUN_ROOT}" \
+    --matrix-file "${MATRIX_FILE}" \
+    --config "${RESOLUTION_CONFIG}" \
+    --output-directory "${staging_directory}/practical"
+fi
+
+if "${python}" -c \
+  'import sys; from ruamel.yaml import YAML; raise SystemExit("convergence_law" not in YAML(typ="safe").load(open(sys.argv[1])))' \
+  "${RESOLUTION_CONFIG}"; then
+  "${python}" \
+    "${CLEO_SDM_PROJECT_ROOT}/scripts/analyze_golovin_convergence_law.py" \
+    --combined-member-time "${summary_directory}/all_member_time_diagnostics.csv" \
+    --run-root "${CLEO_SDM_RUN_ROOT}" \
+    --matrix-file "${MATRIX_FILE}" \
+    --config "${RESOLUTION_CONFIG}" \
+    --output-directory "${staging_directory}/convergence_law"
+fi
+
 install -m 0440 "${MATRIX_FILE}" "${staging_directory}/cases.tsv"
 install -m 0440 "${RESOLUTION_CONFIG}" "${staging_directory}/source_config.yaml"
 install -m 0440 \
   "${CLEO_SDM_PROJECT_ROOT}/scripts/analyze_golovin_resolution_convergence.py" \
   "${staging_directory}/analyze_golovin_resolution_convergence.py"
+install -m 0440 \
+  "${CLEO_SDM_PROJECT_ROOT}/scripts/analyze_golovin_practical_convergence.py" \
+  "${staging_directory}/analyze_golovin_practical_convergence.py"
+install -m 0440 \
+  "${CLEO_SDM_PROJECT_ROOT}/scripts/analyze_golovin_convergence_law.py" \
+  "${staging_directory}/analyze_golovin_convergence_law.py"
 install -m 0440 \
   "${CLEO_SDM_PROJECT_ROOT}/scripts/golovin_stage0.py" \
   "${staging_directory}/golovin_stage0.py"

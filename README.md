@@ -77,14 +77,23 @@ pass threshold. The checksum-published
 [`variance_scaling_v1`](results/golovin_controlled_high_resolution_convergence_v1/variance_scaling_v1/)
 result supports the \(1/n\) approximation for the limiting late-time \(M_6\)
 rows but finds that a normal approximation is optimistic for nonlinear L1.
-No further Golovin member is authorized merely to force the strict rule. No
-Long convergence experiment begins before its distinct physical setup and
-stopping protocol are registered. An explicitly exploratory, fixed-10-member
-Golovin screen is prepared separately to measure broad resolution and
-computational scaling through 524,288 SDs; it cannot alter the formal
-100-member conclusion. See the
+No further Golovin member is authorized merely to force the old strict rule.
+No Long convergence experiment begins before its distinct physical setup and
+stopping protocol are registered. The completed exploratory fixed-10-member
+Golovin screen measured broad resolution and computational scaling through
+524,288 SDs; it does not alter the formal 100-member conclusion. See the
 [`fixed-10 screen design`](docs/experiments/golovin-fixed10-high-resolution-screen.md)
 and [`collisions0d parallel-execution note`](docs/implementation/collisions0d-parallelism.md).
+
+The next prospectively frozen study is a fresh balanced 50-member ladder from
+4,096 through 1,048,576 SDs. It retains the one-percentage-point
+minimum-worthwhile-improvement rule over two successive doublings, adds
+bootstrap-supported floor-plus-power-law fits, and completely excludes ratios
+of successive error reductions. The design and execution gates are in
+[`ADR 0009`](docs/decisions/0009-fixed50-extended-golovin-design.md) and the
+[`fixed-50 runbook`](docs/experiments/golovin-fixed50-extended-runbook.md).
+Its committed matrix is preparation only; Levante model submission still
+requires an explicit compute and storage disclosure.
 
 The completed high-resolution configuration is
 [`golovin_controlled_high_resolution_convergence.yaml`](config/golovin_controlled_high_resolution_convergence.yaml):

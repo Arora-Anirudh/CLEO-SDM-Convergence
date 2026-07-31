@@ -95,8 +95,12 @@ def validate_settings(config: dict[str, Any]) -> dict[str, Any]:
     final_prefixes = [int(value) for value in settings["final_prefixes_for_stability"]]
     primary_bins = int(settings["primary_log_radius_bins"])
     sensitivity_bins = [int(value) for value in settings["sensitivity_log_radius_bins"]]
-    if settings["status"] != "researcher_approved_existing_data_reanalysis_pending_clara_review":
-        raise ValueError("practical criterion has not been approved for existing-data reanalysis")
+    approved_statuses = {
+        "researcher_approved_existing_data_reanalysis_pending_clara_review",
+        "researcher_approved_prospective_fixed_design",
+    }
+    if settings["status"] not in approved_statuses:
+        raise ValueError("practical criterion has not been approved for this analysis scope")
     if prefixes != sorted(set(prefixes)) or prefixes[0] < 2:
         raise ValueError("ensemble prefixes must be unique, increasing and at least two")
     if final_prefixes != prefixes[-2:]:
@@ -580,6 +584,7 @@ def analyze_practical_convergence(
     else:
         status = "no_practical_resolution_selected"
         selected = None
+    prospective_fixed_design = settings["status"] == "researcher_approved_prospective_fixed_design"
     final_decision = {
         "schema": "golovin_practical_convergence_decision_v1",
         "status": status,
@@ -605,10 +610,18 @@ def analyze_practical_convergence(
         ),
         "sensitivity_bins_are_diagnostic_only": True,
         "prospective_scope": (
-            "prospective for future model data; transparent reanalysis of an already "
-            "inspected 100-member matrix"
+            "prospectively frozen before the fixed-50 model data are inspected"
+            if prospective_fixed_design
+            else (
+                "prospective for future model data; transparent reanalysis of an already "
+                "inspected 100-member matrix"
+            )
         ),
-        "clara_review_status": "pending",
+        "clara_review_status": (
+            "researcher proceeding under supervisor-granted freedom to explore"
+            if prospective_fixed_design
+            else "pending"
+        ),
         "independent_ensemble_warning": (
             "Different resolutions use independent collision ensembles; "
             "member indices are reproducible prefixes, not paired histories."
