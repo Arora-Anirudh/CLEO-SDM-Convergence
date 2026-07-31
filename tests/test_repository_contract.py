@@ -267,6 +267,7 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
     assert "#SBATCH --mem=3600M" in parallel_probe
     assert 'EXPECTED_WORKERS="${PARALLEL_PROBE_EXPECTED_WORKERS:-4}"' in parallel_probe
     assert "PARALLEL_PROBE_EXPECTED_WORKERS must be a positive integer" in parallel_probe
+    assert "starts: list[int]" not in parallel_probe
     assert "--exclusive \\\n      --mem=0 \\\n      --mpi=pmix_v3" in parallel_probe
     assert "--cpus-per-task=1 \\\n      --hint=nomultithread" in parallel_probe
     assert "PARALLEL_MEMBER_LAYOUT_PROBE_PASS=1" in parallel_probe

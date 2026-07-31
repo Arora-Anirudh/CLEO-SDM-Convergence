@@ -102,7 +102,7 @@ from pathlib import Path
 directory = Path(sys.argv[1])
 expected_workers = int(sys.argv[2])
 window_ns = int(sys.argv[3]) * 1_000_000_000
-starts: list[int] = []
+starts = []
 
 for worker_index in range(expected_workers):
     output = (directory / f"worker_{worker_index}.out").read_text(encoding="utf-8")
