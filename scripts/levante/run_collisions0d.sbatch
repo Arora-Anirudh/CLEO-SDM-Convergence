@@ -48,6 +48,11 @@ INITIALIZATION_SEED="${INITIALIZATION_SEED:-not_applicable}"
 CONTROLLED_BUNDLE="${CONTROLLED_BUNDLE:-}"
 MATRIX_CASE_INDEX="${MATRIX_CASE_INDEX:--1}"
 MEMBER_INDEX="${MEMBER_INDEX:--1}"
+# ``physical_cores`` is the production-safe default recommended by DKRZ: one
+# one-rank CLEO member is placed on one physical core. ``smt_threads`` exists
+# solely for a controlled resource-efficiency comparison where two independent
+# members are deliberately packed on the two hardware threads of a core.
+CPU_LAYOUT="${CLEO_SDM_CPU_LAYOUT:-physical_cores}"
 
 if [[ "${KERNEL}" != "golovin" && "${KERNEL}" != "long" ]]; then
   echo "ERROR: KERNEL must be golovin or long, got ${KERNEL}" >&2
@@ -91,6 +96,21 @@ if [[ ! "${MODEL_THREADS}" =~ ^[1-9][0-9]*$ ]]; then
   echo "ERROR: MODEL_THREADS must be a positive integer." >&2
   exit 2
 fi
+case "${CPU_LAYOUT}" in
+  physical_cores)
+    srun_layout_options=(--hint=nomultithread)
+    ;;
+  smt_threads)
+    # The enclosing allocation must explicitly request two tasks per core.
+    # Bind this one-rank step to one logical hardware thread; do not silently
+    # revert to the physical-core layout used by the production workflow.
+    srun_layout_options=(--cpu-bind=threads)
+    ;;
+  *)
+    echo "ERROR: CLEO_SDM_CPU_LAYOUT must be physical_cores or smt_threads." >&2
+    exit 2
+    ;;
+esac
 if [[ ! "${MAX_SUPERDROPLETS}" =~ ^[1-9][0-9]*$ ]]; then
   echo "ERROR: MAX_SUPERDROPLETS must be a positive integer." >&2
   exit 2
@@ -168,6 +188,7 @@ inprogress_manifest="${run_directory}/manifest.inprogress.txt"
   echo "kernel=${KERNEL}"
   echo "initialization_seed=${INITIALIZATION_SEED}"
   echo "collision_seed=${COLLISION_SEED}"
+  echo "cpu_layout=${CPU_LAYOUT}"
 } >"${inprogress_manifest}"
 
 preserve_failed_manifest() {
@@ -256,7 +277,7 @@ srun \
   --mpi=pmix_v3 \
   --ntasks=1 \
   --cpus-per-task="${MODEL_THREADS}" \
-  --hint=nomultithread \
+  "${srun_layout_options[@]}" \
   "${executable}" \
   "${runtime_config}" \
   "${COLLISION_SEED}"
@@ -300,6 +321,7 @@ module_list="$(module -t list 2>&1 | paste -sd, -)"
   echo "kernel=${KERNEL}"
   echo "initialization_seed=${INITIALIZATION_SEED}"
   echo "collision_seed=${COLLISION_SEED}"
+  echo "cpu_layout=${CPU_LAYOUT}"
   echo "run_label=${RUN_LABEL}"
   echo "matrix_stage=${MATRIX_STAGE}"
   echo "matrix_case_index=${MATRIX_CASE_INDEX}"

@@ -276,7 +276,10 @@ def test_registered_golovin_definitions_are_explicit_but_not_compute_authorizati
         encoding="utf-8"
     )
     assert "srun \\\n  --exclusive \\\n  --mem=0 \\\n  --mpi=pmix_v3" in collision_runner
-    assert '--cpus-per-task="${MODEL_THREADS}" \\\n  --hint=nomultithread' in collision_runner
+    assert 'CPU_LAYOUT="${CLEO_SDM_CPU_LAYOUT:-physical_cores}"' in collision_runner
+    assert "srun_layout_options=(--hint=nomultithread)" in collision_runner
+    assert "srun_layout_options=(--cpu-bind=threads)" in collision_runner
+    assert '"${srun_layout_options[@]}"' in collision_runner
 
     build_runner = (ROOT / "scripts" / "levante" / "build.sbatch").read_text(encoding="utf-8")
     assert "#SBATCH --cpus-per-task=8" in build_runner
