@@ -29,7 +29,7 @@ matrix:
     [4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576]
   collision_timesteps_s: [0.1]
   members_per_cell: 50
-  observation_timestep_s: 300.0
+  observation_timestep_s: 600.0
   end_time_s: 3600.0
   model_threads: 1
   collision_seed_design: unique_per_case

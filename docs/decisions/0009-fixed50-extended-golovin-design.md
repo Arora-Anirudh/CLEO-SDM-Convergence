@@ -17,8 +17,10 @@ N_{\rm SD}=4096,\ldots,1048576
 
 in factor-of-two steps.  The experiment contains 450 fresh model members.
 It uses the already selected 0.1-s collision timestep, the controlled
-initialization method, 300-s state output and the six registered decision
-times from 600 through 3600 s.
+initialization method, 600-s state output and the six registered decision
+times from 600 through 3600 s.  The output cadence equals the decision cadence;
+the earlier 300-s intermediate states are not needed for any registered
+estimand.
 
 No earlier model output, collision seed, run label, run directory or
 controlled-bundle label is reused.  Each resolution receives one newly
@@ -129,13 +131,15 @@ projects approximately:
 - 24.7 member CPU-hours and 35.5 GB for 4096--524288 SDs;
 - approximately 30--36 additional member CPU-hours for 50 members at
   1048576 SDs, based on the two highest measured runtime doublings; and
-- approximately 12--15 GB additional raw Zarr for the new highest level.
+- approximately 6--8 GB additional raw Zarr for the new highest level after
+  changing the fresh experiment from 300-s to 600-s full-state output.
 
 The current planning range is therefore roughly 55--61 member CPU-hours and
-48--51 GB of new raw SCRATCH data.  These are estimates, not a Slurm request
-or authorization.  A live capacity check, exact-build gate, fresh bundle
-gate, absent-path gate and explicit allocation disclosure are required before
-submission.
+26--29 GB of new raw SCRATCH data.  The storage estimate scales the measured
+13-state stores to the seven states required at 0, 600, ..., 3600 s.  These
+are estimates, not a Slurm request or authorization.  A live capacity check,
+exact-build gate, fresh bundle gate, absent-path gate and explicit allocation
+disclosure are required before submission.
 
 ## 7. Interpretation boundary
 

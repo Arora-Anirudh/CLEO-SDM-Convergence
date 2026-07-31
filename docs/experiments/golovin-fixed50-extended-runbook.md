@@ -10,7 +10,7 @@
   per resolution, reused byte-for-byte by the 50 collision members
 - Collision timestep: 0.1 s
 - End time: 3600 s
-- State output: every 300 s
+- State output: every 600 s, exactly matching the registered analysis cadence
 - Decision times: 600, 1200, 1800, 2400, 3000 and 3600 s
 - Resolutions: 4096 through 1048576 SDs in factor-of-two steps
 - Members: 50 independent collision streams per resolution
@@ -72,7 +72,7 @@ Projection from the completed fixed-10 ladder:
 - model work: approximately 55--61 physical core-hours;
 - model elapsed time with eight concurrent workers: approximately 7--8 h,
   before queueing and with some load/runtime uncertainty;
-- new raw SCRATCH: approximately 48--51 GB;
+- new raw SCRATCH: approximately 26--29 GB;
 - bundle preparation: one CPU, no collision model, no Zarr output;
 - analysis: one CPU, reading all 450 Zarr stores and producing compact
   checksum-published results.
