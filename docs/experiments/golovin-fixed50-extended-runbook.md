@@ -53,31 +53,82 @@ No successive-improvement ratio is calculated or plotted.
    account, partition, CPU, memory, walltime, concurrency, maximum CPU-hour,
    expected CPU-hour and storage disclosure.
 
-## Planned Levante layout
+## Reviewed Levante layout
 
-The model is one Slurm allocation, not 450 scheduler jobs.  Eight worker
+The model is one Slurm allocation, not 450 scheduler jobs.  Sixteen worker
 loops run independent one-rank, one-thread CLEO members concurrently.  Each
 member is launched with `srun --exclusive --mem=0 --mpi=pmix_v3` and one
 physical core.  `collisions0d` itself remains a one-rank executable; OpenMPI
 provides the launch/runtime layer and does not split one box member across
 MPI ranks.
 
+A Levante node has many more cores than this allocation, but unrequested
+cores do not belong to the experiment.  The 16 Slurm tasks are the 16
+concurrent model members.  Hardware threads reported by Slurm are not extra
+independent physical cores and are deliberately excluded with
+`--hint=nomultithread`.
+
 The runner is restartable: a completed member is checksum-audited and
 skipped; an incomplete or mismatched path stops for inspection.
 
-## Projected resources
+## Requested and projected resources
 
 Projection from the completed fixed-10 ladder:
 
 - model work: approximately 55--61 physical core-hours;
-- model elapsed time with eight concurrent workers: approximately 7--8 h,
+- model elapsed time with 16 concurrent workers: approximately 3.5--4.5 h,
   before queueing and with some load/runtime uncertainty;
 - new raw SCRATCH: approximately 26--29 GB;
-- bundle preparation: one CPU, no collision model, no Zarr output;
-- analysis: one CPU, reading all 450 Zarr stores and producing compact
-  checksum-published results.
+- exact build: eight physical cores, 4 GiB and 10 minutes;
+- bundle preparation: input-only, no collision model and no Zarr output;
+- model: 16 physical cores, 14.4 GiB and five hours, giving an 80-core-hour
+  model ceiling;
+- analysis: one physical core, 940 MiB and three hours, reading all 450 Zarr
+  stores and producing compact checksum-published results.
 
-These are planning values, not a submission record.
+The complete requested ceiling is about 84.7 physical core-hours.  Expected
+actual work is about 56--63 physical core-hours, mostly in the model stage.
+Expected end-to-end elapsed compute time, excluding queueing, is approximately
+4.25--6 hours: minutes for build/input preparation, 3.5--4.5 hours for the
+model, and 0.75--1.5 hours for analysis.
+
+## Submission record
+
+The production checkout on Levante is detached at project commit `8e39a60`
+with CLEO pinned at `83318c23`.  The committed 450-row matrix SHA-256 is:
+
+```text
+cc838bc63f2d939f99f21013836d134195de6339658ba9555ca48d17d9a293ed
+```
+
+The execution gates and jobs were:
+
+1. Job `26587062`, the first 16-worker layout probe, safely failed after all
+   worker steps ran because its final login-node-compatible parser used a
+   Python type annotation unsupported by Levante's system Python.  No CLEO
+   model ran.
+2. Commit `8e39a60` removed that compatibility error.  Replacement probe
+   `26587104` completed in 33 seconds; all 16 one-core steps launched within
+   0.291 seconds and the probe reported
+   `PARALLEL_MEMBER_LAYOUT_PROBE_PASS=1`.
+3. Exact build job `26587225` completed in 2 minutes 11 seconds.
+4. Input-only bundle job `26587226` generated and froze the first eight
+   bundles, then exhausted its 940-MiB allocation while constructing the
+   1,048,576-SD bundle.  Its dependent model and analysis jobs, `26587227`
+   and `26587228`, were automatically cancelled before allocation.
+5. The incomplete bundle and record were preserved under names ending in
+   `_failed_job26587226`.  Retry job `26587405` used 4 GiB, generated only
+   the missing bundle, and completed in 31 seconds.  All nine immutable
+   bundles then passed independent checksum, resolution, configuration,
+   project-commit and CLEO-commit verification.
+6. Replacement model job `26587532` was submitted with 16 physical workers,
+   14.4 GiB and a five-hour ceiling.  Analysis job `26587533` depends on its
+   successful completion and requests one physical core, 940 MiB and three
+   hours.  Both jobs email the researcher on completion or failure.
+
+This section is an execution record, not a convergence result.  A running
+model and a pending dependent analysis do not establish scientific
+convergence.
 
 ## Post-run products
 
