@@ -160,14 +160,20 @@ def fit_floor_power_law_grid(
         best_amplitude[improve] = amplitude[improve]
         best_exponent[improve] = exponent
 
-    if np.any(~np.isfinite(best_sse)):
-        raise RuntimeError("no non-negative floor-plus-power-law fit was found")
+    # Independent-member bootstrap draws can contain a locally increasing
+    # error sequence. Such a draw genuinely has no admissible fit under the
+    # registered non-negative, decreasing power-law model. It is evidence that
+    # this supporting model is not applicable to that draw, not a reason to
+    # abort the complete resolution analysis.
+    fit_valid = np.isfinite(best_sse)
+    best_sse[~fit_valid] = np.nan
     fitted = {
         "floor": best_floor,
         "amplitude": best_amplitude,
         "exponent": best_exponent,
         "sse": best_sse,
         "rmse": np.sqrt(best_sse / resolutions.size),
+        "fit_valid": fit_valid,
     }
     if squeeze:
         return {key: value[0] for key, value in fitted.items()}
@@ -301,36 +307,57 @@ def analyze_convergence_law(
                     p_values,
                 )
 
+                point_fit_valid = bool(point_fit["fit_valid"])
+                bootstrap_fit_valid = np.asarray(bootstrap_fit["fit_valid"], dtype=bool)
+                bootstrap_fit_count = int(np.count_nonzero(bootstrap_fit_valid))
+                bootstrap_fit_fraction = bootstrap_fit_count / bootstrap_fit_valid.size
                 next_resolution = 2 * selected[-1]
-                next_scale = next_resolution / selected[0]
-                predicted_next = float(
-                    point_fit["floor"]
-                    + point_fit["amplitude"] * next_scale ** (-point_fit["exponent"])
-                )
-                predicted_next_draws = bootstrap_fit["floor"] + bootstrap_fit[
-                    "amplitude"
-                ] * next_scale ** (-bootstrap_fit["exponent"])
-                predicted_gain = max(point_errors[-1] - predicted_next, 0.0)
-                predicted_gain_draws = np.maximum(
-                    draw_errors[:, -1] - predicted_next_draws,
-                    0.0,
-                )
-                floor_low, floor_high = quantile_interval(
-                    bootstrap_fit["floor"],
-                    confidence_level,
-                )
-                exponent_low, exponent_high = quantile_interval(
-                    bootstrap_fit["exponent"],
-                    confidence_level,
-                )
-                next_low, next_high = quantile_interval(
-                    predicted_next_draws,
-                    confidence_level,
-                )
-                gain_low, gain_high = quantile_interval(
-                    predicted_gain_draws,
-                    confidence_level,
-                )
+
+                # Do not calculate confidence intervals conditional on only
+                # the admissible bootstrap draws. That would hide the model
+                # failure and overstate uncertainty precision. A complete
+                # bootstrap fit is required for uncertainty to be reported.
+                uncertainty_estimable = point_fit_valid and bool(np.all(bootstrap_fit_valid))
+                if point_fit_valid:
+                    next_scale = next_resolution / selected[0]
+                    predicted_next = float(
+                        point_fit["floor"]
+                        + point_fit["amplitude"] * next_scale ** (-point_fit["exponent"])
+                    )
+                    predicted_gain = max(point_errors[-1] - predicted_next, 0.0)
+                else:
+                    predicted_next = float("nan")
+                    predicted_gain = float("nan")
+
+                if uncertainty_estimable:
+                    predicted_next_draws = bootstrap_fit["floor"] + bootstrap_fit[
+                        "amplitude"
+                    ] * next_scale ** (-bootstrap_fit["exponent"])
+                    predicted_gain_draws = np.maximum(
+                        draw_errors[:, -1] - predicted_next_draws,
+                        0.0,
+                    )
+                    floor_low, floor_high = quantile_interval(
+                        bootstrap_fit["floor"],
+                        confidence_level,
+                    )
+                    exponent_low, exponent_high = quantile_interval(
+                        bootstrap_fit["exponent"],
+                        confidence_level,
+                    )
+                    next_low, next_high = quantile_interval(
+                        predicted_next_draws,
+                        confidence_level,
+                    )
+                    gain_low, gain_high = quantile_interval(
+                        predicted_gain_draws,
+                        confidence_level,
+                    )
+                else:
+                    floor_low = floor_high = float("nan")
+                    exponent_low = exponent_high = float("nan")
+                    next_low = next_high = float("nan")
+                    gain_low = gain_high = float("nan")
                 output_rows.append(
                     {
                         "time_s": time_s,
@@ -343,6 +370,16 @@ def analyze_convergence_law(
                         "window_resolutions_json": json.dumps(selected),
                         "window_observed_errors_json": json.dumps(point_errors.tolist()),
                         "observed_error_at_window_max": point_errors[-1],
+                        "point_fit_status": (
+                            "admissible" if point_fit_valid else "no_nonnegative_decay_fit"
+                        ),
+                        "bootstrap_fit_count": bootstrap_fit_count,
+                        "bootstrap_fit_fraction": bootstrap_fit_fraction,
+                        "uncertainty_status": (
+                            "estimable_all_bootstrap_draws_admissible"
+                            if uncertainty_estimable
+                            else "not_estimable_some_bootstrap_draws_unfittable"
+                        ),
                         "fitted_error_floor": float(point_fit["floor"]),
                         "fitted_error_floor_95ci_low": floor_low,
                         "fitted_error_floor_95ci_high": floor_high,
@@ -358,11 +395,18 @@ def analyze_convergence_law(
                         "predicted_next_improvement": predicted_gain,
                         "predicted_next_improvement_95ci_low": gain_low,
                         "predicted_next_improvement_95ci_high": gain_high,
-                        "floor_strictly_positive_at_95pct": floor_low > 0.0,
+                        "floor_strictly_positive_at_95pct": bool(
+                            uncertainty_estimable and floor_low > 0.0
+                        ),
                         "selection_gate": False,
                     }
                 )
 
+    point_fit_count = sum(row["point_fit_status"] == "admissible" for row in output_rows)
+    full_bootstrap_fit_count = sum(
+        row["uncertainty_status"] == "estimable_all_bootstrap_draws_admissible"
+        for row in output_rows
+    )
     decision = {
         "schema": "golovin_convergence_law_diagnostic_v1",
         "status": "supporting_diagnostic_only",
@@ -379,6 +423,16 @@ def analyze_convergence_law(
             "continuing power-law-like error reduction from an identifiable residual floor. "
             "Do not select a practical resolution from this fit alone."
         ),
+        "fit_admissibility": {
+            "total_fit_rows": len(output_rows),
+            "point_fit_rows_admissible": point_fit_count,
+            "rows_with_all_bootstrap_draws_admissible": full_bootstrap_fit_count,
+            "uncertainty_policy": (
+                "Intervals are not reported when any bootstrap draw has no admissible "
+                "non-negative decreasing floor-plus-power-law fit; no conditional "
+                "interval is substituted."
+            ),
+        },
         "successive_improvement_ratio_included": False,
     }
     return output_rows, decision
@@ -397,6 +451,8 @@ def plot_late_time_fits(
         rows = [row for row in selected if row["metric"] == metric]
         for color, window_size in zip(colors, window_sizes, strict=True):
             row = next(value for value in rows if int(value["window_size"]) == window_size)
+            if row["point_fit_status"] != "admissible":
+                continue
             minimum = int(row["window_min_superdroplets"])
             maximum = int(row["window_max_superdroplets"])
             grid = np.geomspace(minimum, 2 * maximum, 200)
@@ -432,7 +488,8 @@ def plot_late_time_fits(
         f"Golovin error-law fits at {time_s / 60.0:g} min (supporting diagnostic)",
         fontsize=14,
     )
-    fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.5, 0.88), ncol=3)
+    if handles:
+        fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.5, 0.88), ncol=3)
     fig.subplots_adjust(left=0.07, right=0.99, bottom=0.16, top=0.72, wspace=0.27)
     fig.savefig(output, dpi=300, facecolor="white")
     plt.close(fig)

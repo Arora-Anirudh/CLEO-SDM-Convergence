@@ -98,3 +98,16 @@ def test_power_law_fit_recovers_known_positive_floor_for_multiple_draws() -> Non
     assert np.allclose(fit["floor"], [0.012, 0.01212], atol=2.0e-4)
     assert np.allclose(fit["exponent"], [0.6, 0.6], atol=0.005)
     assert np.all(np.asarray(fit["rmse"]) < 1.0e-10)
+
+
+def test_power_law_fit_reports_unfittable_increasing_draw_without_raising() -> None:
+    module = load_law_module()
+    resolutions = np.asarray([4096, 8192, 16384, 32768], dtype=float)
+    errors = np.asarray([0.02, 0.03, 0.04, 0.05])
+    p_values = np.arange(0.05, 2.0001, 0.005)
+
+    fit = module.fit_floor_power_law_grid(resolutions, errors, p_values)
+
+    assert not bool(fit["fit_valid"])
+    assert np.isnan(float(fit["floor"]))
+    assert np.isnan(float(fit["rmse"]))
