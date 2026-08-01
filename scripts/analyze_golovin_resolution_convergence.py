@@ -185,9 +185,28 @@ def validate_inputs(
     actual_resolutions = sorted({int(row["max_superdroplets"]) for row in matrix_rows})
     if actual_resolutions != expected_resolutions:
         raise RuntimeError("matrix resolutions differ from the registered configuration")
-    expected_members = int(config["matrix"]["members_per_cell"])
+    raw_member_counts = config["matrix"].get("members_per_resolution")
+    if raw_member_counts is None:
+        expected_members_by_resolution = {
+            resolution: int(config["matrix"]["members_per_cell"])
+            for resolution in expected_resolutions
+        }
+    else:
+        if not isinstance(raw_member_counts, dict):
+            raise RuntimeError("members_per_resolution must be a mapping when provided")
+        expected_members_by_resolution = {
+            int(resolution): int(member_count)
+            for resolution, member_count in raw_member_counts.items()
+        }
+        if set(expected_members_by_resolution) != set(expected_resolutions):
+            raise RuntimeError(
+                "members_per_resolution must cover exactly the registered resolutions"
+            )
+        if any(member_count < 2 for member_count in expected_members_by_resolution.values()):
+            raise RuntimeError("each registered resolution requires at least two members")
     for resolution in expected_resolutions:
         actual_members = sum(int(row["max_superdroplets"]) == resolution for row in matrix_rows)
+        expected_members = expected_members_by_resolution[resolution]
         if actual_members != expected_members:
             raise RuntimeError(
                 f"resolution {resolution} has {actual_members} rows, expected {expected_members}"

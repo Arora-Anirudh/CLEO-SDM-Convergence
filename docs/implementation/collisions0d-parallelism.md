@@ -34,11 +34,12 @@ or output path. It only changes scheduler layout.
 
 The resolution screen requires independent collision RNG streams. Those
 members have no data dependency, so they are embarrassingly parallel. The
-project's restartable runner launches up to four workers, each with a
-disjoint subset of the immutable matrix. Each worker calls `srun` for one
-rank/one thread with `--exclusive --mem=0`; Slurm binds it to a separate
-allocated logical CPU without assigning the complete allocation memory to
-each member step.
+fixed-10 runner was validated with four background worker loops. The targeted
+high-resolution extension uses explicit `srun` steps: twenty worker loops,
+each one rank/one thread with `--exclusive --mem=0 --cpu-bind=cores`. Both
+layouts use disjoint immutable-matrix rows; the explicit extension layout
+binds each worker to a separate physical core without assigning the complete
+allocation memory to every member step.
 
 The `--mem=0` is important on this specific four-worker layout. Without it,
 each nested `srun` inherited the allocation's full 3.6-GiB memory request;
@@ -60,9 +61,9 @@ core for typical applications and documents this exact hint in its
 For a fixed amount of model work, four concurrent one-thread members use
 approximately the same CPU-hours as four sequential members, but reduce
 elapsed time toward one quarter, subject to load imbalance and filesystem
-overhead. The previous 400-member high-resolution Golovin calculation already
-used this layout successfully: four workers inside one job allocation, not
-400 separate scheduler jobs.
+overhead. The earlier high-resolution calculation used one bounded allocation,
+not hundreds of scheduler jobs. The targeted 200-member extension preserves
+that policy while making each worker an explicit Slurm step.
 
 ## What Levante contributes
 

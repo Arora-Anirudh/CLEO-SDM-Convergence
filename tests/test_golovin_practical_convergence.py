@@ -202,6 +202,40 @@ def test_diminishing_returns_uses_absolute_one_sided_upper_bound() -> None:
     )
 
 
+def test_targeted_member_counts_are_recorded_per_resolution() -> None:
+    module = load_module()
+    rows, matrix_rows, config, archives = synthetic_inputs()
+    config["practical_convergence"].pop("ensemble_prefixes")
+    config["practical_convergence"].pop("final_prefixes_for_stability")
+    config["practical_convergence"]["targeted_member_counts_by_resolution"] = {
+        512: 4,
+        1024: 3,
+        2048: 2,
+    }
+
+    _, changes, decision = module.evaluate_prefix(
+        rows=rows,
+        matrix_rows=matrix_rows,
+        config=config,
+        archives=archives,
+        member_count=4,
+        bin_count=500,
+        member_counts_by_resolution={512: 4, 1024: 3, 2048: 2},
+    )
+
+    assert decision["members_by_resolution"] == {"512": 4, "1024": 3, "2048": 2}
+    lower_counts = {
+        int(row["lower_n_members"]) for row in changes if int(row["lower_max_superdroplets"]) == 512
+    }
+    upper_counts = {
+        int(row["upper_n_members"])
+        for row in changes
+        if int(row["upper_max_superdroplets"]) == 1024
+    }
+    assert lower_counts == {4}
+    assert upper_counts == {3}
+
+
 def test_practical_plots_are_written(tmp_path: Path) -> None:
     module = load_module()
     rows, matrix_rows, config, archives = synthetic_inputs()

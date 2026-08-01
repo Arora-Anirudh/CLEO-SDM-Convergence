@@ -91,8 +91,9 @@ def percentile_interval(
 
 def validate_settings(config: dict[str, Any]) -> dict[str, Any]:
     settings = config["practical_convergence"]
-    prefixes = [int(value) for value in settings["ensemble_prefixes"]]
-    final_prefixes = [int(value) for value in settings["final_prefixes_for_stability"]]
+    targeted_counts = settings.get("targeted_member_counts_by_resolution")
+    prefixes = [int(value) for value in settings.get("ensemble_prefixes", [])]
+    final_prefixes = [int(value) for value in settings.get("final_prefixes_for_stability", [])]
     primary_bins = int(settings["primary_log_radius_bins"])
     sensitivity_bins = [int(value) for value in settings["sensitivity_log_radius_bins"]]
     approved_statuses = {
@@ -101,10 +102,16 @@ def validate_settings(config: dict[str, Any]) -> dict[str, Any]:
     }
     if settings["status"] not in approved_statuses:
         raise ValueError("practical criterion has not been approved for this analysis scope")
-    if prefixes != sorted(set(prefixes)) or prefixes[0] < 2:
-        raise ValueError("ensemble prefixes must be unique, increasing and at least two")
-    if final_prefixes != prefixes[-2:]:
-        raise ValueError("stability prefixes must be the final two ensemble prefixes")
+    if targeted_counts is None:
+        if not prefixes or prefixes != sorted(set(prefixes)) or prefixes[0] < 2:
+            raise ValueError("ensemble prefixes must be unique, increasing and at least two")
+        if final_prefixes != prefixes[-2:]:
+            raise ValueError("stability prefixes must be the final two ensemble prefixes")
+    else:
+        if not isinstance(targeted_counts, dict) or not targeted_counts:
+            raise ValueError("targeted member counts must be a non-empty mapping")
+        if any(int(value) < 2 for value in targeted_counts.values()):
+            raise ValueError("targeted member counts must be at least two")
     if primary_bins not in BIN_COUNTS:
         raise ValueError("primary practical-convergence bin count is not registered")
     if sorted([primary_bins, *sensitivity_bins]) != list(BIN_COUNTS):
@@ -155,8 +162,14 @@ def evaluate_prefix(
     archives: dict[str, dict[str, np.ndarray]],
     member_count: int,
     bin_count: int,
+    member_counts_by_resolution: dict[int, int] | None = None,
 ) -> tuple[list[dict[str, object]], list[dict[str, object]], dict[str, object]]:
-    """Evaluate one member prefix and one fixed-bin definition."""
+    """Evaluate one member prefix and one fixed-bin definition.
+
+    ``member_counts_by_resolution`` supports a documented targeted follow-up
+    with unequal complete ensembles. When omitted, the ordinary balanced
+    prefix definition is retained exactly.
+    """
     settings = validate_settings(config)
     criteria = config["convergence_criteria"]
     decision_times = [float(value) for value in config["diagnostics"]["decision_times_s"]]
@@ -171,16 +184,37 @@ def evaluate_prefix(
     }
 
     resolutions = sorted({int(row["max_superdroplets"]) for row in matrix_rows})
-    members_by_resolution = {
+    available_members_by_resolution = {
         resolution: sorted(
             int(row["member_index"])
             for row in matrix_rows
             if int(row["max_superdroplets"]) == resolution
-        )[:member_count]
+        )
         for resolution in resolutions
     }
-    if any(len(members) != member_count for members in members_by_resolution.values()):
-        raise ValueError(f"member prefix {member_count} is unavailable at every resolution")
+    if member_counts_by_resolution is None:
+        requested_member_counts = {resolution: member_count for resolution in resolutions}
+    else:
+        requested_member_counts = {
+            int(resolution): int(count) for resolution, count in member_counts_by_resolution.items()
+        }
+        if set(requested_member_counts) != set(resolutions):
+            raise ValueError("targeted member counts must cover exactly the analyzed resolutions")
+        if any(count < 2 for count in requested_member_counts.values()):
+            raise ValueError("targeted member counts must be at least two")
+    members_by_resolution = {
+        resolution: available_members_by_resolution[resolution][
+            : requested_member_counts[resolution]
+        ]
+        for resolution in resolutions
+    }
+    for resolution, members in members_by_resolution.items():
+        requested = requested_member_counts[resolution]
+        if len(members) != requested:
+            raise ValueError(f"member prefix {requested} is unavailable at resolution {resolution}")
+    design_token = ";".join(
+        f"{resolution}:{requested_member_counts[resolution]}" for resolution in resolutions
+    )
     matrix_lookup = {
         (int(row["max_superdroplets"]), int(row["member_index"])): row for row in matrix_rows
     }
@@ -219,7 +253,7 @@ def evaluate_prefix(
             )
             point = fixed_bin_relative_l1(np.mean(stack, axis=0), analytical, edges)
             rng = np.random.default_rng(
-                derived_seed(base_seed, "l1", member_count, bin_count, resolution, time_s)
+                derived_seed(base_seed, "l1", design_token, bin_count, resolution, time_s)
             )
             draw_indices = rng.integers(
                 0,
@@ -235,6 +269,7 @@ def evaluate_prefix(
             estimate_rows.append(
                 {
                     "ensemble_size": member_count,
+                    "n_members": len(members),
                     "log_radius_bins": bin_count,
                     "max_superdroplets": resolution,
                     "time_s": time_s,
@@ -264,7 +299,7 @@ def evaluate_prefix(
                     seed=derived_seed(
                         base_seed,
                         "moment",
-                        member_count,
+                        design_token,
                         bin_count,
                         resolution,
                         time_s,
@@ -277,6 +312,7 @@ def evaluate_prefix(
                 estimate_rows.append(
                     {
                         "ensemble_size": member_count,
+                        "n_members": len(members),
                         "log_radius_bins": bin_count,
                         "max_superdroplets": resolution,
                         "time_s": time_s,
@@ -312,6 +348,8 @@ def evaluate_prefix(
                 change_rows.append(
                     {
                         "ensemble_size": member_count,
+                        "lower_n_members": len(members_by_resolution[lower]),
+                        "upper_n_members": len(members_by_resolution[upper]),
                         "log_radius_bins": bin_count,
                         "lower_max_superdroplets": lower,
                         "upper_max_superdroplets": upper,
@@ -344,6 +382,9 @@ def evaluate_prefix(
     selected = min(accepted) if accepted else None
     decision = {
         "ensemble_size": member_count,
+        "members_by_resolution": {
+            str(resolution): len(members) for resolution, members in members_by_resolution.items()
+        },
         "log_radius_bins": bin_count,
         "selected_candidate": selected,
         "resolution_analytical_validity_pass": {

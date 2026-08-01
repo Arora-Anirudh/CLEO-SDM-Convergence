@@ -110,6 +110,9 @@ def validate_config(config: dict[str, Any]) -> None:
         raise ValueError("collision timesteps must be unique")
     if int(matrix["members_per_cell"]) < 1:
         raise ValueError("members_per_cell must be positive")
+    member_index_start = int(matrix.get("member_index_start", 0))
+    if member_index_start < 0:
+        raise ValueError("member_index_start must be non-negative")
     if float(matrix["observation_timestep_s"]) <= 0:
         raise ValueError("observation timestep must be positive")
     if float(matrix["end_time_s"]) < float(matrix["observation_timestep_s"]):
@@ -145,12 +148,20 @@ def build_cases(config: dict[str, Any]) -> list[dict[str, int | float | str]]:
     }
     cases: list[dict[str, int | float | str]] = []
 
+    member_index_start = int(matrix.get("member_index_start", 0))
+    matrix_stage = str(experiment.get("matrix_stage", experiment["name"]))
+    if not matrix_stage:
+        raise ValueError("matrix_stage must be non-empty")
+
     for max_superdroplets in sorted(int(value) for value in matrix["max_superdroplets"]):
         for collision_timestep_s in sorted(
             (float(value) for value in matrix["collision_timesteps_s"]),
             reverse=True,
         ):
-            for member_index in range(int(matrix["members_per_cell"])):
+            for member_index in range(
+                member_index_start,
+                member_index_start + int(matrix["members_per_cell"]),
+            ):
                 case_index = len(cases)
                 timestep_token = f"{collision_timestep_s:.6g}".replace(".", "p")
                 run_label = (
@@ -161,7 +172,7 @@ def build_cases(config: dict[str, Any]) -> list[dict[str, int | float | str]]:
                     {
                         "case_index": case_index,
                         "run_label": run_label,
-                        "matrix_stage": experiment["name"],
+                        "matrix_stage": matrix_stage,
                         "initialization_family": experiment["initialization_family"],
                         "kernel": experiment["kernel"],
                         "max_superdroplets": max_superdroplets,
@@ -250,6 +261,8 @@ def write_matrix(
         "source_config_sha256": sha256_file(config_copy),
         "case_index_minimum": 0,
         "case_index_maximum": len(cases) - 1,
+        "member_index_minimum": min(int(case["member_index"]) for case in cases),
+        "member_index_maximum": max(int(case["member_index"]) for case in cases),
         "submission_authorized": False,
         "notes": [
             "Preparing this matrix does not submit compute.",

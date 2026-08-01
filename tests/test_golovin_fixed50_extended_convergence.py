@@ -7,6 +7,7 @@ from ruamel.yaml import YAML
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "config" / "golovin_fixed50_extended_resolution_convergence.yaml"
+PRECISION_EXTENSION_CONFIG = ROOT / "config" / "golovin_fixed50_highres_precision_extension.yaml"
 MATRIX_SCRIPT = ROOT / "scripts" / "prepare_golovin_matrix.py"
 LAW_SCRIPT = ROOT / "scripts" / "analyze_golovin_convergence_law.py"
 
@@ -70,6 +71,32 @@ def test_fixed50_matrix_is_fresh_balanced_and_extended() -> None:
     }
     assert len({str(case["run_label"]) for case in cases}) == 450
     assert len({int(case["collision_seed"]) for case in cases}) == 450
+
+
+def test_targeted_high_resolution_extension_uses_new_member_indices_and_streams() -> None:
+    yaml = YAML(typ="safe")
+    base_config = yaml.load(CONFIG.read_text(encoding="utf-8"))
+    extension_config = yaml.load(PRECISION_EXTENSION_CONFIG.read_text(encoding="utf-8"))
+    module = load_matrix_module()
+
+    base_cases = module.build_cases(base_config)
+    extension_cases = module.build_cases(extension_config)
+
+    assert len(extension_cases) == 200
+    assert {int(case["max_superdroplets"]) for case in extension_cases} == {
+        262_144,
+        524_288,
+    }
+    assert {int(case["member_index"]) for case in extension_cases} == set(range(50, 150))
+    assert {str(case["matrix_stage"]) for case in extension_cases} == {
+        "golovin_fixed50_extended_resolution_convergence_v1"
+    }
+    assert {int(case["collision_seed"]) for case in extension_cases}.isdisjoint(
+        {int(case["collision_seed"]) for case in base_cases}
+    )
+    assert {str(case["run_label"]) for case in extension_cases}.isdisjoint(
+        {str(case["run_label"]) for case in base_cases}
+    )
 
 
 def test_power_law_fit_recovers_known_zero_floor() -> None:
