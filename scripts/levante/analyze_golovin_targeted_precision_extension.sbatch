@@ -80,6 +80,7 @@ trap analysis_failed EXIT
   --extension-matrix "${EXTENSION_MATRIX_FILE}" \
   --extension-run-root "${EXTENSION_RUN_ROOT}" \
   --extension-inventory "${EXTENSION_INVENTORY}" \
+  --include-resolutions 262144 524288 1048576 \
   --output-directory "${COMBINED_VIEW_ROOT}"
 
 "${python}" "${CLEO_SDM_PROJECT_ROOT}/scripts/summarize_golovin_ensemble.py" \

@@ -29,6 +29,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--extension-matrix", required=True, type=Path)
     parser.add_argument("--extension-run-root", required=True, type=Path)
     parser.add_argument("--extension-inventory", required=True, type=Path)
+    parser.add_argument(
+        "--include-resolutions",
+        nargs="+",
+        type=int,
+        help="Optional exact set of superdroplet resolutions to include in the view",
+    )
     parser.add_argument("--output-directory", required=True, type=Path)
     return parser.parse_args()
 
@@ -84,6 +90,7 @@ def assemble(
     extension_run_root: Path,
     extension_inventory: Path,
     output_directory: Path,
+    include_resolutions: set[int] | None = None,
 ) -> dict[str, object]:
     if output_directory.exists():
         raise FileExistsError(f"refusing to overwrite analysis view: {output_directory}")
@@ -111,6 +118,17 @@ def assemble(
         ("extension", row, completed_run_directory(extension_run_root, row))
         for row in extension_rows
     ]
+    if include_resolutions is not None:
+        if not include_resolutions or any(resolution < 1 for resolution in include_resolutions):
+            raise ValueError("include_resolutions must contain positive resolution values")
+        combined_source_rows = [
+            item
+            for item in combined_source_rows
+            if int(item[1]["max_superdroplets"]) in include_resolutions
+        ]
+        actual_resolutions = {int(item[1]["max_superdroplets"]) for item in combined_source_rows}
+        if actual_resolutions != include_resolutions:
+            raise RuntimeError("requested analysis-view resolutions are not all present")
     combined_source_rows.sort(
         key=lambda item: (
             int(item[1]["max_superdroplets"]),
@@ -170,6 +188,9 @@ def assemble(
             str(resolution): sum(int(row["max_superdroplets"]) == resolution for row in cases)
             for resolution in sorted({int(row["max_superdroplets"]) for row in cases})
         },
+        "included_resolutions": (
+            sorted(include_resolutions) if include_resolutions is not None else None
+        ),
         "base_matrix": str(base_matrix),
         "base_matrix_sha256": sha256_file(base_matrix),
         "base_inventory": str(base_inventory),
@@ -206,6 +227,9 @@ def main() -> None:
         extension_run_root=args.extension_run_root.resolve(),
         extension_inventory=args.extension_inventory.resolve(),
         output_directory=output,
+        include_resolutions=(
+            set(args.include_resolutions) if args.include_resolutions is not None else None
+        ),
     )
     checksums = output / "SHA256SUMS"
     checksums.write_text(

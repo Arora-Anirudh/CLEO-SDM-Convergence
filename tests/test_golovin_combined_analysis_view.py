@@ -95,3 +95,40 @@ def test_combined_analysis_view_is_symlinked_and_non_overwriting(tmp_path: Path)
     assert all(link.is_symlink() for link in links)
     assert (view_root / "cases.tsv").is_file()
     assert (view_root / "source_provenance.csv").is_file()
+
+
+def test_combined_analysis_view_can_select_exact_resolutions(tmp_path: Path) -> None:
+    _, view = load_modules()
+    yaml = YAML(typ="safe")
+    base = yaml.load((ROOT / "config" / "golovin_stage0_development.yaml").read_text())
+    extension = yaml.load((ROOT / "config" / "golovin_stage0_development.yaml").read_text())
+    extension["experiment"]["name"] = "golovin_extension_test"
+    extension["experiment"]["matrix_stage"] = base["experiment"]["name"]
+    extension["experiment"]["seed_namespace"] = "golovin-extension-test"
+    extension["matrix"]["member_index_start"] = 4
+
+    base_matrix = write_matrix(tmp_path, base, "base_matrix")
+    extension_matrix = write_matrix(tmp_path, extension, "extension_matrix")
+    base_runs = tmp_path / "base_runs"
+    extension_runs = tmp_path / "extension_runs"
+    base_inventory = prepare_completed_runs(base_runs, base_matrix)
+    extension_inventory = prepare_completed_runs(extension_runs, extension_matrix)
+    selected_resolution = 1024
+    view_root = tmp_path / "selected_view"
+
+    manifest = view.assemble(
+        base_matrix=base_matrix,
+        base_run_root=base_runs,
+        base_inventory=base_inventory,
+        extension_matrix=extension_matrix,
+        extension_run_root=extension_runs,
+        extension_inventory=extension_inventory,
+        output_directory=view_root,
+        include_resolutions={selected_resolution},
+    )
+
+    with (view_root / "cases.tsv").open(encoding="utf-8", newline="") as stream:
+        rows = list(csv.DictReader(stream, delimiter="\t"))
+    assert len(rows) == 4
+    assert {int(row["max_superdroplets"]) for row in rows} == {selected_resolution}
+    assert manifest["included_resolutions"] == [selected_resolution]
