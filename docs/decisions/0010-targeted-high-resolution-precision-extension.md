@@ -30,7 +30,7 @@ For each, 500-bin distribution L1, signed \(M_0\), and signed \(M_6\) are checke
 
 ## Computational layout
 
-The 200 independent members are run inside one allocation, not as a Slurm array. Twenty nested `srun` job steps each run one member at a time, with `--exclusive --mem=0 --mpi=pmix_v3 --cpu-bind=cores` and one rank/one thread. `--hint=nomultithread` requests physical-core placement. This is scheduling parallelism across independent stochastic histories; `collisions0d` itself is not MPI-decomposed.
+The 200 independent members are run inside one allocation, not as a Slurm array. Twenty lightweight Bash workers dispatch one actual `srun` member step at a time, with `--exclusive --mem=0 --mpi=pmix_v3`, one rank and one thread. `--hint=nomultithread` requests physical-core placement. This avoids reserving the same allocation core first for a worker and then again for its CLEO process. It is scheduling parallelism across independent stochastic histories; `collisions0d` itself is not MPI-decomposed.
 
 ## Reproducibility products
 

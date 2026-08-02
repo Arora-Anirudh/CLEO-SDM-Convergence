@@ -14,7 +14,9 @@
 #
 # The individual collisions0d executable rejects MPI communicator sizes above
 # one. Parallelism therefore comes only from independent collision histories.
-# Each nested srun claims one exclusive CPU and shares the allocation memory.
+# Lightweight Bash workers are backgrounded here; each actual CLEO member
+# claims exactly one exclusive CPU in run_collisions0d.sbatch. Do not wrap the
+# workers themselves in srun, because that would reserve every CPU twice.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
@@ -116,7 +118,7 @@ runner_failed() {
       echo "project_commit=${project_commit}"
       echo "matrix_sha256=${matrix_sha256}"
       echo "worker_count=${WORKER_COUNT}"
-      echo "nested_srun=exclusive_one_rank_one_thread_mem0_cpu_bind_cores"
+      echo "member_srun=exclusive_one_rank_one_thread_mem0_hint_nomultithread"
     } >"${RESOLUTION_RECORD_ROOT}/runner_failed_job${SLURM_JOB_ID}.txt"
   fi
   exit "${status}"
@@ -126,24 +128,16 @@ trap runner_failed EXIT
 export MATRIX_FILE RESUME_COMPLETED SCRIPT_DIR EXPECTED_CASE_COUNT WORKER_COUNT
 declare -a worker_pids=()
 for ((worker_index = 0; worker_index < WORKER_COUNT; worker_index++)); do
-  srun \
-    --exclusive \
-    --nodes=1 \
-    --ntasks=1 \
-    --cpus-per-task=1 \
-    --mem=0 \
-    --mpi=pmix_v3 \
-    --cpu-bind=cores \
-    bash -c '
-      set -euo pipefail
-      worker_index="$1"
-      for ((case_index = worker_index; case_index < EXPECTED_CASE_COUNT; case_index += WORKER_COUNT)); do
-        echo "EXTENSION_CASE_BEGIN=${case_index}"
-        export MATRIX_CASE_INDEX="${case_index}"
-        bash "${SCRIPT_DIR}/run_golovin_matrix.sbatch"
-        echo "EXTENSION_CASE_END=${case_index}"
-      done
-    ' -- "${worker_index}" \
+  (
+    for ((case_index = worker_index;
+      case_index < EXPECTED_CASE_COUNT;
+      case_index += WORKER_COUNT)); do
+      echo "EXTENSION_CASE_BEGIN=${case_index}"
+      export MATRIX_CASE_INDEX="${case_index}"
+      bash "${SCRIPT_DIR}/run_golovin_matrix.sbatch"
+      echo "EXTENSION_CASE_END=${case_index}"
+    done
+  ) \
     >"${worker_log_directory}/worker_${worker_index}.out" \
     2>"${worker_log_directory}/worker_${worker_index}.err" &
   worker_pids+=("$!")
@@ -194,7 +188,7 @@ run_finished_epoch="$(date +%s)"
   echo "slurm_mem_per_node=${SLURM_MEM_PER_NODE:-unknown}"
   echo "slurm_time_limit=${SLURM_TIMELIMIT:-unknown}"
   echo "worker_count=${WORKER_COUNT}"
-  echo "nested_srun=exclusive_one_rank_one_thread_mem0_cpu_bind_cores"
+  echo "member_srun=exclusive_one_rank_one_thread_mem0_hint_nomultithread"
   echo "runner_wall_seconds=$((run_finished_epoch - run_started_epoch))"
   echo "project_commit=${project_commit}"
   echo "matrix_sha256=${matrix_sha256}"
