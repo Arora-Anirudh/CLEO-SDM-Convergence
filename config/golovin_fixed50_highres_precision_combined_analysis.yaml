@@ -5,7 +5,7 @@
 
 experiment:
   name: golovin_fixed50_highres_precision_combined_analysis_v1
-  status: production_ready_not_submitted
+  status: submission_authorized
   kernel: golovin
   initialization_family: controlled
   seed_namespace: cleo-sdm-convergence/golovin-fixed50-highres-precision-extension/v1
@@ -87,4 +87,4 @@ timestep_selection_provenance:
   selected_collision_timestep_s: 0.1
 
 authorization:
-  submission_authorized: false
+  submission_authorized: true
