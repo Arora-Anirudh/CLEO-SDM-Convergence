@@ -5,7 +5,7 @@
 
 experiment:
   name: golovin_fixed50_highres_precision_combined_analysis_v1
-  status: submission_authorized
+  status: production_ready_not_submitted
   kernel: golovin
   initialization_family: controlled
   seed_namespace: cleo-sdm-convergence/golovin-fixed50-highres-precision-extension/v1
@@ -87,4 +87,6 @@ timestep_selection_provenance:
   selected_collision_timestep_s: 0.1
 
 authorization:
-  submission_authorized: true
+  # Formal-selection authorization is deliberately separate from permission to
+  # execute this read-only follow-up analysis on Levante.
+  submission_authorized: false
