@@ -32,6 +32,12 @@ All members use Golovin collision-coalescence, controlled initialization, 0.1-s 
 
 One `shared` allocation contains 20 concurrently active independent member steps. Each step is one MPI rank and one Kokkos/OpenMP thread; no member is split across MPI ranks. `--hint=nomultithread` prevents the two logical hardware threads of a Levante core from being mistaken for two physical cores.
 
+The allocation requests 8 GiB node memory. A live scheduler check of the first
+20-member retry showed individual steps at roughly 200--233 MiB plus about
+557 MiB for the batch controller; 4 GiB was therefore insufficient and caused
+two OOM kills. The resource-only correction to 8 GiB does not change any model
+parameter, member matrix, seed, or scientific criterion.
+
 The runner is restart-safe only for manifest-complete matching members. It does not overwrite incomplete output paths.
 
 ## After model completion

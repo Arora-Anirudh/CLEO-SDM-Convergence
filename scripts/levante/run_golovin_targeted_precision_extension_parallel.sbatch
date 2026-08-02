@@ -5,7 +5,7 @@
 #SBATCH --ntasks=20
 #SBATCH --cpus-per-task=1
 #SBATCH --hint=nomultithread
-#SBATCH --mem=4G
+#SBATCH --mem=8G
 #SBATCH --time=08:00:00
 
 # Run a fixed, targeted Golovin high-resolution precision extension in one
@@ -17,6 +17,8 @@
 # Lightweight Bash workers are backgrounded here; each actual CLEO member
 # claims exactly one exclusive CPU in run_collisions0d.sbatch. Do not wrap the
 # workers themselves in srun, because that would reserve every CPU twice.
+# Twenty concurrent members require node-level memory headroom in addition to
+# the per-member working sets and the batch controller; 8 GiB is intentional.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
