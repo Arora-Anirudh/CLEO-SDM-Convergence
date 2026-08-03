@@ -7,6 +7,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "validate_golovin_unfrozen_smoke.py"
+WRAPPER = ROOT / "scripts" / "levante" / "run_golovin_unfrozen_smoke.sbatch"
 
 
 def load_module():
@@ -113,3 +114,12 @@ def test_unfrozen_smoke_rejects_reused_initial_population(tmp_path: Path) -> Non
 
     with pytest.raises(RuntimeError, match="not distinct"):
         module.validate(matrix_file=matrix_file, run_root=run_root, case_indices=indices)
+
+
+def test_smoke_wrapper_allows_shared_partition_memory_cpu_adjustment() -> None:
+    wrapper = WRAPPER.read_text(encoding="utf-8")
+
+    assert 'if ((SLURM_NTASKS != 1)); then' in wrapper
+    assert 'if ((SLURM_CPUS_PER_TASK < 1)); then' in wrapper
+    assert "SLURM_CPUS_PER_TASK != 1" not in wrapper
+    assert "export OMP_NUM_THREADS=1" in wrapper

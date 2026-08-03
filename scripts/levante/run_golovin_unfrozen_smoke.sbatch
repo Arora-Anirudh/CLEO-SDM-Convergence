@@ -41,8 +41,17 @@ EXPECTED_CASE_COUNT="${EXPECTED_CASE_COUNT:-450}"
 SMOKE_CASE_LOW="${SMOKE_CASE_LOW:-0}"
 SMOKE_CASE_HIGH="${SMOKE_CASE_HIGH:-400}"
 
-if ((SLURM_NTASKS != 1 || SLURM_CPUS_PER_TASK != 1)); then
-  echo "ERROR: smoke must use exactly one physical-core task." >&2
+if ((SLURM_NTASKS != 1)); then
+  echo "ERROR: smoke must allocate exactly one Slurm task." >&2
+  exit 2
+fi
+# On the shared partition, Slurm can raise SLURM_CPUS_PER_TASK above the
+# submitted value in order to satisfy a node-level --mem request. The actual
+# model step below still requests one exclusive physical core, and the smoke
+# explicitly fixes OMP_NUM_THREADS=1. Do not mistake memory-accounting CPUs
+# for model threads.
+if ((SLURM_CPUS_PER_TASK < 1)); then
+  echo "ERROR: smoke allocation provides no CPU for its one model task." >&2
   exit 2
 fi
 if [[ ! "${SMOKE_CASE_LOW}" =~ ^[0-9]+$ || ! "${SMOKE_CASE_HIGH}" =~ ^[0-9]+$ ]]; then
