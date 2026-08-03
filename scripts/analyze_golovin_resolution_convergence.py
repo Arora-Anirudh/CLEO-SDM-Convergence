@@ -1,4 +1,4 @@
-"""Analyze the controlled Golovin resolution-convergence ensemble.
+"""Analyze a controlled or operational Golovin resolution ensemble.
 
 The formal distribution statistic is L1 of the ensemble-mean fixed-bin
 distribution. Adjacent resolutions are independent ensembles; their
@@ -41,6 +41,11 @@ MOMENT_METRICS = {
         "moment6_relative_bias_margin",
         "moment6_relative",
     ),
+}
+INITIALIZATION_MOMENT_METRICS = {
+    "golovin_relative_error_radius_moment_0_m3": "moment0_relative_bias_margin",
+    "golovin_relative_error_radius_moment_3_um3_m3": "moment3_relative_bias_margin",
+    "golovin_relative_error_radius_moment_6_um6_m3": "moment6_relative_bias_margin",
 }
 
 
@@ -170,8 +175,27 @@ def validate_inputs(
         raise RuntimeError("matrix contains duplicate run labels")
     if {row["run_label"] for row in rows} != set(labels):
         raise RuntimeError("combined diagnostics do not exactly cover the matrix")
-    if any(row["initialization_family"] != "controlled" for row in matrix_rows):
-        raise RuntimeError("resolution experiment requires controlled initialization")
+    # Older focused-analysis fixtures and archival auxiliary configurations did
+    # not declare the family because they only ever represented controlled
+    # inputs. Preserve that compatibility while requiring an explicit value in
+    # newly registered production configurations.
+    expected_initialization_family = str(
+        config.get("experiment", {}).get("initialization_family", "controlled")
+    )
+    if expected_initialization_family not in {"controlled", "operational_stochastic"}:
+        raise RuntimeError("unsupported registered initialization family")
+    if any(row["initialization_family"] != expected_initialization_family for row in matrix_rows):
+        raise RuntimeError("matrix initialization family differs from the configuration")
+    if expected_initialization_family == "controlled":
+        if any(
+            row.get("initialization_seed", "not_applicable") != "not_applicable"
+            for row in matrix_rows
+        ):
+            raise RuntimeError("controlled matrix unexpectedly contains initialization seeds")
+    else:
+        initialization_seeds = [int(row["initialization_seed"]) for row in matrix_rows]
+        if len(initialization_seeds) != len(set(initialization_seeds)):
+            raise RuntimeError("operational matrix initialization seeds are not unique")
     if len({float(row["collision_timestep_s"]) for row in matrix_rows}) != 1:
         raise RuntimeError("resolution experiment must use one selected timestep")
     expected_timestep = float(
@@ -415,7 +439,9 @@ def analyze(
 ) -> tuple[
     list[dict[str, object]],
     list[dict[str, object]],
+    list[dict[str, object]],
     dict[str, object],
+    dict[str, object] | None,
 ]:
     validate_inputs(rows, matrix_rows, config)
     diagnostics = config["diagnostics"]
@@ -480,7 +506,106 @@ def analyze(
         (int(row["max_superdroplets"]), int(row["member_index"])): row for row in matrix_rows
     }
 
-    resolution_pass = {resolution: True for resolution in resolutions}
+    initialization_rows: list[dict[str, object]] = []
+    initialization_decision: dict[str, object] | None = None
+    initialization_pass = {resolution: True for resolution in resolutions}
+    initialization_settings = config.get("initialization_fidelity")
+    if initialization_settings is not None:
+        initialization_time = float(initialization_settings["apply_to_ensemble_mean_at_time_s"])
+        alpha_seed = int(diagnostics["bootstrap_seed"])
+        for resolution in resolutions:
+            members = members_by_resolution[resolution]
+            stack, analytical, edges = distribution_stack(
+                resolution=resolution,
+                members=members,
+                time_s=initialization_time,
+                bin_count=primary_bin_count,
+                matrix_lookup=matrix_lookup,
+                archives=archives,
+            )
+            estimate, ci_low, ci_high = bootstrap_ensemble_mean_l1(
+                stack,
+                analytical,
+                edges,
+                bootstrap_resamples=resamples,
+                bootstrap_seed=derived_seed(
+                    alpha_seed,
+                    "initialization_l1",
+                    resolution,
+                ),
+                confidence_level=confidence_level,
+            )
+            margin = float(initialization_settings["maximum_l1_upper_95ci"])
+            passed = ci_high <= margin
+            initialization_pass[resolution] &= passed
+            initialization_rows.append(
+                {
+                    "max_superdroplets": resolution,
+                    "time_s": initialization_time,
+                    "metric": f"ensemble_mean_l1_bins_{primary_bin_count}",
+                    "n_members": len(members),
+                    "estimate": estimate,
+                    "95ci_low": ci_low,
+                    "95ci_high": ci_high,
+                    "accuracy_margin": margin,
+                    "accuracy_pass": passed,
+                }
+            )
+            for metric, margin_key in INITIALIZATION_MOMENT_METRICS.items():
+                values = np.asarray(
+                    [
+                        float(
+                            next(
+                                row[metric]
+                                for row in rows
+                                if int(row["max_superdroplets"]) == resolution
+                                and int(row["member_index"]) == member
+                                and np.isclose(
+                                    float(row["time_s"]),
+                                    initialization_time,
+                                    rtol=0.0,
+                                    atol=1.0e-3,
+                                )
+                            )
+                        )
+                        for member in members
+                    ]
+                )
+                estimate, ci_low, ci_high = student_interval(values, confidence_level)
+                margin = float(initialization_settings[margin_key])
+                passed = ci_low >= -margin and ci_high <= margin
+                initialization_pass[resolution] &= passed
+                initialization_rows.append(
+                    {
+                        "max_superdroplets": resolution,
+                        "time_s": initialization_time,
+                        "metric": metric,
+                        "n_members": len(members),
+                        "estimate": estimate,
+                        "95ci_low": ci_low,
+                        "95ci_high": ci_high,
+                        "accuracy_margin": margin,
+                        "accuracy_pass": passed,
+                    }
+                )
+        initialization_decision = {
+            "schema": "golovin_initialization_fidelity_decision_v1",
+            "status": (
+                "initialization_fidelity_pass"
+                if all(initialization_pass.values())
+                else "initialization_fidelity_fail"
+            ),
+            "initialization_family": config["experiment"]["initialization_family"],
+            "time_s": initialization_time,
+            "resolution_pass": {
+                str(resolution): bool(passed) for resolution, passed in initialization_pass.items()
+            },
+            "member_level_initial_metrics_are_descriptive": bool(
+                initialization_settings["member_level_initial_metrics_are_descriptive"]
+            ),
+        }
+
+    resolution_pass = {resolution: initialization_pass[resolution] for resolution in resolutions}
     analytical_rows: list[dict[str, object]] = []
     analytical_l1_margin = float(criteria["analytical_agreement"]["maximum_l1_upper_95ci"])
     l1_precision = float(criteria["maximum_95ci_half_width"]["l1_absolute"])
@@ -698,9 +823,14 @@ def analyze(
 
     strict_selected = min(accepted) if accepted else None
     selected = strict_selected if formal_claim_permitted else None
+    initialization_family = str(config["experiment"]["initialization_family"])
     decision = {
         "status": (
-            "selected_controlled_resolution"
+            (
+                "selected_controlled_resolution"
+                if initialization_family == "controlled"
+                else "selected_operational_resolution"
+            )
             if strict_selected is not None and formal_claim_permitted
             else (
                 "exploratory_resolution_screen_no_formal_selection"
@@ -708,7 +838,12 @@ def analyze(
                 else "no_resolution_accepted_in_initial_matrix"
             )
         ),
-        "schema": "golovin_controlled_resolution_decision_v1",
+        "schema": (
+            "golovin_controlled_resolution_decision_v1"
+            if initialization_family == "controlled"
+            else "golovin_operational_resolution_decision_v1"
+        ),
+        "initialization_family": initialization_family,
         "selected_max_superdroplets": selected,
         "formal_convergence_claim_permitted": formal_claim_permitted,
         "strict_selected_max_superdroplets_if_formal": strict_selected,
@@ -729,11 +864,22 @@ def analyze(
         "formal_l1_bin_count": primary_bin_count,
         "l1_estimand": "relative L1 of the ensemble-mean fixed-bin distribution",
         "independent_ensemble_warning": (
-            "Different resolutions use independent collision ensembles; "
+            "Different resolutions use independent initialization and collision "
+            "ensembles; member indices are paired only across the frozen and "
+            "operational protocols, not across resolution."
+            if initialization_family == "operational_stochastic"
+            else "Different resolutions use independent collision ensembles; "
             "member indices are not paired histories."
         ),
+        "initialization_fidelity_gate_applied": initialization_decision is not None,
     }
-    return analytical_rows, adjacent_rows, decision
+    return (
+        analytical_rows,
+        adjacent_rows,
+        initialization_rows,
+        decision,
+        initialization_decision,
+    )
 
 
 def plot_result(
@@ -1161,7 +1307,13 @@ def main() -> None:
     matrix_rows = read_csv(args.matrix_file.resolve(), delimiter="\t")
     config = load_yaml(args.config.resolve())
     archives = load_archives(args.run_root.resolve(), matrix_rows)
-    analytical_rows, adjacent_rows, decision = analyze(
+    (
+        analytical_rows,
+        adjacent_rows,
+        initialization_rows,
+        decision,
+        initialization_decision,
+    ) = analyze(
         rows=rows,
         matrix_rows=matrix_rows,
         config=config,
@@ -1178,6 +1330,13 @@ def main() -> None:
     write_csv(output_directory / "analytical_agreement.csv", analytical_rows)
     write_csv(output_directory / "adjacent_resolution_equivalence.csv", adjacent_rows)
     write_csv(output_directory / "ensemble_size_sensitivity.csv", sensitivity_rows)
+    if initialization_rows:
+        write_csv(output_directory / "initialization_fidelity.csv", initialization_rows)
+    if initialization_decision is not None:
+        (output_directory / "initialization_fidelity_decision.json").write_text(
+            json.dumps(initialization_decision, indent=2) + "\n",
+            encoding="utf-8",
+        )
     plot_result(
         analytical_rows,
         config,

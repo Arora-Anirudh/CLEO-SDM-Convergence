@@ -1,0 +1,180 @@
+# Prospective Golovin initialization-sensitivity experiment.
+#
+# This experiment repeats the completed balanced fixed-50 resolution ladder
+# with one newly sampled operational initial population per member.  Collision
+# seeds are deliberately matched to the completed frozen experiment so that
+# frozen-versus-unfrozen outcomes can be compared member by member.  No raw
+# model output, initialization binary, or run path is reused.
+
+experiment:
+  name: golovin_unfrozen_fixed50_extended_resolution_convergence_v1
+  status: production_ready_not_submitted
+  kernel: golovin
+  initialization_family: operational_stochastic
+  seed_namespace: cleo-sdm-convergence/golovin-unfrozen-fixed50-extended/v1
+  initialization_seed_namespace: >-
+    cleo-sdm-convergence/golovin-unfrozen-fixed50-extended/initialization/v1
+  collision_seed_namespace: cleo-sdm-convergence/golovin-fixed50-extended-resolution/v1
+
+analysis_protocol:
+  version: 1
+  classification: prospective_unfrozen_fixed_50_initialization_sensitivity
+  formal_convergence_claim_permitted: true
+  rationale: >-
+    Fifty operationally sampled initial populations and fifty collision streams
+    at every resolution estimate the combined initialization, collision and
+    interaction variability.  Reusing the frozen experiment's collision-seed
+    schedule across protocols enables paired comparisons without reusing any
+    frozen model output.  The design and thresholds are frozen before any new
+    member output is inspected.
+
+matrix:
+  max_superdroplets:
+    [4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576]
+  collision_timesteps_s: [0.1]
+  members_per_cell: 50
+  observation_timestep_s: 600.0
+  end_time_s: 3600.0
+  model_threads: 1
+  collision_seed_design: unique_per_case
+
+diagnostics:
+  radius_minimum_um: 1.0
+  radius_maximum_um: 5000.0
+  primary_log_radius_bins: 500
+  sensitivity_log_radius_bins: [250, 1000]
+  decision_times_s: [600.0, 1200.0, 1800.0, 2400.0, 3000.0, 3600.0]
+  initialization_audit_time_s: 0.0
+  confidence_level: 0.95
+  bootstrap_resamples: 10000
+  bootstrap_seed: 2026080401
+  bin_robustness_policy: diagnostic_only
+  ensemble_size_sensitivity:
+    time_s: 3600.0
+    member_counts: [10, 20, 30, 40, 50]
+    random_subset_draws: 2000
+    random_subset_seed: 2026080402
+    log_radius_bins: 500
+
+initialization_fidelity:
+  status: prospective_required_gate
+  apply_to_ensemble_mean_at_time_s: 0.0
+  maximum_l1_upper_95ci: 0.05
+  moment0_relative_bias_margin: 0.05
+  moment3_relative_bias_margin: 0.05
+  moment6_relative_bias_margin: 0.05
+  require_unique_superdroplet_binary_per_member: true
+  member_level_initial_metrics_are_descriptive: true
+  interpretation: >-
+    Individual stochastic initial populations may differ materially.  The hard
+    gate applies to their ensemble mean and confidence interval so that later
+    collision errors are not interpreted against a demonstrably biased initial
+    ensemble.  Member-level time-zero distributions remain diagnostic.
+
+paired_protocol_comparison:
+  status: prospective_required_analysis
+  frozen_source_experiment: golovin_fixed50_extended_resolution_convergence_v1
+  pair_keys: [max_superdroplets, member_index, collision_seed]
+  paired_metrics:
+    - golovin_fixed_bin_l1_relative_bins_500
+    - golovin_relative_error_radius_moment_0_m3
+    - golovin_relative_error_radius_moment_3_um3_m3
+    - golovin_relative_error_radius_moment_6_um6_m3
+  comparison_times_s: [0.0, 600.0, 1200.0, 1800.0, 2400.0, 3000.0, 3600.0]
+  confidence_level: 0.95
+  bootstrap_resamples: 10000
+  bootstrap_seed: 2026080403
+  required_outputs:
+    - paired_member_differences
+    - paired_mean_difference_intervals
+    - protocol_spread_ratios
+    - time_zero_initialization_fidelity
+    - frozen_and_unfrozen_resolution_decisions
+
+practical_convergence:
+  status: researcher_approved_same_rule_as_frozen_experiment
+  protocol_version: 2
+  primary_log_radius_bins: 500
+  sensitivity_log_radius_bins: [250, 1000]
+  confidence_level: 0.95
+  bootstrap_resamples: 10000
+  bootstrap_seed: 2026080404
+  ensemble_prefixes: [10, 20, 30, 40, 50]
+  final_prefixes_for_stability: [40, 50]
+  minimum_worthwhile_improvement_absolute: 0.01
+  maximum_point_change_between_final_prefixes: 0.01
+  require_two_successive_doublings: true
+  sensitivity_bins_are_diagnostic_only: true
+  explicitly_excluded_diagnostic: successive_improvement_ratio
+  exclusion_reason: >-
+    Ratios of successive error reductions are unstable under ensemble noise
+    and approach a non-zero constant for ordinary power-law convergence.
+
+convergence_law:
+  status: supporting_non_selection_diagnostic
+  protocol_version: 1
+  selection_gate: false
+  primary_log_radius_bins: 500
+  metric_error_transform:
+    ensemble_mean_l1: identity
+    golovin_relative_error_radius_moment_0_m3: absolute_value
+    golovin_relative_error_radius_moment_6_um6_m3: absolute_value
+  highest_resolution_window_sizes: [4, 5, 6]
+  minimum_levels_per_fit: 4
+  model: error_floor_plus_power_law
+  formula: E(N) = E_inf + a * (N / N_min)^(-p)
+  exponent_grid:
+    minimum: 0.05
+    maximum: 2.0
+    spacing: 0.005
+  bootstrap_resamples: 2000
+  bootstrap_seed: 2026080405
+  interpretation: >-
+    Report the observed exponent and residual floor as supporting evidence.
+    This fit cannot select the operational convergence resolution by itself.
+
+convergence_criteria:
+  analytical_agreement:
+    maximum_l1_upper_95ci: 0.05
+    moment0_relative_bias_margin: 0.05
+    moment6_relative_bias_margin: 0.05
+  adjacent_level_equivalence:
+    l1_absolute_difference_margin: 0.01
+    moment0_relative_difference_margin: 0.05
+    moment6_relative_difference_margin: 0.05
+  maximum_95ci_half_width:
+    l1_absolute: 0.01
+    moment0_relative: 0.025
+    moment6_relative: 0.05
+  maximum_relative_liquid_mass_drift: 1.0e-7
+  maximum_out_of_range_mass_fraction: 1.0e-6
+  require_pass_at_every_decision_time: true
+  require_next_level_confirmation: true
+
+timestep_selection_provenance:
+  selected_collision_timestep_s: 0.1
+  reference_collision_timestep_s: 0.1
+  source_experiment: golovin_controlled_timestep_screen_v1
+  source_result_status: selected_0p1_second
+
+data_isolation:
+  frozen_raw_members_reused: 0
+  frozen_initialization_binaries_reused: 0
+  frozen_run_labels_reused: 0
+  frozen_run_directories_reused: 0
+  frozen_collision_seed_schedule_reused_for_pairing: 450
+  fresh_member_count: 450
+  fresh_operational_initialization_count: 450
+  existing_frozen_results_read_only_for_comparison: true
+
+authorization:
+  scientific_matrix_reviewed: true
+  submission_authorized: false
+  required_before_submission:
+    - exact-revision build verification
+    - absent fresh run and record paths
+    - live scratch-capacity and quota check
+    - exact matrix and seed-pair audit
+    - low-plus-maximum-resolution production-member smoke gate
+    - measured smoke memory and runtime review
+    - explicit requested and expected compute and storage disclosure

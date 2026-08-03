@@ -79,6 +79,8 @@ def create_case(tmp_path: Path):
         "slurm_job_id": "12345_0",
         "zarr_tree_sha256": "b" * 64,
         "bundle_superdroplet_sha256": "c" * 64,
+        "input_grid_sha256": "d" * 64,
+        "input_superdroplet_sha256": "c" * 64,
     }
     (run_directory / "manifest.txt").write_text(
         "".join(f"{key}={value}\n" for key, value in manifest.items()),
@@ -112,3 +114,59 @@ def test_matrix_audit_rejects_manifest_seed_mismatch(tmp_path: Path) -> None:
 
     with pytest.raises(RuntimeError, match="collision_seed"):
         module.audit(matrix_file=matrix_file, run_root=run_root)
+
+
+def test_matrix_audit_accepts_archived_controlled_manifest_without_named_input_hashes(
+    tmp_path: Path,
+) -> None:
+    module, matrix_file, run_root = create_case(tmp_path)
+    manifest = run_root / "case_000" / "manifest.txt"
+    records = module.read_manifest(manifest)
+    records.pop("input_grid_sha256")
+    records.pop("input_superdroplet_sha256")
+    records["bundle_grid_sha256"] = "d" * 64
+    manifest.write_text(
+        "".join(f"{key}={value}\n" for key, value in records.items()),
+        encoding="utf-8",
+    )
+
+    inventory = module.audit(matrix_file=matrix_file, run_root=run_root)
+
+    assert inventory["members"][0]["input_superdroplet_sha256"] == "c" * 64
+
+
+def test_matrix_audit_accepts_operational_initialization(tmp_path: Path) -> None:
+    module, matrix_file, run_root = create_case(tmp_path)
+    with matrix_file.open(encoding="utf-8", newline="") as stream:
+        case = next(csv.DictReader(stream, delimiter="\t"))
+    case["initialization_family"] = "operational_stochastic"
+    case["initialization_seed"] = "456"
+    case["controlled_bundle_label"] = "not_applicable"
+    with matrix_file.open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(case), delimiter="\t")
+        writer.writeheader()
+        writer.writerow(case)
+
+    manifest_path = run_root / case["run_label"] / "manifest.txt"
+    records = module.read_manifest(manifest_path)
+    records.update(
+        {
+            "initialization_family": "operational_stochastic",
+            "initialization_seed": "456",
+            "controlled_bundle": "none",
+            "bundle_superdroplet_sha256": "none",
+            "input_superdroplet_sha256": "e" * 64,
+            "matrix_sha256": module.sha256_file(matrix_file),
+        }
+    )
+    manifest_path.write_text(
+        "".join(f"{key}={value}\n" for key, value in records.items()),
+        encoding="utf-8",
+    )
+
+    inventory = module.audit(matrix_file=matrix_file, run_root=run_root)
+
+    member = inventory["members"][0]
+    assert member["initialization_family"] == "operational_stochastic"
+    assert member["initialization_seed"] == 456
+    assert member["input_superdroplet_sha256"] == "e" * 64

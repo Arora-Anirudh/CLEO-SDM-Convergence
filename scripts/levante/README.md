@@ -56,6 +56,16 @@ verified absolute paths.
 18. `analyze_golovin_convergence_law.py` fits the supporting
     floor-plus-power-law model with member bootstraps. It is explicitly not a
     resolution-selection gate.
+19. `run_golovin_unfrozen_smoke.sbatch` runs the two endpoint members required
+    before the operational-initialization Golovin matrix can proceed.
+20. `run_golovin_unfrozen_resolution_shard.sbatch` runs a reviewed contiguous
+    matrix group with eight exclusive one-core members, rather than creating
+    one Slurm job per member.
+21. `analyze_golovin_unfrozen_adequacy.sbatch` and
+    `analyze_golovin_unfrozen_comparison.sbatch` are analysis-only follow-ups:
+    the first redoes parent-pool ensemble adequacy for the operational result;
+    the second compares frozen and operational protocols with paired collision
+    seed labels.
 
 The permanent source and build trees are in HOME. Run-specific configuration,
 input binaries and Zarr output are stored under SCRATCH.

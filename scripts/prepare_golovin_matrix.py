@@ -95,6 +95,12 @@ def validate_config(config: dict[str, Any]) -> None:
         raise ValueError("unsupported initialization_family")
     if not experiment["name"] or not experiment["seed_namespace"]:
         raise ValueError("experiment name and seed namespace must be non-empty")
+    for optional_namespace in (
+        "initialization_seed_namespace",
+        "collision_seed_namespace",
+    ):
+        if optional_namespace in experiment and not str(experiment[optional_namespace]):
+            raise ValueError(f"{optional_namespace} must be non-empty when provided")
     if re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", str(experiment["name"])) is None:
         raise ValueError("experiment name contains unsupported run-label characters")
 
@@ -141,6 +147,8 @@ def build_cases(config: dict[str, Any]) -> list[dict[str, int | float | str]]:
     experiment = config["experiment"]
     matrix = config["matrix"]
     namespace = str(experiment["seed_namespace"])
+    initialization_seed_namespace = str(experiment.get("initialization_seed_namespace", namespace))
+    collision_seed_namespace = str(experiment.get("collision_seed_namespace", namespace))
     initialization_family = str(experiment["initialization_family"])
     seed_design = str(matrix.get("collision_seed_design", "unique_per_case"))
     bundle_labels = {
@@ -183,7 +191,7 @@ def build_cases(config: dict[str, Any]) -> list[dict[str, int | float | str]]:
                         "member_index": member_index,
                         "initialization_seed": (
                             deterministic_seed(
-                                namespace=namespace,
+                                namespace=initialization_seed_namespace,
                                 role="initialization",
                                 max_superdroplets=max_superdroplets,
                                 collision_timestep_s=collision_timestep_s,
@@ -194,7 +202,7 @@ def build_cases(config: dict[str, Any]) -> list[dict[str, int | float | str]]:
                             else "not_applicable"
                         ),
                         "collision_seed": deterministic_seed(
-                            namespace=namespace,
+                            namespace=collision_seed_namespace,
                             role="collision",
                             max_superdroplets=max_superdroplets,
                             collision_timestep_s=(

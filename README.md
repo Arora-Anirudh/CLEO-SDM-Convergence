@@ -101,6 +101,14 @@ The completed high-resolution configuration is
 collision-stream members per level. It reused no raw member, collision seed,
 run label or controlled-bundle label from the first matrix.
 
+The next prepared sensitivity study is the operational-initialization
+counterpart of the balanced fixed-50 Golovin ladder. It holds every physical
+and numerical setting constant but gives each of the 450 members a fresh
+seeded initial SD population, while matching collision-seed labels to the
+completed frozen matrix for a paired comparison. It has not submitted any
+model compute. See [ADR 0012](docs/decisions/0012-unfrozen-golovin-initialization-sensitivity.md)
+and the [runbook](docs/experiments/golovin-unfrozen-fixed50-runbook.md).
+
 The local Stage-0 measurement, provenance and non-destructive matrix tooling is
 explained from first principles in the
 [`Golovin Stage-0 implementation guide`](docs/implementation/golovin-stage0-guide.md).

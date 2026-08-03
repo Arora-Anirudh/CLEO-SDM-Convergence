@@ -7,15 +7,16 @@
 #SBATCH --mem=940M
 #SBATCH --time=01:00:00
 
-# Analyze all members of the controlled Golovin resolution experiment and
-# apply the registered analytical-agreement, precision, adjacent-equivalence,
-# conservation, range-coverage and N/2N/4N confirmation gates.
+# Analyze all members of a frozen or operational Golovin resolution experiment
+# and apply the registered analytical-agreement, precision,
+# adjacent-equivalence, conservation, range-coverage and N/2N/4N gates.
 #
 # This is analysis only. It never launches the CLEO model.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
 set -eo pipefail
+unset LC_ALL
 source /etc/profile
 set -u
 
@@ -57,6 +58,35 @@ test -f "${RESOLUTION_CONFIG}"
 actual_case_count="$(( $(wc -l <"${MATRIX_FILE}") - 1 ))"
 if ((actual_case_count != EXPECTED_CASE_COUNT)); then
   echo "ERROR: expected ${EXPECTED_CASE_COUNT} cases, found ${actual_case_count}." >&2
+  exit 2
+fi
+
+initialization_family="$("${python}" - "${RESOLUTION_CONFIG}" <<'PY'
+import sys
+from ruamel.yaml import YAML
+with open(sys.argv[1], encoding="utf-8") as source:
+    print(YAML(typ="safe").load(source)["experiment"]["initialization_family"])
+PY
+)"
+if [[ "${initialization_family}" == "operational_stochastic" ]]; then
+  smoke_gate="${RESOLUTION_RECORD_ROOT}/smoke_gate.json"
+  if [[ ! -f "${smoke_gate}" ]]; then
+    echo "ERROR: operational analysis requires the passed smoke gate: ${smoke_gate}" >&2
+    exit 1
+  fi
+  "${python}" - "${smoke_gate}" "${MATRIX_FILE}" <<'PY'
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+gate = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+digest = hashlib.sha256(Path(sys.argv[2]).read_bytes()).hexdigest()
+if gate.get("status") != "passed" or gate.get("matrix_sha256") != digest:
+    raise SystemExit("operational smoke gate is not a pass for this exact matrix")
+PY
+elif [[ "${initialization_family}" != "controlled" ]]; then
+  echo "ERROR: unsupported initialization family in config: ${initialization_family}" >&2
   exit 2
 fi
 

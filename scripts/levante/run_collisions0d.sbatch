@@ -275,6 +275,16 @@ setup_output="${run_directory}/output/collisions0d_setup.txt"
 test -d "${zarr_output}"
 test -f "${setup_output}"
 
+if [[ "${INITIALIZATION_FAMILY}" == "operational_stochastic" ]]; then
+  input_grid_sha256="$(sha256sum "${run_directory}/inputs/grid.dat" | awk '{print $1}')"
+  input_superdroplet_sha256="$(
+    sha256sum "${run_directory}/inputs/superdroplets.dat" | awk '{print $1}'
+  )"
+else
+  input_grid_sha256="${bundle_grid_sha256}"
+  input_superdroplet_sha256="${bundle_superdroplet_sha256}"
+fi
+
 sha256_directory() {
   local directory="$1"
   (
@@ -309,6 +319,8 @@ module_list="$(module -t list 2>&1 | paste -sd, -)"
   echo "bundle_manifest_sha256=${bundle_manifest_sha256}"
   echo "bundle_grid_sha256=${bundle_grid_sha256}"
   echo "bundle_superdroplet_sha256=${bundle_superdroplet_sha256}"
+  echo "input_grid_sha256=${input_grid_sha256}"
+  echo "input_superdroplet_sha256=${input_superdroplet_sha256}"
   echo "matrix_file=${MATRIX_FILE:-none}"
   echo "matrix_sha256=${MATRIX_SHA256:-none}"
   echo "slurm_job_id=${SLURM_JOB_ID}"

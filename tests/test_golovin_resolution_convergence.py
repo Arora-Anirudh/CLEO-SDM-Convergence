@@ -40,6 +40,7 @@ def synthetic_inputs(*, fail_smallest: bool = False):
                 {
                     "run_label": run_label,
                     "initialization_family": "controlled",
+                    "initialization_seed": "not_applicable",
                     "collision_timestep_s": "0.1",
                     "max_superdroplets": str(resolution),
                     "member_index": str(member),
@@ -54,6 +55,7 @@ def synthetic_inputs(*, fail_smallest: bool = False):
                         "member_index": str(member),
                         "time_s": str(time_s),
                         "golovin_relative_error_radius_moment_0_m3": str(bias),
+                        "golovin_relative_error_radius_moment_3_um3_m3": str(bias),
                         "golovin_relative_error_radius_moment_6_um6_m3": str(bias),
                         "relative_liquid_mass_drift": "1e-9",
                         "fixed_bin_mass_below_range_fraction": "0.0",
@@ -75,6 +77,7 @@ def synthetic_inputs(*, fail_smallest: bool = False):
             archives[run_label] = archive
 
     config = {
+        "experiment": {"initialization_family": "controlled"},
         "matrix": {
             "max_superdroplets": [512, 1024, 2048],
             "members_per_cell": 4,
@@ -129,7 +132,7 @@ def test_resolution_analysis_selects_smallest_confirmed_level() -> None:
     module = load_module()
     rows, matrix_rows, config, archives = synthetic_inputs()
 
-    analytical, adjacent, decision = module.analyze(
+    analytical, adjacent, initialization, decision, initialization_decision = module.analyze(
         rows=rows,
         matrix_rows=matrix_rows,
         config=config,
@@ -138,6 +141,8 @@ def test_resolution_analysis_selects_smallest_confirmed_level() -> None:
 
     assert analytical
     assert adjacent
+    assert initialization == []
+    assert initialization_decision is None
     assert decision["status"] == "selected_controlled_resolution"
     assert decision["selected_max_superdroplets"] == 512
     assert decision["resolution_analytical_and_precision_pass"] == {
@@ -174,7 +179,7 @@ def test_resolution_analysis_does_not_accept_failed_smallest_level() -> None:
     module = load_module()
     rows, matrix_rows, config, archives = synthetic_inputs(fail_smallest=True)
 
-    _, _, decision = module.analyze(
+    _, _, _, decision, _ = module.analyze(
         rows=rows,
         matrix_rows=matrix_rows,
         config=config,
@@ -195,7 +200,7 @@ def test_exploratory_screen_does_not_make_a_formal_selection() -> None:
     }
     config["diagnostics"]["bin_robustness_policy"] = "diagnostic_only"
 
-    _, _, decision = module.analyze(
+    _, _, _, decision, _ = module.analyze(
         rows=rows,
         matrix_rows=matrix_rows,
         config=config,
@@ -218,7 +223,7 @@ def test_diagnostic_only_sensitivity_bins_do_not_veto_primary_decision() -> None
             archive["analytical_gm3_per_ln_radius_1000"] + 0.20
         )
 
-    analytical, adjacent, decision = module.analyze(
+    analytical, adjacent, _, decision, _ = module.analyze(
         rows=rows,
         matrix_rows=matrix_rows,
         config=config,
@@ -228,8 +233,59 @@ def test_diagnostic_only_sensitivity_bins_do_not_veto_primary_decision() -> None
     sensitivity_rows = [row for row in analytical if row["metric"].endswith("_1000")]
     assert sensitivity_rows
     assert any(not row["accuracy_pass"] for row in sensitivity_rows)
-    assert adjacent
+
+
+def test_operational_initialization_fidelity_is_a_resolution_gate() -> None:
+    module = load_module()
+    rows, matrix_rows, config, archives = synthetic_inputs()
+    config["experiment"]["initialization_family"] = "operational_stochastic"
+    config["initialization_fidelity"] = {
+        "apply_to_ensemble_mean_at_time_s": 0.0,
+        "maximum_l1_upper_95ci": 0.05,
+        "moment0_relative_bias_margin": 0.05,
+        "moment3_relative_bias_margin": 0.05,
+        "moment6_relative_bias_margin": 0.05,
+        "member_level_initial_metrics_are_descriptive": True,
+    }
+    for index, matrix_row in enumerate(matrix_rows):
+        matrix_row["initialization_family"] = "operational_stochastic"
+        matrix_row["initialization_seed"] = str(1000 + index)
+        rows.append(
+            {
+                "run_label": matrix_row["run_label"],
+                "max_superdroplets": matrix_row["max_superdroplets"],
+                "member_index": matrix_row["member_index"],
+                "time_s": "0.0",
+                "golovin_relative_error_radius_moment_0_m3": "0.0",
+                "golovin_relative_error_radius_moment_3_um3_m3": "0.0",
+                "golovin_relative_error_radius_moment_6_um6_m3": "0.0",
+                "relative_liquid_mass_drift": "0.0",
+                "fixed_bin_mass_below_range_fraction": "0.0",
+                "fixed_bin_mass_above_range_fraction": "0.0",
+            }
+        )
+        archive = archives[matrix_row["run_label"]]
+        archive["time_s"] = np.insert(archive["time_s"], 0, 0.0)
+        for bin_count in (250, 500, 1000):
+            analytical_key = f"analytical_gm3_per_ln_radius_{bin_count}"
+            numerical_key = f"numerical_gm3_per_ln_radius_{bin_count}"
+            archive[analytical_key] = np.vstack(
+                [archive[analytical_key][0], archive[analytical_key]]
+            )
+            archive[numerical_key] = np.vstack([archive[analytical_key][0], archive[numerical_key]])
+
+    _, adjacent, initialization, decision, initialization_decision = module.analyze(
+        rows=rows,
+        matrix_rows=matrix_rows,
+        config=config,
+        archives=archives,
+    )
+
+    assert len(initialization) == 3 * 4
+    assert initialization_decision["status"] == "initialization_fidelity_pass"
+    assert decision["status"] == "selected_operational_resolution"
     assert decision["selected_max_superdroplets"] == 512
+    assert adjacent
     assert decision["formal_l1_bin_count"] == 500
 
 
@@ -299,7 +355,7 @@ def test_ensemble_size_sensitivity_covers_every_metric_and_resolution() -> None:
 def test_new_plots_are_written(tmp_path: Path) -> None:
     module = load_module()
     rows, matrix_rows, config, archives = synthetic_inputs()
-    analytical, adjacent, _ = module.analyze(
+    analytical, adjacent, _, _, _ = module.analyze(
         rows=rows,
         matrix_rows=matrix_rows,
         config=config,

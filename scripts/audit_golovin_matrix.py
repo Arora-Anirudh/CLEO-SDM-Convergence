@@ -79,8 +79,44 @@ def audit(
                 raise RuntimeError(
                     f"{manifest_file}: {key}={manifest.get(key)!r}, expected {expected_value!r}"
                 )
-        if not manifest["controlled_bundle"].endswith(f"/{case['controlled_bundle_label']}"):
-            raise RuntimeError(f"{manifest_file}: controlled bundle label mismatch")
+        initialization_family = case["initialization_family"]
+        if initialization_family == "controlled":
+            if not manifest["controlled_bundle"].endswith(f"/{case['controlled_bundle_label']}"):
+                raise RuntimeError(f"{manifest_file}: controlled bundle label mismatch")
+            if manifest.get(
+                "input_superdroplet_sha256",
+                manifest.get("bundle_superdroplet_sha256"),
+            ) != manifest.get("bundle_superdroplet_sha256"):
+                raise RuntimeError(f"{manifest_file}: controlled input and bundle hashes differ")
+        elif initialization_family == "operational_stochastic":
+            if case["controlled_bundle_label"] != "not_applicable":
+                raise RuntimeError(f"{matrix_file}: operational case has a controlled bundle label")
+            if manifest.get("controlled_bundle") != "none":
+                raise RuntimeError(
+                    f"{manifest_file}: operational member unexpectedly used a bundle"
+                )
+            if manifest.get("bundle_superdroplet_sha256") != "none":
+                raise RuntimeError(f"{manifest_file}: operational member has a bundle hash")
+        else:
+            raise RuntimeError(
+                f"{matrix_file}: unsupported initialization family {initialization_family}"
+            )
+        # Manifests produced before the named-input fields were introduced still
+        # preserve the exact controlled inputs in the bundle hash fields.  Keep
+        # those completed archives auditable while requiring explicit input
+        # hashes for every newly generated operational member.
+        input_superdroplet_sha256 = manifest.get(
+            "input_superdroplet_sha256",
+            manifest.get("bundle_superdroplet_sha256", "")
+            if initialization_family == "controlled"
+            else "",
+        )
+        input_grid_sha256 = manifest.get(
+            "input_grid_sha256",
+            manifest.get("bundle_grid_sha256", "") if initialization_family == "controlled" else "",
+        )
+        if len(input_superdroplet_sha256) != 64 or len(input_grid_sha256) != 64:
+            raise RuntimeError(f"{manifest_file}: missing named input SHA-256 provenance")
 
         project_commits.add(manifest["project_commit"])
         zarr_bytes = sum(
@@ -93,11 +129,19 @@ def audit(
                 "run_label": case["run_label"],
                 "max_superdroplets": int(case["max_superdroplets"]),
                 "member_index": int(case["member_index"]),
+                "initialization_family": initialization_family,
+                "initialization_seed": (
+                    int(case["initialization_seed"])
+                    if initialization_family == "operational_stochastic"
+                    else None
+                ),
                 "collision_seed": int(case["collision_seed"]),
                 "job_wall_seconds": int(manifest["job_wall_seconds"]),
                 "slurm_job_id": manifest["slurm_job_id"],
                 "zarr_bytes": zarr_bytes,
                 "zarr_tree_sha256": manifest["zarr_tree_sha256"],
+                "input_grid_sha256": input_grid_sha256,
+                "input_superdroplet_sha256": input_superdroplet_sha256,
                 "bundle_superdroplet_sha256": manifest["bundle_superdroplet_sha256"],
             }
         )
@@ -106,7 +150,7 @@ def audit(
         raise RuntimeError("members were produced by more than one project commit")
     return {
         "status": "completed",
-        "schema": "golovin_controlled_resolution_inventory_v1",
+        "schema": "golovin_resolution_inventory_v2",
         "case_count": len(inventory),
         "matrix_file": str(matrix_file.resolve()),
         "matrix_sha256": matrix_sha256,

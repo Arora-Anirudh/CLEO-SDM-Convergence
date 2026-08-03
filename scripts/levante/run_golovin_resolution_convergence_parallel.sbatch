@@ -8,9 +8,9 @@
 #SBATCH --mem=3600M
 #SBATCH --time=02:15:00
 
-# Run a reviewed Golovin matrix with a bounded number of independent serial
-# CLEO members inside one Slurm allocation. This avoids one scheduler job per
-# member while preserving one rank and one thread per member.
+# Run a reviewed Golovin matrix, or a bounded contiguous shard of it, with
+# independent serial CLEO members inside one Slurm allocation. This avoids one
+# scheduler job per member while preserving one rank and one thread per member.
 #
 # Each worker owns a disjoint strided subset of matrix rows. Completed rows
 # are checksum-audited and skipped on restart; incomplete or mismatched paths
@@ -38,14 +38,30 @@ source "${SCRIPT_DIR}/common.sh"
 EXPECTED_CASE_COUNT="${EXPECTED_CASE_COUNT:-400}"
 WORKER_COUNT="${WORKER_COUNT:-4}"
 RESUME_COMPLETED="${RESUME_COMPLETED:-1}"
+CASE_INDEX_START="${CASE_INDEX_START:-0}"
+CASE_INDEX_END="${CASE_INDEX_END:-}"
+REQUIRE_COMPLETE_MATRIX="${REQUIRE_COMPLETE_MATRIX:-1}"
 
-for integer_name in EXPECTED_CASE_COUNT WORKER_COUNT; do
+for integer_name in EXPECTED_CASE_COUNT WORKER_COUNT CASE_INDEX_START; do
   integer_value="${!integer_name}"
   if [[ ! "${integer_value}" =~ ^[1-9][0-9]*$ ]]; then
     echo "ERROR: ${integer_name} must be a positive integer." >&2
     exit 2
   fi
 done
+if [[ -z "${CASE_INDEX_END}" ]]; then
+  CASE_INDEX_END=$((EXPECTED_CASE_COUNT - 1))
+fi
+if [[ ! "${CASE_INDEX_END}" =~ ^[0-9]+$ ]] \
+  || ((CASE_INDEX_END < CASE_INDEX_START)) \
+  || ((CASE_INDEX_END >= EXPECTED_CASE_COUNT)); then
+  echo "ERROR: CASE_INDEX_END must be within the reviewed matrix range." >&2
+  exit 2
+fi
+if [[ "${REQUIRE_COMPLETE_MATRIX}" != "0" && "${REQUIRE_COMPLETE_MATRIX}" != "1" ]]; then
+  echo "ERROR: REQUIRE_COMPLETE_MATRIX must be 0 or 1." >&2
+  exit 2
+fi
 if [[ "${RESUME_COMPLETED}" != "1" ]]; then
   echo "ERROR: this restartable runner requires RESUME_COMPLETED=1." >&2
   exit 2
@@ -72,6 +88,7 @@ if ((actual_case_count != EXPECTED_CASE_COUNT)); then
   echo "ERROR: expected ${EXPECTED_CASE_COUNT} cases, found ${actual_case_count}." >&2
   exit 2
 fi
+selected_case_count=$((CASE_INDEX_END - CASE_INDEX_START + 1))
 
 matrix_sha256="$(sha256sum "${MATRIX_FILE}" | awk '{print $1}')"
 project_commit="$(git -C "${CLEO_SDM_PROJECT_ROOT}" rev-parse HEAD)"
@@ -129,8 +146,8 @@ export RESUME_COMPLETED
 declare -a worker_pids=()
 for ((worker_index = 0; worker_index < WORKER_COUNT; worker_index++)); do
   (
-    for ((case_index = worker_index;
-      case_index < EXPECTED_CASE_COUNT;
+    for ((case_index = CASE_INDEX_START + worker_index;
+      case_index <= CASE_INDEX_END;
       case_index += WORKER_COUNT)); do
       echo "RESOLUTION_CASE_BEGIN=${case_index}"
       export MATRIX_CASE_INDEX="${case_index}"
@@ -153,26 +170,29 @@ if ((worker_failure != 0)); then
   exit 1
 fi
 
-python="${CLEO_SDM_PROJECT_ROOT}/.venv/bin/python"
-inventory_staging="${RESOLUTION_RECORD_ROOT}/.model_inventory_job${SLURM_JOB_ID}.json"
-if [[ -e "${inventory_staging}" ]]; then
-  echo "ERROR: inventory staging path already exists: ${inventory_staging}" >&2
-  exit 1
-fi
-"${python}" "${CLEO_SDM_PROJECT_ROOT}/scripts/audit_golovin_matrix.py" \
-  --matrix-file "${MATRIX_FILE}" \
-  --run-root "${CLEO_SDM_RUN_ROOT}" \
-  --output "${inventory_staging}"
-
-inventory="${RESOLUTION_RECORD_ROOT}/model_inventory.json"
-if [[ -e "${inventory}" ]]; then
-  if ! cmp --silent "${inventory}" "${inventory_staging}"; then
-    echo "ERROR: existing model inventory differs from the new audit." >&2
+inventory="not_created_for_partial_shard"
+if [[ "${REQUIRE_COMPLETE_MATRIX}" == "1" ]]; then
+  python="${CLEO_SDM_PROJECT_ROOT}/.venv/bin/python"
+  inventory_staging="${RESOLUTION_RECORD_ROOT}/.model_inventory_job${SLURM_JOB_ID}.json"
+  if [[ -e "${inventory_staging}" ]]; then
+    echo "ERROR: inventory staging path already exists: ${inventory_staging}" >&2
     exit 1
   fi
-  rm "${inventory_staging}"
-else
-  mv "${inventory_staging}" "${inventory}"
+  "${python}" "${CLEO_SDM_PROJECT_ROOT}/scripts/audit_golovin_matrix.py" \
+    --matrix-file "${MATRIX_FILE}" \
+    --run-root "${CLEO_SDM_RUN_ROOT}" \
+    --output "${inventory_staging}"
+
+  inventory="${RESOLUTION_RECORD_ROOT}/model_inventory.json"
+  if [[ -e "${inventory}" ]]; then
+    if ! cmp --silent "${inventory}" "${inventory_staging}"; then
+      echo "ERROR: existing model inventory differs from the new audit." >&2
+      exit 1
+    fi
+    rm "${inventory_staging}"
+  else
+    mv "${inventory_staging}" "${inventory}"
+  fi
 fi
 
 run_finished_epoch="$(date +%s)"
@@ -187,16 +207,24 @@ run_finished_epoch="$(date +%s)"
   echo "slurm_mem_per_node=${SLURM_MEM_PER_NODE:-unknown}"
   echo "slurm_time_limit=${SLURM_TIMELIMIT:-unknown}"
   echo "worker_count=${WORKER_COUNT}"
+  echo "case_index_start=${CASE_INDEX_START}"
+  echo "case_index_end=${CASE_INDEX_END}"
+  echo "selected_case_count=${selected_case_count}"
+  echo "require_complete_matrix=${REQUIRE_COMPLETE_MATRIX}"
   echo "runner_wall_seconds=$((run_finished_epoch - run_started_epoch))"
   echo "project_commit=${project_commit}"
   echo "matrix_sha256=${matrix_sha256}"
-  echo "completed_cases=${EXPECTED_CASE_COUNT}"
-  echo "model_inventory_sha256=$(sha256sum "${inventory}" | awk '{print $1}')"
+  echo "completed_cases=${selected_case_count}"
+  if [[ "${REQUIRE_COMPLETE_MATRIX}" == "1" ]]; then
+    echo "model_inventory_sha256=$(sha256sum "${inventory}" | awk '{print $1}')"
+  fi
 } >"${RESOLUTION_RECORD_ROOT}/runner_completed_job${SLURM_JOB_ID}.txt"
 
 trap - EXIT
+echo "GOLOVIN_PARALLEL_RESOLUTION_RUN_PASS=1"
+# Backward-compatible marker retained for existing archived-workflow checks.
 echo "GOLOVIN_CONTROLLED_PARALLEL_RESOLUTION_RUN_PASS=1"
-echo "completed_cases=${EXPECTED_CASE_COUNT}"
+echo "completed_cases=${selected_case_count}"
 echo "worker_count=${WORKER_COUNT}"
 echo "resolution_record_root=${RESOLUTION_RECORD_ROOT}"
 echo "model_inventory=${inventory}"

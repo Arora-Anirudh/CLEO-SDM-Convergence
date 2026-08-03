@@ -105,13 +105,9 @@ def projected_welch_interval(
     if standard_error == 0.0:
         multiplier = 0.0
     else:
-        denominator = lower_term**2 / (member_count - 1) + upper_term**2 / (
-            member_count - 1
-        )
+        denominator = lower_term**2 / (member_count - 1) + upper_term**2 / (member_count - 1)
         degrees_freedom = (lower_term + upper_term) ** 2 / denominator
-        multiplier = float(
-            student_t.ppf(0.5 + confidence_level / 2.0, degrees_freedom)
-        )
+        multiplier = float(student_t.ppf(0.5 + confidence_level / 2.0, degrees_freedom))
     difference = float(np.mean(lower) - np.mean(upper))
     return (
         difference,
@@ -169,10 +165,13 @@ def bootstrap_l1_all_counts(
             if member_count not in count_to_position:
                 continue
             means = running / member_count
-            l1 = np.sum(
-                np.abs(means - analytical[None, :, :]) * delta_ln[None, None, :],
-                axis=2,
-            ) / denominator[None, :]
+            l1 = (
+                np.sum(
+                    np.abs(means - analytical[None, :, :]) * delta_ln[None, None, :],
+                    axis=2,
+                )
+                / denominator[None, :]
+            )
             output[count_to_position[member_count], start:stop, :] = l1
     return output
 
@@ -391,6 +390,8 @@ def analyze(
     selection_rows: list[dict[str, object]] = []
     limiting_rows: list[dict[str, object]] = []
     selections: dict[int, int | None] = {}
+    target_setting = settings["target_selected_resolution"]
+    derive_target = target_setting == "derived_from_full_50_selection"
 
     for count_index, member_count in enumerate(member_counts):
         resolution_pass = {resolution: validity[resolution] for resolution in resolutions}
@@ -407,12 +408,8 @@ def analyze(
                 low, high = np.quantile(values, [alpha, 1.0 - alpha])
                 estimate = float(point_l1[resolution][time_index])
                 half_width = float((high - low) / 2.0)
-                accuracy_margin = float(
-                    criteria["analytical_agreement"]["maximum_l1_upper_95ci"]
-                )
-                precision_margin = float(
-                    criteria["maximum_95ci_half_width"]["l1_absolute"]
-                )
+                accuracy_margin = float(criteria["analytical_agreement"]["maximum_l1_upper_95ci"])
+                precision_margin = float(criteria["maximum_95ci_half_width"]["l1_absolute"])
                 accuracy_pass = bool(high <= accuracy_margin)
                 precision_pass = bool(half_width <= precision_margin)
                 resolution_pass[resolution] &= accuracy_pass and precision_pass
@@ -442,12 +439,8 @@ def analyze(
                         member_count,
                         confidence,
                     )
-                    accuracy_margin = float(
-                        criteria["analytical_agreement"][accuracy_key]
-                    )
-                    precision_margin = float(
-                        criteria["maximum_95ci_half_width"][precision_key]
-                    )
+                    accuracy_margin = float(criteria["analytical_agreement"][accuracy_key])
+                    precision_margin = float(criteria["maximum_95ci_half_width"][precision_key])
                     half_width = (high - low) / 2.0
                     accuracy_pass = low >= -accuracy_margin and high <= accuracy_margin
                     precision_pass = half_width <= precision_margin
@@ -478,9 +471,7 @@ def analyze(
                 low, high = np.quantile(differences, [alpha, 1.0 - alpha])
                 estimate = float(point_l1[lower][time_index] - point_l1[upper][time_index])
                 margin = float(
-                    criteria["adjacent_level_equivalence"][
-                        "l1_absolute_difference_margin"
-                    ]
+                    criteria["adjacent_level_equivalence"]["l1_absolute_difference_margin"]
                 )
                 passed = bool(low >= -margin and high <= margin)
                 pair_pass[(lower, upper)] &= passed
@@ -545,35 +536,64 @@ def analyze(
             {
                 "ensemble_size": member_count,
                 "selected_max_superdroplets": selected if selected is not None else "",
-                "target_131072_selected": selected == int(settings["target_selected_resolution"]),
                 "accepted_candidates": ";".join(str(value) for value in accepted),
             }
         )
 
-        target = int(settings["target_selected_resolution"])
-        target_index = resolutions.index(target)
-        triple = set(resolutions[target_index : target_index + 3])
-        pairs = {
-            (resolutions[target_index], resolutions[target_index + 1]),
-            (resolutions[target_index + 1], resolutions[target_index + 2]),
+        analytical_rows.extend(analytical_for_count)
+        adjacent_rows.extend(adjacent_for_count)
+
+    target = selections[member_counts[-1]] if derive_target else int(target_setting)
+    for row in selection_rows:
+        selected = row["selected_max_superdroplets"]
+        row["target_selected_resolution"] = target if target is not None else ""
+        row["target_resolution_selected"] = (
+            target is not None and selected != "" and int(selected) == target
+        )
+    if target is None:
+        decision = {
+            "schema": "golovin_fixed50_ensemble_size_adequacy_v2",
+            "status": "not_assessed_no_full_50_resolution_selection",
+            "smallest_retrospectively_supported_tested_ensemble_size": None,
+            "target_selected_resolution": None,
+            "target_selection_source": "full_50_member_operational_analysis",
+            "tested_member_counts": member_counts,
+            "formal_rule": (
+                "no target exists because the full 50-member formal analysis selected none"
+            ),
+            "interpretation": config["interpretation"]["allowed_claim"],
+            "prohibited_claims": config["interpretation"]["prohibited_claims"],
         }
+        return analytical_rows, adjacent_rows, selection_rows, limiting_rows, decision
+
+    target_index = resolutions.index(target)
+    if target_index > len(resolutions) - 3:
+        raise ValueError("selected target has no N/2N/4N confirmation triple")
+    triple = set(resolutions[target_index : target_index + 3])
+    pairs = {
+        (resolutions[target_index], resolutions[target_index + 1]),
+        (resolutions[target_index + 1], resolutions[target_index + 2]),
+    }
+    for member_count in member_counts:
         for metric in ("ensemble_mean_l1_bins_500", M0, M6):
             relevant_analytical = [
                 row
-                for row in analytical_for_count
-                if row["metric"] == metric and row["max_superdroplets"] in triple
+                for row in analytical_rows
+                if int(row["ensemble_size"]) == member_count
+                and row["metric"] == metric
+                and int(row["max_superdroplets"]) in triple
             ]
             relevant_adjacent = [
                 row
-                for row in adjacent_for_count
-                if row["metric"] == metric
-                and (row["lower_max_superdroplets"], row["upper_max_superdroplets"])
+                for row in adjacent_rows
+                if int(row["ensemble_size"]) == member_count
+                and row["metric"] == metric
+                and (int(row["lower_max_superdroplets"]), int(row["upper_max_superdroplets"]))
                 in pairs
             ]
             analytical_ratio = max(
                 (
-                    float(row["projected_95ci_high"])
-                    / float(row["accuracy_margin"])
+                    float(row["projected_95ci_high"]) / float(row["accuracy_margin"])
                     if metric == "ensemble_mean_l1_bins_500"
                     else max(
                         abs(float(row["projected_95ci_low"])),
@@ -584,8 +604,7 @@ def analyze(
                 for row in relevant_analytical
             )
             precision_ratio = max(
-                float(row["projected_95ci_half_width"])
-                / float(row["precision_margin"])
+                float(row["projected_95ci_half_width"]) / float(row["precision_margin"])
                 for row in relevant_analytical
             )
             adjacent_ratio = max(
@@ -617,17 +636,13 @@ def analyze(
                 }
             )
 
-        analytical_rows.extend(analytical_for_count)
-        adjacent_rows.extend(adjacent_for_count)
-
-    target = int(settings["target_selected_resolution"])
     adequate = None
     for member_count in member_counts:
         if all(selections[count] == target for count in member_counts if count >= member_count):
             adequate = member_count
             break
     decision = {
-        "schema": "golovin_fixed50_ensemble_size_adequacy_v1",
+        "schema": "golovin_fixed50_ensemble_size_adequacy_v2",
         "status": (
             "retrospective_adequate_count_identified"
             if adequate is not None
@@ -635,11 +650,12 @@ def analyze(
         ),
         "smallest_retrospectively_supported_tested_ensemble_size": adequate,
         "target_selected_resolution": target,
+        "target_selection_source": (
+            "full_50_member_operational_analysis" if derive_target else "fixed_config_value"
+        ),
         "tested_member_counts": member_counts,
         "bootstrap_resamples": resamples,
-        "selection_by_member_count": {
-            str(count): selections[count] for count in member_counts
-        },
+        "selection_by_member_count": {str(count): selections[count] for count in member_counts},
         "formal_rule": (
             "primary 500-bin N/2N/4N analytical, precision and adjacent-equivalence "
             "gates at every 600--3600-s decision time"
@@ -664,15 +680,17 @@ def refine_boundary(
     decision: dict[str, object],
 ) -> tuple[list[dict[str, object]], dict[str, object]]:
     """Refine a near-threshold L1 boundary with independent large bootstraps."""
-    initial_adequate = decision[
-        "smallest_retrospectively_supported_tested_ensemble_size"
-    ]
+    initial_adequate = decision["smallest_retrospectively_supported_tested_ensemble_size"]
     if initial_adequate is None:
         decision["boundary_refinement"] = {"status": "not_triggered_no_initial_count"}
         return [], decision
 
     settings = config["analysis"]["boundary_refinement"]
-    target = int(config["analysis"]["target_selected_resolution"])
+    target = decision["target_selected_resolution"]
+    if target is None:
+        decision["boundary_refinement"] = {"status": "not_triggered_no_target_selection"}
+        return [], decision
+    target = int(target)
     target_index = resolutions.index(target)
     target_pairs = {
         (resolutions[target_index], resolutions[target_index + 1]),
@@ -686,6 +704,7 @@ def refine_boundary(
         and (int(row["lower_max_superdroplets"]), int(row["upper_max_superdroplets"]))
         in target_pairs
     ]
+
     def normalized_ratio(row: dict[str, object]) -> float:
         return max(
             abs(float(row["projected_95ci_low"])),
@@ -759,8 +778,7 @@ def refine_boundary(
                     "projected_95ci_low": float(low),
                     "projected_95ci_high": float(high),
                     "equivalence_margin": margin,
-                    "normalized_worst_bound": max(abs(float(low)), abs(float(high)))
-                    / margin,
+                    "normalized_worst_bound": max(abs(float(low)), abs(float(high))) / margin,
                     "equivalence_pass": passed,
                 }
             )
@@ -772,12 +790,8 @@ def refine_boundary(
         low, high = np.quantile(pooled, [0.025, 0.975])
         pooled_pass = bool(low >= -margin and high <= margin)
         pooled_ratio[count] = max(abs(float(low)), abs(float(high))) / margin
-        stable_pass[count] = (
-            (pooled_pass or not bool(settings["require_pooled_pass"]))
-            and (
-                all(seed_pass_by_count[count])
-                or not bool(settings["require_every_seed_pass"])
-            )
+        stable_pass[count] = (pooled_pass or not bool(settings["require_pooled_pass"])) and (
+            all(seed_pass_by_count[count]) or not bool(settings["require_every_seed_pass"])
         )
         output_rows.append(
             {
@@ -800,15 +814,14 @@ def refine_boundary(
     selection_lookup = {int(row["ensemble_size"]): row for row in selection_rows}
     for count in counts:
         row = selection_lookup[count]
-        accepted = [
-            int(value) for value in str(row["accepted_candidates"]).split(";") if value
-        ]
+        accepted = [int(value) for value in str(row["accepted_candidates"]).split(";") if value]
         if target in accepted and not stable_pass[count]:
             accepted.remove(target)
         selected = min(accepted) if accepted else None
         row["accepted_candidates"] = ";".join(str(value) for value in accepted)
         row["selected_max_superdroplets"] = selected if selected is not None else ""
-        row["target_131072_selected"] = selected == target
+        row["target_selected_resolution"] = target
+        row["target_resolution_selected"] = selected == target
 
     updated_selections = {
         int(row["ensemble_size"]): (
@@ -820,11 +833,7 @@ def refine_boundary(
     }
     refined_adequate = None
     for count in tested_counts:
-        if all(
-            updated_selections[larger] == target
-            for larger in tested_counts
-            if larger >= count
-        ):
+        if all(updated_selections[larger] == target for larger in tested_counts if larger >= count):
             refined_adequate = count
             break
 
@@ -846,9 +855,7 @@ def refine_boundary(
         )
 
     decision["initial_10000_resample_adequate_count"] = initial_adequate
-    decision["smallest_retrospectively_supported_tested_ensemble_size"] = (
-        refined_adequate
-    )
+    decision["smallest_retrospectively_supported_tested_ensemble_size"] = refined_adequate
     decision["selection_by_member_count"] = {
         str(count): updated_selections[count] for count in tested_counts
     }
@@ -862,9 +869,7 @@ def refine_boundary(
         "pooled_resamples_per_count": resamples * len(seeds),
         "require_pooled_pass": bool(settings["require_pooled_pass"]),
         "require_every_seed_pass": bool(settings["require_every_seed_pass"]),
-        "stable_pass_by_member_count": {
-            str(count): stable_pass[count] for count in counts
-        },
+        "stable_pass_by_member_count": {str(count): stable_pass[count] for count in counts},
     }
     return output_rows, decision
 
@@ -877,9 +882,7 @@ def plot_result(
 ) -> None:
     counts = np.asarray([int(row["ensemble_size"]) for row in selection_rows])
     selected_values = [
-        int(row["selected_max_superdroplets"])
-        if row["selected_max_superdroplets"] != ""
-        else None
+        int(row["selected_max_superdroplets"]) if row["selected_max_superdroplets"] != "" else None
         for row in selection_rows
     ]
     categorical_position = {None: 0, 131072: 1, 262144: 2, 524288: 3, 1048576: 4}
