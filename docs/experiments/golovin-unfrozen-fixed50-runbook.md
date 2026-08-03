@@ -19,11 +19,11 @@ The generated matrix has 450 rows and immutable SHA-256
 | A | Build exact committed revision | 8 physical cores, 4 GiB, 10 min | build manifest matches Git revision |
 | B | Scheduler-layout probe | 8 physical cores, 12 GiB, 10 min | eight one-core steps start concurrently |
 | C | Two real endpoint smoke members | 1 physical core, 4 GiB, 3 h | fresh input hashes, Zarr, Stage-0 readability, measured resource audit |
-| D1 | Cases 0--249 (4,096--65,536; 250 paths, smoke path reused) | 8 physical cores, 12 GiB, 1 h | every member complete and resumable audit clean |
-| D2 | Cases 250--299 (131,072) | 8 physical cores, 12 GiB, 2 h | same |
-| D3 | Cases 300--349 (262,144) | 8 physical cores, 12 GiB, 4 h | same |
-| D4 | Cases 350--399 (524,288) | 8 physical cores, 12 GiB, 8 h | same |
-| D5 | Cases 400--449 (1,048,576; smoke path reused) | 8 physical cores, 12 GiB, 8 h | same |
+| D1 | Cases 0--249 (4,096--65,536; 250 paths, smoke path reused) | 8 physical cores, 6 GiB, 1 h | every member complete and resumable audit clean |
+| D2 | Cases 250--299 (131,072) | 8 physical cores, 6 GiB, 2 h | same |
+| D3 | Cases 300--349 (262,144) | 8 physical cores, 6 GiB, 4 h | same |
+| D4 | Cases 350--399 (524,288) | 8 physical cores, 6 GiB, 8 h | same |
+| D5 | Cases 400--449 (1,048,576; smoke path reused) | 8 physical cores, 6 GiB, 8 h | same |
 | E | Stage-0, full convergence decision | 1 physical core, 4 GiB, 90 min | all 450 manifest/Zarr/diagnostic checksums valid |
 | F | Operational ensemble-size reconstruction | 1 physical core, 4 GiB, 2 h | operational 50-member resolution result is known |
 | G | Frozen-versus-operational paired comparison | 1 physical core, 4 GiB, 90 min | both compact analyses are complete |
@@ -66,6 +66,17 @@ physics, resolution/time grid and output structure.
 The 8-hour 524k/1M ceilings are intentionally based on the slowest prior
 resolution groups and a runtime safety factor. They are not requests for
 eight cores for eight hours of active model work if the groups finish earlier.
+
+### Measured smoke revision
+
+The completed 1,048,576-SD endpoint smoke used 0.33 GiB at its actual CLEO
+step peak. Eight simultaneous members at that measured peak require about
+2.64 GiB before controller and initialization overhead. The production request
+is therefore revised from 12 GiB to 6 GiB: it retains substantial headroom,
+while avoiding the shared-partition memory request that needlessly enlarged
+the Slurm CPU allocation during the scheduler-only probe. The first completed
+eight-worker group remains the operational check on this estimate; an OOM
+failure stops its group and does not silently continue.
 
 ## Output and analysis products
 

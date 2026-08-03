@@ -8,6 +8,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "validate_golovin_unfrozen_smoke.py"
 WRAPPER = ROOT / "scripts" / "levante" / "run_golovin_unfrozen_smoke.sbatch"
+SHARD_WRAPPER = ROOT / "scripts" / "levante" / "run_golovin_unfrozen_resolution_shard.sbatch"
 
 
 def load_module():
@@ -123,3 +124,12 @@ def test_smoke_wrapper_allows_shared_partition_memory_cpu_adjustment() -> None:
     assert 'if ((SLURM_CPUS_PER_TASK < 1)); then' in wrapper
     assert "SLURM_CPUS_PER_TASK != 1" not in wrapper
     assert "export OMP_NUM_THREADS=1" in wrapper
+
+
+def test_shard_wrapper_uses_measured_memory_and_allows_cpu_adjustment() -> None:
+    wrapper = SHARD_WRAPPER.read_text(encoding="utf-8")
+
+    assert "#SBATCH --mem=6G" in wrapper
+    assert "WORKER_COUNT != 8 || SLURM_NTASKS != 8" in wrapper
+    assert "SLURM_CPUS_PER_TASK != 1" not in wrapper
+    assert "SLURM_CPUS_PER_TASK < 1" in wrapper

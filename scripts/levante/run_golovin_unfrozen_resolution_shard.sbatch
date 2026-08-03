@@ -5,7 +5,7 @@
 #SBATCH --ntasks=8
 #SBATCH --cpus-per-task=1
 #SBATCH --hint=nomultithread
-#SBATCH --mem=12G
+#SBATCH --mem=6G
 #SBATCH --time=08:00:00
 
 # Run one contiguous reviewed operational Golovin matrix group. The calling
@@ -45,8 +45,16 @@ export RESUME_COMPLETED=1
 export REQUIRE_COMPLETE_MATRIX=0
 EXPECTED_GROUP_CASES="${EXPECTED_GROUP_CASES:-50}"
 
-if ((WORKER_COUNT != 8 || SLURM_NTASKS != 8 || SLURM_CPUS_PER_TASK != 1)); then
+if ((WORKER_COUNT != 8 || SLURM_NTASKS != 8)); then
   echo "ERROR: the reviewed shard layout is eight one-core members." >&2
+  exit 2
+fi
+# Shared-partition memory accounting can raise SLURM_CPUS_PER_TASK above the
+# submitted value. Each member step still requests one exclusive physical core
+# and run_collisions0d fixes MODEL_THREADS=1; do not reject that safe Slurm
+# adjustment as though it created extra model threads.
+if ((SLURM_CPUS_PER_TASK < 1)); then
+  echo "ERROR: the shard allocation provides no CPU per member task." >&2
   exit 2
 fi
 if [[ ! "${EXPECTED_GROUP_CASES}" =~ ^[1-9][0-9]*$ ]]; then
