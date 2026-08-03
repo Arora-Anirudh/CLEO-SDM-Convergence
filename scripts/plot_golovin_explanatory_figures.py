@@ -711,33 +711,51 @@ def plot_integrity_qa(diagnostics: pd.DataFrame, output: Path) -> None:
 
 
 def plot_member_variability(diagnostics: pd.DataFrame, output: Path) -> None:
-    resolutions = [131_072, 262_144, 524_288]
+    resolutions = sorted(
+        int(value) for value in diagnostics["max_superdroplets"].unique()
+    )
+    if len(resolutions) != 9:
+        raise ValueError(
+            f"expected nine fixed-50 resolutions, found {len(resolutions)}"
+        )
     selected = diagnostics[
         diagnostics["max_superdroplets"].isin(resolutions)
         & np.isclose(diagnostics["time_s"], 3600.0, atol=1e-3)
     ]
+    member_counts = selected.groupby("max_superdroplets")["member_index"].nunique()
+    if set(member_counts.index.astype(int)) != set(resolutions) or not np.all(
+        member_counts.to_numpy() == 50
+    ):
+        raise ValueError("expected 50 independent members at every resolution")
     columns = [
         "golovin_fixed_bin_l1_relative_bins_500",
         "golovin_relative_error_radius_moment_0_m3",
         "golovin_relative_error_radius_moment_6_um6_m3",
     ]
     titles = [r"member-level DSD $L_1$ mismatch", r"member $M_0$ bias", r"member $M_6$ bias"]
-    fig, axes = plt.subplots(1, 3, figsize=(13.2, 4.4))
+    positions = np.arange(len(resolutions))
+    fig, axes = plt.subplots(1, 3, figsize=(15.8, 4.9))
     for ax, column, title in zip(axes, columns, titles):
         data = [
             100
             * selected[selected["max_superdroplets"] == resolution][column].to_numpy(dtype=float)
             for resolution in resolutions
         ]
-        parts = ax.violinplot(data, positions=np.arange(3), showmeans=False, showextrema=False)
+        parts = ax.violinplot(
+            data,
+            positions=positions,
+            widths=0.82,
+            showmeans=False,
+            showextrema=False,
+        )
         for body in parts["bodies"]:
             body.set_facecolor(COLORS["sky"])
             body.set_edgecolor(COLORS["blue"])
             body.set_alpha(0.65)
         ax.boxplot(
             data,
-            positions=np.arange(3),
-            widths=0.18,
+            positions=positions,
+            widths=0.14,
             showfliers=False,
             patch_artist=True,
             boxprops=dict(facecolor="white", edgecolor=COLORS["dark"]),
@@ -746,7 +764,13 @@ def plot_member_variability(diagnostics: pd.DataFrame, output: Path) -> None:
             capprops=dict(color=COLORS["dark"]),
         )
         ax.axhline(0, color=COLORS["dark"], linewidth=0.8)
-        ax.set_xticks(np.arange(3), [format_resolution(value) for value in resolutions])
+        ax.set_xticks(
+            positions,
+            [format_resolution(value) for value in resolutions],
+            rotation=38,
+            ha="right",
+        )
+        ax.set_xlim(-0.65, len(resolutions) - 0.35)
         ax.set_xlabel(r"$N_{SD}$")
         ax.set_ylabel("member diagnostic / %")
         ax.set_title(title)
@@ -762,7 +786,7 @@ def plot_member_variability(diagnostics: pd.DataFrame, output: Path) -> None:
     )
     source_footer(
         fig,
-        "Each violin contains 50 independent collision members. Panel a is a member-level diagnostic and is not the formal L1 of the ensemble-mean distribution.",
+        "All nine tested resolutions are shown; each violin contains 50 independent collision members. Panel a is a member-level diagnostic and is not the formal L1 of the ensemble-mean distribution.",
     )
     fig.tight_layout(rect=[0, 0.06, 1, 0.92])
     save_figure(fig, output)
