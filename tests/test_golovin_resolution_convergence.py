@@ -84,6 +84,7 @@ def synthetic_inputs(*, fail_smallest: bool = False):
             "confidence_level": 0.95,
             "bootstrap_resamples": 100,
             "bootstrap_seed": 123,
+            "primary_log_radius_bins": 500,
             "bin_robustness_policy": ("require_resolution_decision_at_all_registered_bin_counts"),
             "ensemble_size_sensitivity": {
                 "time_s": 1200.0,
@@ -205,6 +206,31 @@ def test_exploratory_screen_does_not_make_a_formal_selection() -> None:
     assert decision["selected_max_superdroplets"] is None
     assert decision["strict_selected_max_superdroplets_if_formal"] == 512
     assert decision["formal_convergence_claim_permitted"] is False
+
+
+def test_diagnostic_only_sensitivity_bins_do_not_veto_primary_decision() -> None:
+    module = load_module()
+    rows, matrix_rows, config, archives = synthetic_inputs()
+    config["diagnostics"]["bin_robustness_policy"] = "diagnostic_only"
+
+    for archive in archives.values():
+        archive["numerical_gm3_per_ln_radius_1000"] = (
+            archive["analytical_gm3_per_ln_radius_1000"] + 0.20
+        )
+
+    analytical, adjacent, decision = module.analyze(
+        rows=rows,
+        matrix_rows=matrix_rows,
+        config=config,
+        archives=archives,
+    )
+
+    sensitivity_rows = [row for row in analytical if row["metric"].endswith("_1000")]
+    assert sensitivity_rows
+    assert any(not row["accuracy_pass"] for row in sensitivity_rows)
+    assert adjacent
+    assert decision["selected_max_superdroplets"] == 512
+    assert decision["formal_l1_bin_count"] == 500
 
 
 def test_resolution_plot_accepts_bootstrap_interval_excluding_estimate(

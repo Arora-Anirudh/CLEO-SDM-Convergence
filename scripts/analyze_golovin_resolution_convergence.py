@@ -440,6 +440,13 @@ def analyze(
         "diagnostic_only",
     }:
         raise ValueError("unsupported resolution bin-robustness policy")
+    primary_bin_count = int(diagnostics.get("primary_log_radius_bins", 500))
+    if primary_bin_count not in BIN_COUNTS:
+        raise ValueError("primary L1 bin count is not registered")
+    require_all_bin_counts = (
+        diagnostics["bin_robustness_policy"]
+        == "require_resolution_decision_at_all_registered_bin_counts"
+    )
 
     decision_rows = [
         {**row, "_nominal_time": nominal_time(float(row["time_s"]), decision_times)}
@@ -520,7 +527,8 @@ def analyze(
                 half_width = (ci_high - ci_low) / 2.0
                 accuracy_pass = ci_high <= analytical_l1_margin
                 precision_pass = half_width <= l1_precision
-                resolution_pass[resolution] &= accuracy_pass and precision_pass
+                if require_all_bin_counts or bin_count == primary_bin_count:
+                    resolution_pass[resolution] &= accuracy_pass and precision_pass
                 analytical_rows.append(
                     {
                         "max_superdroplets": resolution,
@@ -617,7 +625,8 @@ def analyze(
                     criteria["adjacent_level_equivalence"]["l1_absolute_difference_margin"]
                 )
                 passed = ci_low >= -margin and ci_high <= margin
-                pair_pass[(lower, upper)] &= passed
+                if require_all_bin_counts or bin_count == primary_bin_count:
+                    pair_pass[(lower, upper)] &= passed
                 adjacent_rows.append(
                     {
                         "lower_max_superdroplets": lower,
@@ -717,6 +726,7 @@ def analyze(
             "N, 2N and 4N pass analytical/precision gates and both adjacent pairs pass equivalence"
         ),
         "bin_robustness_policy": diagnostics["bin_robustness_policy"],
+        "formal_l1_bin_count": primary_bin_count,
         "l1_estimand": "relative L1 of the ensemble-mean fixed-bin distribution",
         "independent_ensemble_warning": (
             "Different resolutions use independent collision ensembles; "

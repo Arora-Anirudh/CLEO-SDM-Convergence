@@ -1,0 +1,55 @@
+analysis:
+  name: golovin_fixed50_ensemble_size_adequacy_v1
+  classification: retrospective_analysis_only
+  source_experiment: golovin_fixed50_extended_resolution_convergence_v1
+  source_members_per_resolution: 50
+  tested_member_counts:
+    minimum: 5
+    maximum: 50
+    step: 1
+  bootstrap_resamples: 10000
+  bootstrap_seed: 2026080305
+  boundary_refinement:
+    trigger_within_normalized_margin: 0.05
+    member_count_radius: 1
+    bootstrap_resamples_per_seed: 200000
+    bootstrap_seeds: [2026080316, 2026080317, 2026080318]
+    require_pooled_pass: true
+    require_every_seed_pass: true
+  confidence_level: 0.95
+  target_selected_resolution: 131072
+  sustained_selection_required_through_larger_counts: true
+
+diagnostics:
+  decision_times_s: [600.0, 1200.0, 1800.0, 2400.0, 3000.0, 3600.0]
+  primary_log_radius_bins: 500
+  sensitivity_log_radius_bins: [250, 1000]
+  sensitivity_bins_are_diagnostic_only: true
+
+convergence_criteria:
+  analytical_agreement:
+    maximum_l1_upper_95ci: 0.05
+    moment0_relative_bias_margin: 0.05
+    moment6_relative_bias_margin: 0.05
+  adjacent_level_equivalence:
+    l1_absolute_difference_margin: 0.01
+    moment0_relative_difference_margin: 0.05
+    moment6_relative_difference_margin: 0.05
+  maximum_95ci_half_width:
+    l1_absolute: 0.01
+    moment0_relative: 0.025
+    moment6_relative: 0.05
+  maximum_relative_liquid_mass_drift: 1.0e-7
+  maximum_out_of_range_mass_fraction: 1.0e-6
+  require_pass_at_every_decision_time: true
+  require_next_level_confirmation: true
+
+interpretation:
+  allowed_claim: >-
+    Smallest retrospectively supported tested ensemble size for the completed
+    controlled Golovin fixed-50 archive under the stated projected-precision
+    method.
+  prohibited_claims:
+    - universal minimum ensemble size
+    - prospective proof that fewer members would always select the same result
+    - transfer to Long or another initialization, box, timestep or diagnostic
