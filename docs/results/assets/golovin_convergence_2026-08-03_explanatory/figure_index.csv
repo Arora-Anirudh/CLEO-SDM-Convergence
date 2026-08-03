@@ -1,0 +1,10 @@
+figure,purpose
+golovin_dsd_evolution_selected.png,selected-resolution DSD evolution and residuals
+golovin_formal_decision_matrix.png,formal five-gate candidate decision matrix
+golovin_n2n4n_confirmation.png,selected N-2N-4N analytical confirmation over time
+golovin_ensemble_size_selected.png,descriptive selected-resolution ensemble-size stability
+golovin_accuracy_cost_tradeoff.png,accuracy versus work and operational wall time
+golovin_initialization_fidelity.png,controlled initialization fidelity
+golovin_integrity_qa.png,mass-conservation and diagnostic-range quality control
+golovin_member_variability.png,member-level collision-realization variability
+golovin_bin_sensitivity.png,fixed-bin sensitivity of DSD conclusions

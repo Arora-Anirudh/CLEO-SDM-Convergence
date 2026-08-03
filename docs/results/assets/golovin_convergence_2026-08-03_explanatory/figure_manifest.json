@@ -1,0 +1,282 @@
+{
+  "schema": "golovin_explanatory_figure_manifest_v1",
+  "scientific_scope": "analysis-only figures from archived fixed-50 Golovin products",
+  "formal_result_unchanged": "131072 SDs with the prospectively fixed 50-member ensembles",
+  "inputs": [
+    {
+      "path": "fixed50-analysis/all_member_time_diagnostics.csv",
+      "sha256": "6350c8c457555d748607dd05adfd109a546f567dd994cdbd94f047c09cfa6551"
+    },
+    {
+      "path": "fixed50-analysis/ensemble_size_sensitivity.csv",
+      "sha256": "f804f9fa35c7531762ae0eb8b5609f2e9e2b04d76b2097735dde311726521a6a"
+    },
+    {
+      "path": "fixed50-analysis/model_inventory.json",
+      "sha256": "2b55d9f1c4a7942ce3ada67d292db82a68e706c1529d5149aa0715444df7fe62"
+    },
+    {
+      "path": "fixed50-tables/analytical_agreement.csv",
+      "sha256": "703ec364081f66bea345e2a36ae8aa4da8a566277870035aa334a01e6d68eb80"
+    },
+    {
+      "path": "fixed50-tables/adjacent_resolution_equivalence.csv",
+      "sha256": "96f6cf854d4de64f319b056d06b62f46b9234e397f7b2f3f5a4786ccf5b563f2"
+    },
+    {
+      "path": "fixed50-tables/resolution_decision.json",
+      "sha256": "5f677dd18132cba70cec4483a874c24a8bd2df80adaf05ba380c6bb6a9d3962d"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N004096_dt0p1_m000/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "22f8806e62ae4d47eadf6d3956cfc77919e24ddc71f886fc6ede79ea05758ac1"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N1048576_dt0p1_m000/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "32fc679e1b668044bad4b19bfc6067897407b925faeadc9f422bad5cfa6e7e74"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m000/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "db88b457414c38787dcedb526130d4d00d52a20c902f5d0cf2d618e33d8b2ad3"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m001/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "84179bc117f33de261e329c3a25ae6396363cc2fc8ddfc35332c12f3cfd7e631"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m002/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "3f8a574987fa7e33443125a51f9b5d3f3634842edbac97328d1857f7db1ae6e6"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m003/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "31af4c42b114c61b4d227f87391a8311f9fa57de9460a07733902336c97c9c57"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m004/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "df20ab3dfad222ef960c988bef40283a2bc97fcc1c80b8b921e26f9764af4335"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m005/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "c2515e30d0f5fd50234ef02b0300d52e14dbf2f32b89af2330cb791e005a0180"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m006/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "0696d50da5d48e8ff829edd4ea4cc5a7c491182f357e71513b4b3b658715dc24"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m007/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "acaa37133c469d1a77d2f5a437fc8273a307ac63cfa3eea827ec51395c89111e"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m008/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "8792e6092df86259c9d9580de08999dcd4ad3d8194e5b86032458c920b6491d0"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m009/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "4a5821949f1fa29922ab46ad5dd50bb55833b4436157b960475737a1d08c8c63"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m010/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "0138768bf5d032fb94b5a4f071ac4d4d535b7efb2247d5c480f3f97857b2003c"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m011/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "383a8b62539214db015d3f6c93575dc3d415ebdacba2cebf439a66fc7d3978ea"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m012/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "6d18f7e923c9996cfc2ccb2a0e67bede1ef4e81bca989ee754605f94d5405db2"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m013/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "ef99c9661193aee92d39f54684b203e87c79b11cf00b7a97e957e92d60dcd73f"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m014/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "8f040b972b7fed5df2277744da9051e9d43425f7ce932fec1a2ee695a1bed6dd"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m015/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "187b39c6d4c1c62f72b1e93d83fc2c9ad2a3d45115015d58fefff81c86c891fc"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m016/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "5436ec743acf8b978518a10cf630dc701ccfcd8d485949a30442482288d62ec9"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m017/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "ca988acf513226c779858d95d7467116fd6a7581dcc68d7b0f4b3ef8eaed98e0"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m018/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "006702ff1b43da191fffe6e47da082e08c84df04fbc96438f81897e9fef7bfdd"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m019/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "729815444817ebad78425191938425217187427e00753e18b2a3768296f3fde6"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m020/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "a2ef61996a1100e5674ec58147a6710dd530fd0ff9ad4525cd94d2630b714ce5"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m021/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "f59ab10a338a2189afe5abae11e330489648ebc49bb7d5a98674501d6fdbee74"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m022/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "8a89345019d030cb79f91011723da76cad4e1783c084340a655ff71e1630bcbd"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m023/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "64e25acb9ffdb5326f36885a667e320addc5fbfb1901e2dcf05dca959c285b62"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m024/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "b66a9e2e5223f38e1b5e29a013c181a57d16b9b0ef5402a6761c9ec635dacc9c"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m025/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "abdb17fe3c078cca6b732ff46931b99185534a605e984b88b7b48f416520c074"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m026/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "b667f95697cb8e382ae90d798f47b1fce9c0bc2be9293160e9a6518a183e683c"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m027/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "f9e167032d2432a78df60275da51c62de4070ec7f77c01d185d9e76eb6d880fb"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m028/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "b10dd4e6aac966681daf2c28e884b0473f16808fa1d86e763c31256bba516fea"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m029/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "5b5d6a221ccada41dd4f4160810b72776168fa8182c5470250c9ff8212cbd588"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m030/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "f02e562ae4cdac1c72e8c2b13941810c11a2080f0c23beb2f99f1630433bfa9f"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m031/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "5ca34efb351fbc0c0ccfbdd6482cfcd84f98118a24e149643489d15e5f6cb315"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m032/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "5dcc08418ce7bc1781885087b2f418697b1ed8d648e7a9687b546d26dd91af96"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m033/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "2ff015d7431f22f1f2b1368a12c3c4097d5d2a2bd4d8e1dcea15a0d534889174"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m034/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "33fb2b168b1faf7e7261c984745a7f4c9e0c3b156178077661fa86c3eca62a7e"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m035/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "f3e5b01ddf1bb3959804f5154d81be328cf3f7cfef8aa8b7f6681862c5318f31"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m036/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "c52e4390f245417bf94ba6e82050393044ee168c3334ec91eea3344309ea2230"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m037/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "ac8840df63dd80c64ac47e723f09bccada2444132e3c31ca88c7808950449b4f"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m038/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "124fc0a5df9b5096c284318dea44f10912b420b84f133c851d667bce9956c496"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m039/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "2b77e0c205c3cff65849af82570487174d81bd1d5cd8496324888244365e602d"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m040/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "f77fb259167ecd862711ce5416e9629dce6613b2451a99c24e8966ae319df498"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m041/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "1aff7b0173109960b22b4af0c36a42910b46945550282f13fcf62c096c9f09ba"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m042/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "572e3b9a9d6be96818941d9e0f2d67c30e72ddfcbd28640b5bd3c697942412ca"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m043/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "56cce930a9f3a53c38ec14c280774db63a193eec881b5b22dc03a71ecef1c4f5"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m044/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "a4d78e95c64922ca6f6cea93f51c1be323181f36f28a2b1f7056d7881aea4928"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m045/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "5e85939ae63bdcc8a565b69be449f093ba7cd8bc80595f1622ac72d6cc94701f"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m046/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "8e6ba83c05e07e04962d600ded1fe57dbca1fa4da387252b64adb32f25e49266"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m047/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "0a707e4f772d9b5f1333e6f9543a69a429336b4a1d12ae1883e92581c2ad9bf7"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m048/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "bf5e4a0aaaf0b6d8bea8b39ad4d30d001a1cd786ee176b0c1884b0bc82ec7906"
+    },
+    {
+      "path": "selected-stage0/golovin_fixed50_extended_resolution_convergence_v1_N131072_dt0p1_m049/analysis_stage0_v2/fixed_bin_distributions.npz",
+      "sha256": "7a467daa85b7b1dc158d3f64487cdb2eceeea9aa6ed3558b38f21a9c1bcf7f98"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "golovin_dsd_evolution_selected.png",
+      "sha256": "c2dd327b18ac9da7705095815030c929761ebe93f9ddd96630aa754f3ff49cca"
+    },
+    {
+      "path": "golovin_formal_decision_matrix.png",
+      "sha256": "2a910a00d9c2b017fc56f07285a39a09690f06200c15019748ff003ff9b50175"
+    },
+    {
+      "path": "golovin_n2n4n_confirmation.png",
+      "sha256": "93cdf41c50e492af6981e5679ea9b921178ccd41e7c5d11a6ea3248e1cf17b4f"
+    },
+    {
+      "path": "golovin_ensemble_size_selected.png",
+      "sha256": "2147a39ef0dfc5e4dc97f69b8b1d95ed922edbdfa41e9feca82321ec345c6266"
+    },
+    {
+      "path": "golovin_accuracy_cost_tradeoff.png",
+      "sha256": "d931b43a79c7dbc3e42120a878f6379fe5110af9ec90c0cc8097342a1ec6f005"
+    },
+    {
+      "path": "golovin_initialization_fidelity.png",
+      "sha256": "19213807c2350c3c9e11d5903d2a880bfb94e0fd294de39c3c6013af6fc4f724"
+    },
+    {
+      "path": "golovin_integrity_qa.png",
+      "sha256": "a33f8e74a34e0901e5bd25af1524dabff3d0c84d79706c68e03d91e6f5c93196"
+    },
+    {
+      "path": "golovin_member_variability.png",
+      "sha256": "ffcdd9ef385d116f657984d88ea98b56290d72c875700849de100cb67e615f2f"
+    },
+    {
+      "path": "golovin_bin_sensitivity.png",
+      "sha256": "cb1eecbe1b81b9e87ecd872f49d7bc30f24b534b7573b8ff696fab8b2c9e9748"
+    }
+  ],
+  "notes": [
+    "No CLEO model run was performed by this script.",
+    "Member-level L1 variability is explicitly separated from the formal ensemble-mean L1 estimand.",
+    "The n=5 ensemble-size point is a post-hoc descriptive subset diagnostic and does not alter the registered decision."
+  ]
+}
