@@ -899,7 +899,18 @@ def plot_result(
         int(row["selected_max_superdroplets"]) if row["selected_max_superdroplets"] != "" else None
         for row in selection_rows
     ]
-    categorical_position = {None: 0, 131072: 1, 262144: 2, 524288: 3, 1048576: 4}
+    selected_resolutions = sorted(
+        {
+            int(value)
+            for value in selected_values
+            if value is not None
+        }
+        | {int(decision["target_selected_resolution"])}
+    )
+    categorical_position = {
+        None: 0,
+        **{resolution: index for index, resolution in enumerate(selected_resolutions, start=1)},
+    }
     selected = np.asarray([categorical_position[value] for value in selected_values], dtype=float)
     adequate = decision["smallest_retrospectively_supported_tested_ensemble_size"]
 
@@ -926,9 +937,9 @@ def plot_result(
         color="#2869a8",
         linewidth=2,
     )
-    ax.set_yticks([0, 1, 2, 3])
-    ax.set_yticklabels(["No selection", "131,072", "262,144", "524,288"])
-    ax.set_ylim(-0.35, 3.25)
+    ax.set_yticks(range(len(selected_resolutions) + 1))
+    ax.set_yticklabels(["No selection", *(f"{value:,}" for value in selected_resolutions)])
+    ax.set_ylim(-0.35, len(selected_resolutions) + 0.35)
     ax.set_ylabel(r"Selected base resolution, $N_{SD}$")
     ax.set_title("A. Full formal N/2N/4N decision reconstructed at each ensemble size", loc="left")
     ax.text(

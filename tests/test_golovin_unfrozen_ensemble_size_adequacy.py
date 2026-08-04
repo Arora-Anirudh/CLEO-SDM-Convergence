@@ -37,3 +37,30 @@ def test_unselected_operational_resolution_cannot_define_adequacy_target(tmp_pat
 
     with pytest.raises(ValueError, match="does not contain an operational selection"):
         module.load_formal_target_resolution(decision)
+
+
+def test_adequacy_plot_supports_a_projected_resolution_below_target(tmp_path: Path) -> None:
+    module = load_module()
+    output = tmp_path / "adequacy.png"
+    selection_rows = [
+        {"ensemble_size": 49, "selected_max_superdroplets": 131072},
+        {"ensemble_size": 50, "selected_max_superdroplets": 65536},
+    ]
+    limiting_rows = [
+        {
+            "ensemble_size": count,
+            "metric": metric,
+            "worst_formal_gate_ratio": 0.8,
+        }
+        for count in (49, 50)
+        for metric in ("ensemble_mean_l1_bins_500", module.M0, module.M6)
+    ]
+    decision = {
+        "target_selected_resolution": 131072,
+        "smallest_retrospectively_supported_tested_ensemble_size": None,
+    }
+
+    module.plot_result(selection_rows, limiting_rows, decision, output)
+
+    assert output.is_file()
+    assert output.stat().st_size > 0
