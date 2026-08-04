@@ -96,9 +96,13 @@ def validate_settings(config: dict[str, Any]) -> dict[str, Any]:
     final_prefixes = [int(value) for value in settings.get("final_prefixes_for_stability", [])]
     primary_bins = int(settings["primary_log_radius_bins"])
     sensitivity_bins = [int(value) for value in settings["sensitivity_log_radius_bins"]]
+    prospective_fixed_design_statuses = {
+        "researcher_approved_prospective_fixed_design",
+        "researcher_approved_same_rule_as_frozen_experiment",
+    }
     approved_statuses = {
         "researcher_approved_existing_data_reanalysis_pending_clara_review",
-        "researcher_approved_prospective_fixed_design",
+        *prospective_fixed_design_statuses,
     }
     if settings["status"] not in approved_statuses:
         raise ValueError("practical criterion has not been approved for this analysis scope")
@@ -625,7 +629,10 @@ def analyze_practical_convergence(
     else:
         status = "no_practical_resolution_selected"
         selected = None
-    prospective_fixed_design = settings["status"] == "researcher_approved_prospective_fixed_design"
+    prospective_fixed_design = settings["status"] in {
+        "researcher_approved_prospective_fixed_design",
+        "researcher_approved_same_rule_as_frozen_experiment",
+    }
     final_decision = {
         "schema": "golovin_practical_convergence_decision_v1",
         "status": status,

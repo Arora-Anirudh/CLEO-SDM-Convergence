@@ -154,6 +154,26 @@ def test_exact_plateau_selects_smallest_confirmed_resolution() -> None:
     assert all(bool(row["diminishing_returns_pass"]) for row in changes)
 
 
+def test_same_rule_as_frozen_status_is_prospective_fixed_design() -> None:
+    module = load_module()
+    rows, matrix_rows, config, archives = synthetic_inputs()
+    config["practical_convergence"]["status"] = (
+        "researcher_approved_same_rule_as_frozen_experiment"
+    )
+
+    _, _, _, _, decision = module.analyze_practical_convergence(
+        rows=rows,
+        matrix_rows=matrix_rows,
+        config=config,
+        archives=archives,
+    )
+
+    assert decision["prospective_scope"].startswith("prospectively frozen")
+    assert decision["clara_review_status"] == (
+        "researcher proceeding under supervisor-granted freedom to explore"
+    )
+
+
 def test_material_but_analytically_valid_change_blocks_selection() -> None:
     module = load_module()
     rows, matrix_rows, config, archives = synthetic_inputs(smallest_offset=0.02)
