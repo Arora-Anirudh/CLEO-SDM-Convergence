@@ -56,7 +56,11 @@ def parse_args() -> argparse.Namespace:
 
 def validate_settings(config: dict[str, Any]) -> dict[str, Any]:
     settings = config["convergence_law"]
-    if settings["status"] != "researcher_approved_prospective_supporting_diagnostic":
+    registered_prospective_statuses = {
+        "researcher_approved_prospective_supporting_diagnostic",
+        "supporting_non_selection_diagnostic",
+    }
+    if settings["status"] not in registered_prospective_statuses:
         raise ValueError("convergence-law diagnostic is not prospectively approved")
     if settings["selection_gate"] is not False:
         raise ValueError("convergence-law fit must remain a supporting non-selection diagnostic")

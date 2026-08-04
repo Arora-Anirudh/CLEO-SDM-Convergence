@@ -7,6 +7,7 @@ from ruamel.yaml import YAML
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "config" / "golovin_fixed50_extended_resolution_convergence.yaml"
+UNFROZEN_CONFIG = ROOT / "config" / "golovin_unfrozen_fixed50_extended_resolution_convergence.yaml"
 PRECISION_EXTENSION_CONFIG = ROOT / "config" / "golovin_fixed50_highres_precision_extension.yaml"
 MATRIX_SCRIPT = ROOT / "scripts" / "prepare_golovin_matrix.py"
 LAW_SCRIPT = ROOT / "scripts" / "analyze_golovin_convergence_law.py"
@@ -111,6 +112,16 @@ def test_power_law_fit_recovers_known_zero_floor() -> None:
     assert np.isclose(float(fit["exponent"]), 0.5, atol=0.005)
     assert np.isclose(float(fit["amplitude"]), 0.08, rtol=1.0e-5)
     assert float(fit["rmse"]) < 1.0e-12
+
+
+def test_unfrozen_registered_supporting_convergence_law_is_accepted() -> None:
+    config = YAML(typ="safe").load(UNFROZEN_CONFIG.read_text(encoding="utf-8"))
+    module = load_law_module()
+
+    settings = module.validate_settings(config)
+
+    assert settings["status"] == "supporting_non_selection_diagnostic"
+    assert settings["selection_gate"] is False
 
 
 def test_power_law_fit_recovers_known_positive_floor_for_multiple_draws() -> None:
