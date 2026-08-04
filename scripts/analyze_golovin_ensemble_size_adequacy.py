@@ -40,6 +40,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--cases", required=True, type=Path)
     parser.add_argument("--member-time", required=True, type=Path)
     parser.add_argument("--stage0-root", required=True, type=Path)
+    parser.add_argument("--resolution-decision", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     return parser.parse_args()
 
@@ -50,6 +51,18 @@ def sha256(path: Path) -> str:
         for chunk in iter(lambda: source.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def load_formal_target_resolution(path: Path) -> int:
+    """Read the immutable full-50 operational selection used as the adequacy target."""
+    with path.open(encoding="utf-8") as source:
+        decision = json.load(source)
+    if decision.get("status") != "selected_operational_resolution":
+        raise ValueError("resolution decision does not contain an operational selection")
+    target = decision.get("selected_max_superdroplets")
+    if not isinstance(target, int) or target <= 0:
+        raise ValueError("resolution decision has no positive selected superdroplet count")
+    return target
 
 
 def derived_seed(base: int, *parts: object) -> int:
@@ -346,6 +359,7 @@ def analyze(
     edges: np.ndarray,
     moments: dict[int, dict[str, np.ndarray]],
     validity: dict[int, bool],
+    formal_target_resolution: int,
 ) -> tuple[
     list[dict[str, object]],
     list[dict[str, object]],
@@ -390,8 +404,10 @@ def analyze(
     selection_rows: list[dict[str, object]] = []
     limiting_rows: list[dict[str, object]] = []
     selections: dict[int, int | None] = {}
-    target_setting = settings["target_selected_resolution"]
-    derive_target = target_setting == "derived_from_full_50_selection"
+    if settings["target_selected_resolution"] != "derived_from_full_50_selection":
+        raise ValueError("adequacy analysis must derive its target from the full-50 decision")
+    if formal_target_resolution not in resolutions:
+        raise ValueError("formal target resolution is absent from the adequacy matrix")
 
     for count_index, member_count in enumerate(member_counts):
         resolution_pass = {resolution: validity[resolution] for resolution in resolutions}
@@ -543,7 +559,7 @@ def analyze(
         analytical_rows.extend(analytical_for_count)
         adjacent_rows.extend(adjacent_for_count)
 
-    target = selections[member_counts[-1]] if derive_target else int(target_setting)
+    target = formal_target_resolution
     for row in selection_rows:
         selected = row["selected_max_superdroplets"]
         row["target_selected_resolution"] = target if target is not None else ""
@@ -556,7 +572,7 @@ def analyze(
             "status": "not_assessed_no_full_50_resolution_selection",
             "smallest_retrospectively_supported_tested_ensemble_size": None,
             "target_selected_resolution": None,
-            "target_selection_source": "full_50_member_operational_analysis",
+            "target_selection_source": "formal_operational_resolution_decision",
             "tested_member_counts": member_counts,
             "formal_rule": (
                 "no target exists because the full 50-member formal analysis selected none"
@@ -650,9 +666,7 @@ def analyze(
         ),
         "smallest_retrospectively_supported_tested_ensemble_size": adequate,
         "target_selected_resolution": target,
-        "target_selection_source": (
-            "full_50_member_operational_analysis" if derive_target else "fixed_config_value"
-        ),
+        "target_selection_source": "formal_operational_resolution_decision",
         "tested_member_counts": member_counts,
         "bootstrap_resamples": resamples,
         "selection_by_member_count": {str(count): selections[count] for count in member_counts},
@@ -959,7 +973,7 @@ def plot_result(
         )
 
     fig.suptitle(
-        "Retrospective ensemble-size adequacy for the controlled Golovin calibration\n"
+        "Retrospective ensemble-size adequacy for the completed Golovin ensemble\n"
         "10,000 bootstrap projections; primary 500-bin rule; all six decision times",
         fontsize=14,
         fontweight="bold",
@@ -974,6 +988,7 @@ def main() -> None:
     with args.config.open(encoding="utf-8") as source:
         config = yaml.safe_load(source)
     args.output.mkdir(parents=True, exist_ok=False)
+    formal_target_resolution = load_formal_target_resolution(args.resolution_decision)
 
     (
         resolutions,
@@ -1001,6 +1016,7 @@ def main() -> None:
         edges=edges,
         moments=moments,
         validity=validity,
+        formal_target_resolution=formal_target_resolution,
     )
     boundary_rows, decision = refine_boundary(
         config=config,
@@ -1041,6 +1057,7 @@ def main() -> None:
             "config": sha256(args.config),
             "cases": sha256(args.cases),
             "member_time": sha256(args.member_time),
+            "resolution_decision": sha256(args.resolution_decision),
             "stage0_archive_inventory": aggregate.hexdigest(),
         },
         "stage0_archive_count": len(archive_hash_rows),
