@@ -1,0 +1,45 @@
+{
+  "status": "provisional_operational_metric_scoped_resolution_selection",
+  "resolutions_ncell": [
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096,
+    8192
+  ],
+  "members_per_resolution": 20,
+  "bootstrap_replicates": 2000,
+  "internal_comparator_ncell": 8192,
+  "core_tolerances_percent": {
+    "mass_dsd_tv_500": 5.0,
+    "lambda0_m3": 5.0,
+    "lambda2_um2_m3": 5.0,
+    "lambda3_um3_m3": 5.0,
+    "mass_weighted_terminal_speed_ms": 5.0
+  },
+  "tail_tolerances_percent": {
+    "lambda6_um6_m3": 10.0,
+    "mass_weighted_r90_um": 10.0
+  },
+  "candidate_rule": "comparator plus two successive adjacent doublings",
+  "selected_ncell": 1024,
+  "support_comparability_audit": {
+    "initial_lambda0_m3_symmetric_percent": 1.4639501297472251e-10,
+    "initial_lambda2_um2_m3_symmetric_percent": 0.00021099543001818876,
+    "initial_lambda3_um3_m3_symmetric_percent": 0.0020039218690595887,
+    "initial_lambda6_um6_m3_symmetric_percent": 0.3371771076036806,
+    "initial_total_droplet_mass_g_m3_symmetric_percent": 0.0020039286695182337,
+    "initial_mass_dsd_tv_250_percent": 0.015874208859593304,
+    "initial_mass_dsd_tv_500_percent": 0.035010525357810976,
+    "initial_mass_dsd_tv_1000_percent": 0.07474932655503816
+  },
+  "warning": "8192 cohort uses separately audited 4nm-to-2um support correction and is an internal comparator, not independent numerical truth."
+}

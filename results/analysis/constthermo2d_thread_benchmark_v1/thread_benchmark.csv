@@ -1,0 +1,6 @@
+threads,jobid,model_wall_seconds,job_elapsed_seconds,allocated_cpus,allocated_cpu_hours,status
+8,27666821,131,141,10,0.391667,passed
+16,27666656,79,84,16,0.373333,passed
+32,27666657,50,55,32,0.488889,passed
+64,27666658,30,36,64,0.640000,passed
+128,27666659,39,50,128,1.777778,passed

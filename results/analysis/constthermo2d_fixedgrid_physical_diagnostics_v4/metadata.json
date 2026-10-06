@@ -1,0 +1,35 @@
+{
+  "status": "complete_full_production_physical_diagnostic_suite",
+  "resolutions_ncell": [
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096,
+    8192
+  ],
+  "members_per_resolution": 20,
+  "reference_ncell": 8192,
+  "dsd_meshes": [
+    500,
+    1000
+  ],
+  "terminal_speed_relation": "Rogers--Gunn--Kinzer",
+  "fast_speed_thresholds_ms": [
+    0.25,
+    0.5,
+    1.0
+  ],
+  "development_threshold": {
+    "speed_ms": 1.0,
+    "mass_fraction": 0.01
+  },
+  "warning": "Flux and development diagnostics are closed-domain terminal-speed proxies, not surface precipitation."
+}

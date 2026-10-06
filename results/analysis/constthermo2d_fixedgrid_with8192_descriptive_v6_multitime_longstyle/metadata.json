@@ -1,0 +1,27 @@
+{
+  "status": "descriptive_fixed20_internal_comparator_analysis_no_convergence_selection",
+  "resolutions_ncell": [
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096,
+    8192
+  ],
+  "members_per_resolution": 20,
+  "internal_comparator_ncell": 8192,
+  "dsd_bin_sensitivity_available": [
+    250,
+    500,
+    1000
+  ],
+  "surface_method": "without-replacement candidate subsets compared with fixed full-20 8192 ensemble mean",
+  "high_resolution_protocol_note": "When reference=8192, that cohort uses the separately audited 4 nm to 2 micrometre initial-radius support correction needed to avoid zero multiplicities. It trims an analytically estimated 0.000052 percent of initial number and 0.00205 percent of initial mass; it remains an internal support-corrected comparator, not identical-protocol numerical truth."
+}

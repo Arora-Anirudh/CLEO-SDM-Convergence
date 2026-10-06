@@ -1,0 +1,110 @@
+[
+  {
+    "ncell": 8,
+    "member": 1,
+    "dataset": "CLEO-SDM-Convergence/results/cache/constthermo2d_fixedgrid_pilot_v3_16threads/ncell0008/member001/bin/const2d_sol.zarr",
+    "noutputs": 61,
+    "trajectory_status": "passed_trajectory_integrity_no_convergence_claim",
+    "max_abs_lambda0_relative_observer_difference": 0.0,
+    "max_abs_total_droplet_mass_relative_observer_difference": 1.3987010361038443e-07
+  },
+  {
+    "ncell": 8,
+    "member": 2,
+    "dataset": "CLEO-SDM-Convergence/results/cache/constthermo2d_fixedgrid_pilot_v3_16threads/ncell0008/member002/bin/const2d_sol.zarr",
+    "noutputs": 61,
+    "trajectory_status": "passed_trajectory_integrity_no_convergence_claim",
+    "max_abs_lambda0_relative_observer_difference": 0.0,
+    "max_abs_total_droplet_mass_relative_observer_difference": 1.362207669997062e-07
+  },
+  {
+    "ncell": 8,
+    "member": 3,
+    "dataset": "CLEO-SDM-Convergence/results/cache/constthermo2d_fixedgrid_pilot_v3_16threads/ncell0008/member003/bin/const2d_sol.zarr",
+    "noutputs": 61,
+    "trajectory_status": "passed_trajectory_integrity_no_convergence_claim",
+    "max_abs_lambda0_relative_observer_difference": 0.0,
+    "max_abs_total_droplet_mass_relative_observer_difference": 1.8962977632597244e-07
+  },
+  {
+    "ncell": 32,
+    "member": 1,
+    "dataset": "CLEO-SDM-Convergence/results/cache/constthermo2d_fixedgrid_pilot_v3_16threads/ncell0032/member001/bin/const2d_sol.zarr",
+    "noutputs": 61,
+    "trajectory_status": "passed_trajectory_integrity_no_convergence_claim",
+    "max_abs_lambda0_relative_observer_difference": 0.0,
+    "max_abs_total_droplet_mass_relative_observer_difference": 1.260185248375123e-07
+  },
+  {
+    "ncell": 32,
+    "member": 2,
+    "dataset": "CLEO-SDM-Convergence/results/cache/constthermo2d_fixedgrid_pilot_v3_16threads/ncell0032/member002/bin/const2d_sol.zarr",
+    "noutputs": 61,
+    "trajectory_status": "passed_trajectory_integrity_no_convergence_claim",
+    "max_abs_lambda0_relative_observer_difference": 0.0,
+    "max_abs_total_droplet_mass_relative_observer_difference": 1.5195211144902743e-07
+  },
+  {
+    "ncell": 32,
+    "member": 3,
+    "dataset": "CLEO-SDM-Convergence/results/cache/constthermo2d_fixedgrid_pilot_v3_16threads/ncell0032/member003/bin/const2d_sol.zarr",
+    "noutputs": 61,
+    "trajectory_status": "passed_trajectory_integrity_no_convergence_claim",
+    "max_abs_lambda0_relative_observer_difference": 0.0,
+    "max_abs_total_droplet_mass_relative_observer_difference": 1.4741073028901042e-07
+  },
+  {
+    "ncell": 128,
+    "member": 1,
+    "dataset": "CLEO-SDM-Convergence/results/cache/constthermo2d_fixedgrid_pilot_v3_16threads/ncell0128/member001/bin/const2d_sol.zarr",
+    "noutputs": 61,
+    "trajectory_status": "passed_trajectory_integrity_no_convergence_claim",
+    "max_abs_lambda0_relative_observer_difference": 0.0,
+    "max_abs_total_droplet_mass_relative_observer_difference": 1.4897193689744626e-07
+  },
+  {
+    "ncell": 128,
+    "member": 2,
+    "dataset": "CLEO-SDM-Convergence/results/cache/constthermo2d_fixedgrid_pilot_v3_16threads/ncell0128/member002/bin/const2d_sol.zarr",
+    "noutputs": 61,
+    "trajectory_status": "passed_trajectory_integrity_no_convergence_claim",
+    "max_abs_lambda0_relative_observer_difference": 0.0,
+    "max_abs_total_droplet_mass_relative_observer_difference": 1.1844173875008579e-07
+  },
+  {
+    "ncell": 128,
+    "member": 3,
+    "dataset": "CLEO-SDM-Convergence/results/cache/constthermo2d_fixedgrid_pilot_v3_16threads/ncell0128/member003/bin/const2d_sol.zarr",
+    "noutputs": 61,
+    "trajectory_status": "passed_trajectory_integrity_no_convergence_claim",
+    "max_abs_lambda0_relative_observer_difference": 0.0,
+    "max_abs_total_droplet_mass_relative_observer_difference": 1.451420742482057e-07
+  },
+  {
+    "ncell": 512,
+    "member": 1,
+    "dataset": "CLEO-SDM-Convergence/results/cache/constthermo2d_fixedgrid_pilot_v3_16threads/ncell0512/member001/bin/const2d_sol.zarr",
+    "noutputs": 61,
+    "trajectory_status": "passed_trajectory_integrity_no_convergence_claim",
+    "max_abs_lambda0_relative_observer_difference": 0.0,
+    "max_abs_total_droplet_mass_relative_observer_difference": 2.3603291920970548e-07
+  },
+  {
+    "ncell": 512,
+    "member": 2,
+    "dataset": "CLEO-SDM-Convergence/results/cache/constthermo2d_fixedgrid_pilot_v3_16threads/ncell0512/member002/bin/const2d_sol.zarr",
+    "noutputs": 61,
+    "trajectory_status": "passed_trajectory_integrity_no_convergence_claim",
+    "max_abs_lambda0_relative_observer_difference": 0.0,
+    "max_abs_total_droplet_mass_relative_observer_difference": 2.6898932636854056e-07
+  },
+  {
+    "ncell": 512,
+    "member": 3,
+    "dataset": "CLEO-SDM-Convergence/results/cache/constthermo2d_fixedgrid_pilot_v3_16threads/ncell0512/member003/bin/const2d_sol.zarr",
+    "noutputs": 61,
+    "trajectory_status": "passed_trajectory_integrity_no_convergence_claim",
+    "max_abs_lambda0_relative_observer_difference": 0.0,
+    "max_abs_total_droplet_mass_relative_observer_difference": 2.601712685290636e-07
+  }
+]

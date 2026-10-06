@@ -1,0 +1,30 @@
+{
+  "status": "bootstrap_precision_and_adjacent_stability_no_convergence_selection",
+  "members_per_resolution": 20,
+  "bootstrap_replicates": 2000,
+  "internal_comparator_ncell": 4096,
+  "internal_reference_candidates": [
+    512,
+    1024,
+    2048
+  ],
+  "adjacent_transitions": [
+    [
+      256,
+      512
+    ],
+    [
+      512,
+      1024
+    ],
+    [
+      1024,
+      2048
+    ],
+    [
+      2048,
+      4096
+    ]
+  ],
+  "warning": "4096 is highest tested resolution, not independent numerical reference; no post-hoc threshold or convergence number assigned"
+}

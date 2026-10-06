@@ -1,0 +1,11 @@
+{
+  "source_cache": "constthermo2d_fixedgrid_production_v1",
+  "members_per_resolution": 20,
+  "stored_outputs": 61,
+  "output_cadence_seconds": 120,
+  "size_class_boundaries_radius_um": [
+    50,
+    250
+  ],
+  "boundary_interpretation": "Null boundaries; no surface rainfall diagnostic."
+}

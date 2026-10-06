@@ -1,0 +1,25 @@
+{
+  "status": "descriptive_fixed20_internal_comparator_analysis_no_convergence_selection",
+  "resolutions_ncell": [
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "members_per_resolution": 20,
+  "internal_comparator_ncell": 4096,
+  "dsd_bin_sensitivity_available": [
+    250,
+    500,
+    1000
+  ],
+  "surface_method": "without-replacement candidate subsets compared with fixed full-20 4096 ensemble mean"
+}
