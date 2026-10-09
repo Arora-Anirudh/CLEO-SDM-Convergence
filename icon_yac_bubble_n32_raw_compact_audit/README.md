@@ -64,7 +64,6 @@ for the mismatch and it is not evidence about the physical simulation itself.
 - `config/bubble3d_setup.txt` -- configuration written for the audited run.
 - `results/n32_raw_compact_alltime.csv` -- the 241-time-step audit table.
 - `results/01_n32_raw_compact_alltime.png` -- moment ratios and raw-record indicators.
-- `results/02_n32_compact_ragged_observer_paths.{png,pdf}` -- observer-path schematic.
 - `results/n32_v2_provenance_manifest.csv` -- run provenance manifest.
 
 ## Reproduce on Levante
