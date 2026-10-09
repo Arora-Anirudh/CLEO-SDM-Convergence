@@ -1,10 +1,4 @@
 #!/usr/bin/env python3
-"""All-time integrity audit of the Ncell=32 ICON--YAC--CLEO raw output.
-
-This read-only audit deliberately distinguishes the independently serialised
-ragged particle stream from CLEO's compact moment/state outputs.  It makes no
-deduplication or correction and must not be interpreted as a convergence test.
-"""
 
 from __future__ import annotations
 
