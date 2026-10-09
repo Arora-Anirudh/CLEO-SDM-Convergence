@@ -147,7 +147,13 @@ def make_plot(rows: list[dict[str, float | int]], outdir: Path) -> None:
 def main() -> None:
     cfg = args()
     cfg.outdir.mkdir(parents=True, exist_ok=False)
-    with xr.open_dataset(cfg.dataset, engine="zarr", consolidated=False) as ds:
+    # Decode CF scale factors explicitly. CLEO stores massmom1 in g,
+    # massmom2 in g^2, and msol in g through Zarr scale_factor metadata.
+    # Raw radius is stored in micrometres and is converted to metres in
+    # row_for_time before evaluating CLEO's total-droplet-mass expression.
+    with xr.open_dataset(
+        cfg.dataset, engine="zarr", consolidated=False, mask_and_scale=True
+    ) as ds:
         records_per_time = np.asarray(ds["raggedcount"].values, dtype=np.int64)
         # Convert per-time ragged record counts to exclusive offsets on the
         # one-dimensional ``superdroplets`` storage axis.

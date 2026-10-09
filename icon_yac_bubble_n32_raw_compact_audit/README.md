@@ -54,6 +54,13 @@ with `rho_water = 998.203 kg m^-3` and `rho_solute = 2016.5 kg m^-3`.
 The raw stored radius is converted from micrometres to metres and `msol` from
 grams to kilograms before evaluating the formula.
 
+Unit handling is explicit: CLEO writes `massmom0` as an unscaled count,
+`massmom1` with unit `g`, `massmom2` with unit `g^2`, and raw `msol` with unit
+`g`. The audit opens the Zarr store with CF scale-factor decoding enabled, so
+the `massmom1`, `massmom2`, and `msol` scale factors are applied before any
+comparison. It then converts radius from micrometres to metres and solute mass
+from grams to kilograms only where required by the SI mass expression above.
+
 For assessing whether a discrepancy could be rounding, the output CSV also
 contains the signed difference `raw_minus_compact_*` and magnitude
 `abs_raw_minus_compact_*` for all three moments in their physical units. The
