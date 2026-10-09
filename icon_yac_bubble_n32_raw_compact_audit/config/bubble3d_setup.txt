@@ -1,0 +1,251 @@
+// ----------------------------- //
+// --------- /work/mh0731/m301324/icon/icon/experiments/bubble_cleo_convergence_v2/bubble_cleo_conv_n32_m01/tmp/bubble3d_config.yaml --------- //
+// ----------------------------- //
+# ----- CLEO -----
+# File: bubble3d_config.txt
+# Project: config
+# Created Date: Thursday 18th April 2024
+# Author: Clara Bayley (CB)
+# Additional Contributors:
+# -----
+# License: BSD 3-Clause "New" or "Revised" License
+# https://opensource.org/licenses/BSD-3-Clause
+# -----
+# Copyright (c) 2023 MPI-M, Clara Bayley
+# -----
+# File Description:
+# Configuration file for test of YAC with 3D time varying thermodynamics example.
+# Note: The initial superdroplets data read from file "initsupers_filename" can be made with
+# CLEO's cleopy module (see Python script "create_initsuperdropsbinary_script.py" for example of usage).
+# Likewise the "grid_filename" can be made using cleopy (see "create_gbxboundariesbinary_script.py"),
+# and so can the thermodynamics files when using coupled thermodynamics "fromfile".
+#
+
+### ICON-YAC initialisation parameters ###
+### Note: yac_bubble_data_reader.py reads icon_yac_config, including orginal_icon_[XXX] files ###
+icon_yac_config:
+  orginal_icon_grid_file:
+    /work/mh0731/m301324/icon/icon/experiments/bubble_1mom/outdata/bubble_1mom_atm_cgrid_ml.nc
+  orginal_icon_data_file:
+    /work/mh0731/m301324/icon/icon/experiments/bubble_1mom/outdata/bubble_1mom_atm_3d_ml_20080801T000000Z.nc
+  icon_grid_name: icon_atmos_grid                         # must match CLEO (see yac_cartesian_dynamics.cpp)
+  icon_data_timestep: 30                                  # must match ICON data file [seconds]
+  num_vertical_levels: 24                                 # number of vertical levels in CLEO (<= ICON)
+
+### Initialization Parameters for bubble3d_inputfiles.py (bimondal distrib. from RICO vanZanten) ###
+python_inputfiles:
+  xgrid_ngbxs: 16                              # x direction ngbxs <- note(!) num_vertical_levels * xgrid_ngbxs == ngbxs (see below)
+  ygrid_ngbxs: 2                               # y direction ngbxs <- note(!) num_vertical_levels * xgrid_ngbxs == ngbxs (see below)
+  nsupers_pergbx: 32                           # number of SDs per gridbox <- note(!) must be consistent with maxnsupers (see below)
+  rspan:                                       # [min, max] range of radii to sample [m]
+  - 5e-9
+  - 4e-6
+  geomeans:                                    # geometric means of bimodal Lognormal distribution
+  - 0.03e-6
+  - 0.14e-6
+  geosigs:                                     # geometric stddevs of bimodal Lognormal distribution
+  - 1.28
+  - 1.75
+  scalefacs:                                   # scale factors of peaks in bimodal Lognormal distribution
+  - 0.85714285714
+  - 0.14285714285
+  numconc: 1.05e8                              # total no. conc of real droplets [m^-3]
+  randradii: true                             # sample SD radii in log10r bins randomly or not
+  randcoords: true                            # sample SD spatial coordinates randomly or not
+
+### Kokkos Initialization Parameters ###
+kokkos_settings:
+  num_threads: 32                                          # number of threads for host parallel backend
+
+### YAC Setttings / Initialization Parameters ###
+yac_settings:
+  cleo_component_name: cleo                                                           # name to label cleo model with
+  cleo_grid_name: cleo_cartesian_grid                                                 # name to label cleo grid with
+  yac_config_file:
+    /work/mh0731/m301324/icon/icon/experiments/bubble_cleo_convergence_v2/bubble_cleo_conv_n32_m01/tmp/yac_icon_cleo_coupling_config.yaml # path to YAC configuration file
+  # yac_debug_config_file: /path/to/bin/cleo_coupling_debug.yaml      # (optional) for debugging: yac_cset_config_output_file
+  # yac_debug_grid_file: /path/to/bin/CLEO/build/bin/cleo_grid_debug.nc              # (optional) for debugging: yac_cset_grid_output_file
+
+### SDM Runtime Parameters ###
+domain:
+  nspacedims: 3                                           # no. of spatial dimensions to model
+  ngbxs: 768                                              # total number of Gbxs
+  maxnsupers: 24576                                       # maximum number of SDs
+
+timesteps:
+  CONDTSTEP: 0.1                                          # time between SD condensation [s]
+  COLLTSTEP: 1                                            # time between SD collision [s]
+  MOTIONTSTEP: 1                                          # time between SDM motion [s]
+  COUPLTSTEP: 30                                          # time between dynamic couplings [s]
+  OBSTSTEP: 30                                            # time between SDM observations [s]
+  T_END: 7200                                             # time span of integration from 0s to T_END [s]
+
+### Initialisation Parameters ###
+inputfiles:
+  constants_filename:
+    /home/m/m301324/CLEO-bubble-cdb51226/libs/cleoconstants.hpp      # name of file for values of physical constants
+  grid_filename:
+    /work/mh0731/m301324/icon/icon/experiments/bubble_cleo_convergence_v2/bubble_cleo_conv_n32_m01/share/bubble3d_dimlessGBxboundaries.dat # binary filename for initialisation of GBxs / GbxMaps
+
+initsupers:
+  type: frombinary                                        # type of initialisation of super-droplets
+  initsupers_filename:
+    /work/mh0731/m301324/icon/icon/experiments/bubble_cleo_convergence_v2/bubble_cleo_conv_n32_m01/share/bubble3d_dimlessSDsinit.dat # binary filename for initialisation of SDs
+
+### Output Parameters ###
+outputdata:
+  setup_filename:
+    /work/mh0731/m301324/icon/icon/experiments/bubble_cleo_convergence_v2/bubble_cleo_conv_n32_m01/bin/bubble3d_setup.txt # .txt filename to copy configuration to
+  zarrbasedir:
+    /work/mh0731/m301324/icon/icon/experiments/bubble_cleo_convergence_v2/bubble_cleo_conv_n32_m01/bin/bubble3d_sol.zarr # zarr store base directory
+  maxchunk: 2500000                                           # maximum no. of elements in chunks of zarr store array
+
+### Microphysics Parameters ###
+microphysics:
+  condensation:
+    do_alter_thermo: false                                    # true = cond/evap alters the thermodynamic state
+    maxniters: 50                                             # maximum no. iterations of Newton Raphson Method
+    MINSUBTSTEP: 0.0001                                       # minimum subtimestep in cases of substepping [s]
+    rtol: 0.1                                                 # relative tolerance for implicit Euler integration
+    atol: 0.1                                                 # absolute tolerance for implicit Euler integration
+  coalescence:
+    constcoaleff:
+      coaleff: 1.0                                            # coalescence efficiency (not collision efficiency!)
+
+### Coupled Dynamics Parameters ###
+coupled_dynamics:
+  type: yac
+  lower_longitude: -2.51327412287                      # must match xgrid domain delta_x
+  upper_longitude: 2.51327412287
+  lower_latitude: -0.06544984694                       # must match ygrid domain delta_y
+  upper_latitude: 0.03272492347
+  longitude_to_meters: 15915.494309189535              # conversion from longitude radians to km (100 km = 2*pi)
+  latitude_to_meters: 88212.62326748674                # conversion from latitude radians to km (17 km = 0.03125 * 2*pi)
+// ----------------------------- //
+
+
+
+// ----------------------------- //
+// --------- /home/m/m301324/CLEO-bubble-cdb51226/libs/cleoconstants.hpp --------- //
+// ----------------------------- //
+/*
+ * Copyright (c) 2024 MPI-M, Clara Bayley
+ *
+ *
+ * ----- CLEO -----
+ * File: cleoconstants.hpp
+ * Project: libs
+ * Created Date: Monday 29th January 2024
+ * Author: Clara Bayley (CB)
+ * Additional Contributors:
+ * -----
+ * License: BSD 3-Clause "New" or "Revised" License
+ * https://opensource.org/licenses/BSD-3-Clause
+ * -----
+ * File Description:
+ * header file with namespaces for (physical) constants used by CLEO
+ * _Note:_ All letters in CAPITALS indicates constants have dimensions
+ * (or are naturally dimensionless as for IONIC). Only first letter
+ * capitalised indicates value is dimensionless (version of a) constant.
+ */
+
+#ifndef LIBS_CLEOCONSTANTS_HPP_
+#define LIBS_CLEOCONSTANTS_HPP_
+
+#include <cstdint>
+#include <limits>
+#include <numbers>
+
+/**
+ * @brief Namespace containing values of constants with dimensions.
+ */
+namespace dimmed_constants {
+constexpr double G = 9.80665;                   /**< Acceleration due to gravity [m/s^2]. */
+constexpr double RGAS_UNIV = 8.314462618;       /**< Universal molar gas constant [J/Kg/K]. */
+constexpr double MR_WATER = 0.01801528;         /**< Molecular mass of water [Kg/mol]. */
+constexpr double MR_DRY = 0.028966216;          /**< Molecular mass of dry air [Kg/mol]. */
+constexpr double RGAS_DRY = RGAS_UNIV / MR_DRY; /**< Specific gas constant for dry air [J/Kg/K]. */
+constexpr double RGAS_V = RGAS_UNIV / MR_WATER; /**< Specific gas constant for water [J/Kg/K]. */
+
+constexpr double LATENT_V = 2500930;
+/**< Specific latent heat of vapourisation of water [J/Kg]  (IAPWS97 at 273.15K). */
+constexpr double CP_DRY = 1004.64;
+/**< Specific heat capacity (dry) air at constant pressure [J/Kg/K] ~1.400*cv_dry (ICON). */
+constexpr double CP_V = 1865.01;
+/**< Specific heat capacity of water vapour [J/Kg/K] (IAPWS97 at 273.15K). */
+constexpr double C_L = 4192.664;
+/**< Specific heat capacity of liquid water[J/Kg/K] (ICON c_l = (3.1733 + 1.0) * cp_dry). */
+
+constexpr double RHO_L = 998.203;
+/**< Density of liquid water condensing [kg/m^3] (water at 293K from SCALE-SDM). */
+constexpr double DYNVISC = 18.45 * 1e-6; /**< dynamic viscosity of air [Pa s] (at 300K). */
+
+constexpr double RHO_SOL = 2016.5; /**< Density of (dry) areosol [Kg/m^3] (NaCl from SCALE-SDM). */
+constexpr double MR_SOL = 0.05844277;
+/**< Molecular mass of areosol [Kg/mol] (NaCl=0.058 from SCALE-SDM). */
+constexpr int IONIC = 2; /**< Degree ionic dissociation (van't Hoff factor) [dimensionless]. */
+
+constexpr double SURFSIGMA = 7.28e-2; /**< Surface tension of water [J/m^-2]. */
+}  // namespace dimmed_constants
+
+/**
+ * @brief Namespace containing constants for using characterstic scales of time, velocity,
+ * temperature, ... (TIME0, TEMP0, P0, ...) etc. in order to make variables dimensionless.
+ * Namespace also includes the dimensionless equivalents of some members of the
+ * dimmed_constants namespace.
+ *
+ */
+namespace dimless_constants {
+
+namespace DC = dimmed_constants;
+
+/* characterstic scales */
+constexpr double W0 = 1.0;                        /**< Characteristic velocity [m/s]. */
+constexpr double TIME0 = 1000.0;                  /**< Timescale [s]. */
+constexpr double COORD0 = TIME0 * W0;             /**< Coordinate grid scale [m]. */
+constexpr double VOL0 = COORD0 * COORD0 * COORD0; /**< Volume scale [m^3]. */
+
+constexpr double CP0 = DC::CP_DRY; /**< Heat capacity [J/Kg/K]. */
+constexpr double MR0 = DC::MR_DRY; /**< Molecular molar mass [Kg/mol]. */
+constexpr double R0 = 1e-6;        /**< Droplet radius lengthscale [m]. */
+
+constexpr double P0 = 100000.0;                 /**< Pressure [Pa]. */
+constexpr double TEMP0 = 273.15;                /**< Temperature [K]. */
+constexpr double RHO0 = P0 / (CP0 * TEMP0);     /**< Density [Kg/m^3]. */
+constexpr double MASS0 = R0 * R0 * R0 * RHO0;   /**< Mass [Kg]. */
+constexpr double MASS0grams = MASS0 * 1000;     /**< Mass [g]. */
+constexpr double F0 = TIME0 / (RHO0 * R0 * R0); /**< Droplet condensation-diffusion factors. */
+
+/* dimensionless constants */
+constexpr double Mr_ratio = DC::MR_WATER / DC::MR_DRY; /**< Dimensionless molecular mass ratio. */
+constexpr double Cp_dry = DC::CP_DRY / CP0;            /**< Dimensionless CP_DRY. */
+constexpr double Cp_v = DC::CP_V / CP0;                /**< Dimensionless CP_V. */
+constexpr double C_l = DC::C_L / CP0;                  /**< Dimensionless C_L. */
+constexpr double Latent_v = DC::LATENT_V / (TEMP0 * CP0); /**< Dimensionless LATENT_V. */
+constexpr double Rgas_dry = DC::RGAS_DRY / CP0;           /**< Dimensionless RGAS_DRY. */
+constexpr double Rgas_v = DC::RGAS_V / CP0;               /**< Dimensionless RGAS_V. */
+constexpr double Rho_l = DC::RHO_L / RHO0;                /**< Dimensionless RHO_L. */
+constexpr double Rho_sol = DC::RHO_SOL / RHO0;            /**< Dimensionless RHO_SOL. */
+constexpr double Mr_sol = DC::MR_SOL / MR0;               /**< Dimensionless MR_SOL. */
+constexpr int IONIC = DC::IONIC;                          /**< Dimensionless IONIC. */
+
+constexpr double surfconst = 4.0 * DC::SURFSIGMA * std::numbers::pi * R0 * R0;
+/**< Surface tension energy constant (see collisionkinetics) */
+}  // namespace dimless_constants
+
+/**
+ * @brief max/min values for certain types, e.g. to use values from C++ standard numeric limits on
+ * GPUs.
+ *
+ */
+namespace LIMITVALUES {
+constexpr unsigned int uintmax = std::numeric_limits<unsigned int>::max(); /**< Max unsigned int. */
+constexpr uint64_t uint64_t_max = std::numeric_limits<uint64_t>::max(); /**< Max 64 byte u-int. */
+
+constexpr unsigned int oob_gbxindex = uintmax; /**< value for an out of bounds gbxindex */
+constexpr double llim = -1.0 * std::numeric_limits<double>::max(); /**< Maximum negative double. */
+constexpr double ulim = std::numeric_limits<double>::max();        /**< Maximum positive double. */
+}  // namespace LIMITVALUES
+
+#endif  // LIBS_CLEOCONSTANTS_HPP_
+// ----------------------------- //

@@ -1,0 +1,6 @@
+# The package shares code and compact audit products, not the large raw particle store.
+*.zarr/
+*.mp4
+*.docx
+*.pptx
+*.key

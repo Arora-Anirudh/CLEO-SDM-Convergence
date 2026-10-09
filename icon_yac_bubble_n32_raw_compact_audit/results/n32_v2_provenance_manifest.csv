@@ -1,0 +1,42 @@
+kind,number,artifact,status,source_basis
+report_figure,1,bubble_massmoms.png,compact-authoritative,CLEO compact massmom and raindrop-moment arrays
+report_figure,2,bubble_massmoms_1.png,compact-authoritative,CLEO compact massmom and raindrop-moment arrays
+report_figure,3,bubble_motion.png,raw-qualitative-only,"raw sampled sdId, coordinates, and radius; no validated trajectory identity"
+report_figure,4,bubble_motion_v2.png,raw-qualitative-only,raw cumulative sampled histories; no validated trajectory identity
+report_figure,5,bubble_thermo.png,compact-authoritative,"dense received temperature, pressure, and humidity state"
+report_figure,6,bubble_thermo_1.png,compact-authoritative,"dense received temperature, pressure, and humidity state"
+report_figure,7,bubble_thermo_2.png,compact-authoritative,"dense received temperature, pressure, and humidity state"
+report_figure,8,bubble_winds.png,compact-authoritative,dense received wind state
+report_figure,9,bubble_winds_1.png,compact-authoritative,dense received wind state
+report_figure,10,bubble_winds_2.png,compact-authoritative,dense received wind state
+report_figure,11,bubble_zyplane_thermo.png,compact-authoritative,"dense received temperature, pressure, and humidity state"
+report_figure,12,bubble_zyplane_thermo_1.png,compact-authoritative,"dense received temperature, pressure, and humidity state"
+report_figure,13,bubble_zyplane_winds.png,compact-authoritative,dense received wind state
+report_figure,14,bubble_zyplane_winds_1.png,compact-authoritative,dense received wind state
+report_figure,15,01_spatial_hydrometeor_mass.png,compact-authoritative,compact massmom1 and massmom1_raindrops
+report_figure,16,02_domain_lambda_evolution.png,raw-quantitative-not-validated,raw xi and radius reconstruction
+report_figure,17,03_domain_dsd_evolution.png,raw-quantitative-not-validated,raw xi and radius reconstruction
+report_figure,18,04_particle_size_height_snapshots.png,raw-qualitative-only,raw coordinates and radius categories
+report_figure,19,05_lower_boundary_precipitation.png,compact-authoritative,compact precipitation observer at external lower boundary
+report_figure,20,01_height_time_hydrometeor_categories.png,raw-quantitative-not-validated,"raw xi, radius, msol, and coordinates"
+report_figure,21,02_vertical_liquid_water_transport.png,raw-quantitative-not-validated,"raw particle mass, radius, and coordinates combined with compact winds"
+report_figure,22,03_updraft_downdraft_microphysics.png,raw-quantitative-not-validated,raw particle mass/radius conditioning combined with compact winds
+report_figure,23,04_optical_and_radar_moment_proxies.png,raw-quantitative-not-validated,raw particle radius-moment reconstruction
+report_figure,24,05_large_drop_tail_sampling_diagnostics.png,raw-quantitative-not-validated,raw particle record/identity and radius-tail reconstruction
+report_figure,25,gridboxboundaries.png,initialization-authoritative,input grid file
+report_figure,26,initGBxs_distribs.png,initialization-authoritative,input superdroplet population before integration
+report_figure,27,initGBxs_dropletmasses.png,initialization-authoritative,input superdroplet population before integration
+report_figure,28,06_signed_transport_scale_comparison.png,raw-quantitative-not-validated,raw particle condensate and vertical-velocity reconstruction
+report_figure,29,07_bidirectional_transport.png,raw-quantitative-not-validated,raw particle condensate and vertical-velocity reconstruction
+report_figure,30,08_all_time_output_integrity.png,integrity-QC,raw-versus-compact discrepancy diagnostic; not a physical-result figure
+report_figure,31,09_event_number_and_liquid_mass_dsd.png,raw-quantitative-not-validated,raw xi/radius/msol reconstruction
+report_figure,32,10_conditional_mass_context.png,raw-quantitative-not-validated,raw particle condensate/radius combined with compact winds
+report_figure,33,11_event_chronology.png,mixed-split-panel,raw radius moments/categories plus compact lower-boundary export
+report_figure,34,12_terminal_speed_law_and_motion.png,raw-quantitative-not-validated,configured terminal-speed law is exact; time-varying weighted statistics are raw-derived
+report_figure,35,13_event_particle_location_snapshots.png,raw-qualitative-only,raw coordinates/radius categories; no unique trajectory or population claim
+animation,,cleo_n32_domain_dsd_evolution_30s.mp4,raw-quantitative-not-validated,raw xi and radius DSD
+animation,,cleo_n32_microphysical_event_dashboard_30s.mp4,mixed-split-panel,raw DSD/lambda6 plus compact lower-boundary outflow
+animation,,cleo_n32_spatial_hydrometeor_mass_30s.mp4,compact-authoritative,compact massmom1/massmom1_raindrops
+animation,,cleo_n32_superdroplet_motion_30s.mp4,raw-qualitative-only,raw coordinates/radius over compact vertical wind
+animation,,cleo_n32_superdroplet_motion_radius_scaled_30s.mp4,raw-qualitative-only,raw coordinates/radius over compact vertical wind
+animation,,cleo_n32_superdroplet_motion_fixed_symbols_30s.mp4,raw-qualitative-only,raw coordinates/radius over compact vertical wind
