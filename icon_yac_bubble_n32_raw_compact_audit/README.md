@@ -34,7 +34,10 @@ raw stream has one concatenated `superdroplets` axis and, for this executable,
 does not contain a saved `sdgbxindex`. `raggedcount(time)` gives the number of
 particle records saved at each time, so its cumulative sum supplies the
 start/end offsets needed to select one complete output time. It does not select
-or accumulate gridboxes.
+or accumulate gridboxes. A cell-by-cell audit is still possible, but it must
+first reconstruct a provisional gridbox assignment from `coord1/2/3` and the
+saved grid-boundary file, then validate the boundary convention against CLEO's
+native mapping; it cannot directly use an output `sdgbxindex` here.
 
 ## What the code compares
 

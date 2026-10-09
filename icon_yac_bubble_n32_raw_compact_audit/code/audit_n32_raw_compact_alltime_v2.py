@@ -39,9 +39,11 @@ def row_for_time(
     solute_g = msol_kg * (1.0 - RHO_WATER / RHO_SOLUTE) * 1000.0
     mass_g = water_g + solute_g
     represented_mass_g = xi * mass_g
-    # The raw stream has no saved sdgbxindex in this executable, so the
-    # comparable quantity is the domain total: sum compact values over all
-    # gridboxes at this same saved time.
+    # This first audit deliberately compares domain totals. The raw stream
+    # does not save CLEO's sdgbxindex, although a later audit can reconstruct
+    # a provisional cell assignment from coord1/2/3 and the grid-boundary
+    # file. Here the compact values are therefore summed over every gridbox at
+    # the same saved time.
     compact0 = float(np.sum(np.asarray(ds["massmom0"].isel(time=index).values, dtype=float)))
     compact1 = float(np.sum(np.asarray(ds["massmom1"].isel(time=index).values, dtype=float)))
     compact2 = float(np.sum(np.asarray(ds["massmom2"].isel(time=index).values, dtype=float)))
