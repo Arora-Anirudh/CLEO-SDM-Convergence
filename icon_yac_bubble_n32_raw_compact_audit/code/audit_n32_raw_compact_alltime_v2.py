@@ -39,6 +39,9 @@ def row_for_time(ds: xr.Dataset, starts: np.ndarray, ends: np.ndarray, index: in
     raw0 = float(np.sum(xi))
     raw1 = float(np.sum(represented_mass_g))
     raw2 = float(np.sum(xi * mass_g**2))
+    delta0 = raw0 - compact0
+    delta1 = raw1 - compact1
+    delta2 = raw2 - compact2
     unique = int(np.unique(ids).size)
     return {
         "time_min": float(ds["time"].isel(time=index).values) / 60.0,
@@ -50,12 +53,18 @@ def row_for_time(ds: xr.Dataset, starts: np.ndarray, ends: np.ndarray, index: in
         "duplicate_fraction_pct": float(100.0 * ((end - start) - unique) / max(end - start, 1)),
         "raw_sum_xi": raw0,
         "compact_massmom0": compact0,
+        "raw_minus_compact_mom0": delta0,
+        "abs_raw_minus_compact_mom0": abs(delta0),
         "ratio_mom0": raw0 / compact0 if compact0 > 0 else np.nan,
         "raw_mass_g": raw1,
         "compact_massmom1_g": compact1,
+        "raw_minus_compact_mom1_g": delta1,
+        "abs_raw_minus_compact_mom1_g": abs(delta1),
         "ratio_mom1": raw1 / compact1 if compact1 > 0 else np.nan,
         "raw_massmom2_g2": raw2,
         "compact_massmom2_g2": compact2,
+        "raw_minus_compact_mom2_g2": delta2,
+        "abs_raw_minus_compact_mom2_g2": abs(delta2),
         "ratio_mom2": raw2 / compact2 if compact2 > 0 else np.nan,
         "raw_water_mass_g": float(np.sum(xi * water_g)),
         "raw_effective_solute_mass_g": float(np.sum(xi * solute_g)),
@@ -76,6 +85,28 @@ def write_csv(path: Path, rows: list[dict[str, float | int]]) -> None:
         writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
+
+
+def print_absolute_difference_summary(rows: list[dict[str, float | int]]) -> None:
+    """Print physical-unit differences so rounding can be assessed directly."""
+    metrics = (
+        ("M0", "raw_minus_compact_mom0", "abs_raw_minus_compact_mom0", "represented droplets"),
+        ("M1", "raw_minus_compact_mom1_g", "abs_raw_minus_compact_mom1_g", "g"),
+        ("M2", "raw_minus_compact_mom2_g2", "abs_raw_minus_compact_mom2_g2", "g^2"),
+    )
+    print("Absolute-difference audit: raw reconstruction minus compact diagnostic")
+    for name, signed_key, absolute_key, unit in metrics:
+        signed0 = float(rows[0][signed_key])
+        finite = [row for row in rows if np.isfinite(float(row[absolute_key]))]
+        largest = max(finite, key=lambda row: float(row[absolute_key]))
+        nonfinite = len(rows) - len(finite)
+        print(
+            f"{name}: t=0 signed difference = {signed0:.12g} {unit}; "
+            f"max finite absolute difference = {float(largest[absolute_key]):.12g} {unit} "
+            f"at {float(largest['time_min']):.6g} min "
+            f"(signed {float(largest[signed_key]):.12g}); "
+            f"non-finite differences = {nonfinite}"
+        )
 
 
 def make_plot(rows: list[dict[str, float | int]], outdir: Path) -> None:
@@ -111,6 +142,7 @@ def main() -> None:
         starts = np.insert(ends[:-1], 0, 0)
         rows = [row_for_time(ds, starts, ends, index) for index in range(counts.size)]
     write_csv(cfg.outdir / "n32_raw_compact_alltime.csv", rows)
+    print_absolute_difference_summary(rows)
     make_plot(rows, cfg.outdir)
     with (cfg.outdir / "README.txt").open("w") as stream:
         stream.write(

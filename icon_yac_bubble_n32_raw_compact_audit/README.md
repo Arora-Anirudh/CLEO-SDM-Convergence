@@ -44,6 +44,12 @@ with `rho_water = 998.203 kg m^-3` and `rho_solute = 2016.5 kg m^-3`.
 The raw stored radius is converted from micrometres to metres and `msol` from
 grams to kilograms before evaluating the formula.
 
+For assessing whether a discrepancy could be rounding, the output CSV also
+contains the signed difference `raw_minus_compact_*` and magnitude
+`abs_raw_minus_compact_*` for all three moments in their physical units. The
+script prints the initial difference, the largest finite absolute difference,
+its time, and the number of non-finite differences when it is run.
+
 ## Result
 
 At the initial state, raw/compact `M1 = 0.99999994`, validating the units and
