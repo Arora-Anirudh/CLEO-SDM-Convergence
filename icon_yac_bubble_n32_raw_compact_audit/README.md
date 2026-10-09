@@ -29,6 +29,13 @@ The raw-particle stream is useful for particle snapshots.  Before using it to
 derive a bulk diagnostic, this audit checks whether its reconstructed moments
 agree with the separately written compact products.
 
+This is intentionally a “domain-total versus domain-total” comparison. The
+raw stream has one concatenated `superdroplets` axis and, for this executable,
+does not contain a saved `sdgbxindex`. `raggedcount(time)` gives the number of
+particle records saved at each time, so its cumulative sum supplies the
+start/end offsets needed to select one complete output time. It does not select
+or accumulate gridboxes.
+
 ## What the code compares
 
 `code/audit_n32_raw_compact_alltime_v2.py` partitions the ragged stream using

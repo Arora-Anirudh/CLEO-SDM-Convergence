@@ -22,8 +22,14 @@ def args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def row_for_time(ds: xr.Dataset, starts: np.ndarray, ends: np.ndarray, index: int) -> dict[str, float | int]:
-    start, end = int(starts[index]), int(ends[index])
+def row_for_time(
+    ds: xr.Dataset, time_starts: np.ndarray, time_ends: np.ndarray, index: int
+) -> dict[str, float | int]:
+    # The ragged arrays have no time dimension. They are laid out as one
+    # concatenation of complete output states: [all particles at t0]
+    # [all particles at t1] ... . These offsets select one saved time, not one
+    # gridbox or a cumulative set of gridboxes.
+    start, end = int(time_starts[index]), int(time_ends[index])
     selection = {"superdroplets": slice(start, end)}
     ids = np.asarray(ds["sdId"].isel(selection).values)
     xi = np.asarray(ds["xi"].isel(selection).values, dtype=float)
@@ -33,6 +39,9 @@ def row_for_time(ds: xr.Dataset, starts: np.ndarray, ends: np.ndarray, index: in
     solute_g = msol_kg * (1.0 - RHO_WATER / RHO_SOLUTE) * 1000.0
     mass_g = water_g + solute_g
     represented_mass_g = xi * mass_g
+    # The raw stream has no saved sdgbxindex in this executable, so the
+    # comparable quantity is the domain total: sum compact values over all
+    # gridboxes at this same saved time.
     compact0 = float(np.sum(np.asarray(ds["massmom0"].isel(time=index).values, dtype=float)))
     compact1 = float(np.sum(np.asarray(ds["massmom1"].isel(time=index).values, dtype=float)))
     compact2 = float(np.sum(np.asarray(ds["massmom2"].isel(time=index).values, dtype=float)))
@@ -137,10 +146,15 @@ def main() -> None:
     cfg = args()
     cfg.outdir.mkdir(parents=True, exist_ok=False)
     with xr.open_dataset(cfg.dataset, engine="zarr", consolidated=False) as ds:
-        counts = np.asarray(ds["raggedcount"].values, dtype=np.int64)
-        ends = np.cumsum(counts, dtype=np.int64)
-        starts = np.insert(ends[:-1], 0, 0)
-        rows = [row_for_time(ds, starts, ends, index) for index in range(counts.size)]
+        records_per_time = np.asarray(ds["raggedcount"].values, dtype=np.int64)
+        # Convert per-time ragged record counts to exclusive offsets on the
+        # one-dimensional ``superdroplets`` storage axis.
+        time_ends = np.cumsum(records_per_time, dtype=np.int64)
+        time_starts = np.insert(time_ends[:-1], 0, 0)
+        rows = [
+            row_for_time(ds, time_starts, time_ends, index)
+            for index in range(records_per_time.size)
+        ]
     write_csv(cfg.outdir / "n32_raw_compact_alltime.csv", rows)
     print_absolute_difference_summary(rows)
     make_plot(rows, cfg.outdir)
